@@ -104,12 +104,13 @@ export function AiCopilotClient() {
         <CardContent className="pt-4 space-y-4">
           {draftResult ? (
             <>
-              {draftResult.missingInformation?.length > 0 && (
-                <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 text-xs text-amber-800">
-                  <strong>Missing Travel Details Flagged by AI:</strong>{' '}
-                  {draftResult.missingInformation.join(', ')}
-                </div>
-              )}
+              {Array.isArray(draftResult.missingInformation) &&
+                draftResult.missingInformation.length > 0 && (
+                  <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 text-xs text-amber-800">
+                    <strong>Missing Travel Details Flagged by AI:</strong>{' '}
+                    {(draftResult.missingInformation || []).join(', ')}
+                  </div>
+                )}
 
               <div>
                 <Label>Editable Response Text</Label>

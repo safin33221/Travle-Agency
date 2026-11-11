@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { createPackage } from '@/services/packages/packages.service';
+import { ServiceCategory } from '@/types/api';
 import { Button } from '@/components/ui/button';
 import { Input, Label, Textarea } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -29,6 +30,7 @@ export function CreatePackageForm() {
 
     startTransition(async () => {
       const res = await createPackage({
+        category: (formData.get('category') as ServiceCategory) || 'TOUR',
         title: String(formData.get('title') || ''),
         destination: String(formData.get('destination') || ''),
         durationDays: Number(formData.get('durationDays')) || 3,
@@ -65,7 +67,21 @@ export function CreatePackageForm() {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <Label htmlFor="title">Package Title *</Label>
+              <Label htmlFor="category">Service Sector *</Label>
+              <select
+                id="category"
+                name="category"
+                className="flex h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+                defaultValue="TOUR"
+              >
+                <option value="TOUR">Holiday Tour & Tourist Visa</option>
+                <option value="HAJJ_UMRAH">Hajj & Umrah Package</option>
+                <option value="WORK_PERMIT">Work Permit & Job Visa</option>
+                <option value="STUDENT_VISA">Study Abroad & Student Visa</option>
+              </select>
+            </div>
+            <div>
+              <Label htmlFor="title">Package / Program Title *</Label>
               <Input
                 id="title"
                 name="title"

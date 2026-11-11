@@ -12,12 +12,58 @@
  * ============================================================================
  */
 
+import { ServiceCategory } from '@/types/api';
+
+export interface SectorMetaConfig {
+  key: ServiceCategory;
+  label: string;
+  shortLabel: string;
+  badgeColor: string;
+  description: string;
+}
+
+export const SECTOR_CATALOG: Record<ServiceCategory, SectorMetaConfig> = {
+  TOUR: {
+    key: 'TOUR',
+    label: 'Holiday Tours & Visa',
+    shortLabel: 'Holiday Tour',
+    badgeColor: 'bg-sky-100 text-sky-800 border-sky-200',
+    description: 'Domestic & international holiday packages, hotels, and tourist visas.',
+  },
+  HAJJ_UMRAH: {
+    key: 'HAJJ_UMRAH',
+    label: 'Hajj & Umrah Packages',
+    shortLabel: 'Hajj & Umrah',
+    badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+    description: 'Nusuk-verified Hajj & Umrah packages with walking-distance Haram hotels.',
+  },
+  WORK_PERMIT: {
+    key: 'WORK_PERMIT',
+    label: 'Work Permit & Job Visa',
+    shortLabel: 'Work Permit',
+    badgeColor: 'bg-amber-100 text-amber-800 border-amber-200',
+    description: 'Verified overseas employment permits, GAMCA medical & BMET processing.',
+  },
+  STUDENT_VISA: {
+    key: 'STUDENT_VISA',
+    label: 'Study Abroad & Student Visa',
+    shortLabel: 'Student Visa',
+    badgeColor: 'bg-purple-100 text-purple-800 border-purple-200',
+    description: 'University admission, SOP/CAS support, and student visa counseling.',
+  },
+};
+
 export interface BrandConfig {
   agencyName: string;
   shortName: string;
   tagline: string;
   legalName: string;
   establishedYear: number;
+  /**
+   * Toggle which service verticals this agency sells!
+   * Simply remove or reorder categories when cloning for a niche agency.
+   */
+  enabledCategories: ServiceCategory[];
   logo: {
     primaryText: string;
     accentText: string;
@@ -61,6 +107,7 @@ export const brandConfig: BrandConfig = {
   tagline: 'Curated Journeys, Transparent Pricing, Memorable Experiences',
   legalName: 'TravelPilot Tours & Travels Ltd.',
   establishedYear: 2026,
+  enabledCategories: ['TOUR', 'HAJJ_UMRAH', 'WORK_PERMIT', 'STUDENT_VISA'],
   logo: {
     primaryText: 'Travel',
     accentText: 'Pilot',

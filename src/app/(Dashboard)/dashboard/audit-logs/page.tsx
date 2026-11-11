@@ -4,8 +4,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { formatDate, formatTime } from '@/lib/utils';
 
+export const instant = false;
+
 export default async function AuditLogsPage() {
   const logsRes = await getAuditLogs();
+  const logs = logsRes?.data || [];
 
   return (
     <div>
@@ -27,7 +30,7 @@ export default async function AuditLogsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {logsRes.data.map((log) => (
+                {logs.map((log) => (
                   <tr key={log.id}>
                     <td className="py-3 px-4 text-xs text-slate-500">
                       {formatDate(log.createdAt)} {formatTime(log.createdAt)}
@@ -43,7 +46,7 @@ export default async function AuditLogsPage() {
                     </td>
                   </tr>
                 ))}
-                {logsRes.data.length === 0 && (
+                {logs.length === 0 && (
                   <tr>
                     <td
                       colSpan={4}

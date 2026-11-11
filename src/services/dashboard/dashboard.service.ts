@@ -31,50 +31,69 @@ const EMPTY_SUMMARY: DashboardSummary = {
   },
 };
 
+interface RawDashboardSummary {
+  leads?: {
+    total?: number;
+    byStage?: Record<string, number>;
+  };
+  quotations?: {
+    total?: number;
+    draft?: number;
+    draftCount?: number;
+    approved?: number;
+    approvedCount?: number;
+    wonRevenue?: string | number;
+  };
+  followUps?: {
+    openCount?: number;
+    overdueCount?: number;
+    upcomingTasks?: DashboardSummary['followUps']['upcomingTasks'];
+  };
+  packages?: {
+    activeCount?: number;
+  };
+}
+
 export async function getDashboardSummary(): Promise<DashboardSummary> {
   try {
     const res = await serverFetch.get('/dashboard/summary');
     if (!res.ok) return EMPTY_SUMMARY;
-    const data = (await res.json().catch(() => null)) as Record<string, unknown> | null;
-    if (!data || typeof data !== 'object') return EMPTY_SUMMARY;
+    const raw = (await res.json().catch(() => null)) as RawDashboardSummary | null;
+    if (!raw) return EMPTY_SUMMARY;
 
-    const quotations = (data['quotations'] as Record<string, unknown>) || {};
-    const leads = (data['leads'] as Record<string, unknown>) || {};
-    const followUps = (data['followUps'] as Record<string, unknown>) || {};
-    const packages = (data['packages'] as Record<string, unknown>) || {};
-    const byStage = (leads['byStage'] as Record<string, unknown>) || {};
-
-    const draft = Number(quotations['draft'] ?? quotations['draftCount']) || 0;
-    const approved = Number(quotations['approved'] ?? quotations['approvedCount']) || 0;
-    const totalQuotes = Number(quotations['total']) || draft + approved;
+    const draft = Number(raw?.quotations?.draft ?? raw?.quotations?.draftCount ?? 0);
+    const approved = Number(raw?.quotations?.approved ?? raw?.quotations?.approvedCount ?? 0);
+    const totalQuotations = Number(raw?.quotations?.total ?? (draft + approved));
+    const wonRevenue = raw?.quotations?.wonRevenue ?? '0';
 
     return {
       leads: {
-        total: Number(leads['total']) || 0,
+        total: Number(raw?.leads?.total ?? 0),
         byStage: {
-          NEW: Number(byStage['NEW']) || 0,
-          QUALIFIED: Number(byStage['QUALIFIED']) || 0,
-          QUOTED: Number(byStage['QUOTED']) || 0,
-          FOLLOW_UP: Number(byStage['FOLLOW_UP']) || 0,
-          WON: Number(byStage['WON']) || 0,
-          LOST: Number(byStage['LOST']) || 0,
+          NEW: Number(raw?.leads?.byStage?.NEW ?? 0),
+          QUALIFIED: Number(raw?.leads?.byStage?.QUALIFIED ?? 0),
+          QUOTED: Number(raw?.leads?.byStage?.QUOTED ?? 0),
+          FOLLOW_UP: Number(raw?.leads?.byStage?.FOLLOW_UP ?? 0),
+          WON: Number(raw?.leads?.byStage?.WON ?? 0),
+          LOST: Number(raw?.leads?.byStage?.LOST ?? 0),
+          ...(raw?.leads?.byStage ?? {}),
         },
       },
       quotations: {
-        total: totalQuotes,
+        total: totalQuotations,
         draft,
         approved,
-        wonRevenue: (quotations['wonRevenue'] as string | number) ?? '0',
+        wonRevenue,
       },
       followUps: {
-        openCount: Number(followUps['openCount']) || 0,
-        overdueCount: Number(followUps['overdueCount']) || 0,
-        upcomingTasks: Array.isArray(followUps['upcomingTasks'])
-          ? (followUps['upcomingTasks'] as DashboardSummary['followUps']['upcomingTasks'])
+        openCount: Number(raw?.followUps?.openCount ?? 0),
+        overdueCount: Number(raw?.followUps?.overdueCount ?? 0),
+        upcomingTasks: Array.isArray(raw?.followUps?.upcomingTasks)
+          ? raw.followUps.upcomingTasks
           : [],
       },
       packages: {
-        activeCount: Number(packages['activeCount']) || 0,
+        activeCount: Number(raw?.packages?.activeCount ?? 0),
       },
     };
   } catch {

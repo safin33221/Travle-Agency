@@ -1,6 +1,8 @@
 import { ManagementPageHeader } from '@/components/shared/ManagementPageHeader';
 import { AiCopilotClient } from '@/components/module/ai/AiCopilotClient';
 
+export const instant = false;
+
 export default function AiCopilotPage() {
   return (
     <div>

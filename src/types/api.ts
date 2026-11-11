@@ -1,6 +1,32 @@
 export type StaffRole = 'OWNER_ADMIN' | 'SALES_AGENT';
 export type StaffStatus = 'ACTIVE' | 'INACTIVE';
 
+export type ServiceCategory =
+  | 'TOUR'
+  | 'HAJJ_UMRAH'
+  | 'WORK_PERMIT'
+  | 'STUDENT_VISA';
+
+export type DocumentItemStatus = 'PENDING' | 'RECEIVED' | 'VERIFIED' | 'REJECTED';
+
+export interface LeadDocumentChecklistItem {
+  key: string;
+  title: string;
+  required?: boolean;
+  status: DocumentItemStatus;
+  note?: string;
+  updatedAt?: string;
+}
+
+export type MilestoneItemStatus = 'PENDING' | 'IN_PROGRESS' | 'DONE';
+
+export interface LeadMilestoneItem {
+  key: string;
+  title: string;
+  status: MilestoneItemStatus;
+  completedAt?: string;
+}
+
 export type LeadStage =
   | 'NEW'
   | 'QUALIFIED'
@@ -73,12 +99,16 @@ export interface AgencySettings {
 
 export interface TourPackage {
   id: string;
+  category?: ServiceCategory;
   title: string;
   destination: string;
   durationDays: number;
+  durationNights?: number;
   description: string;
   inclusions: string[];
   exclusions: string[];
+  requiredDocuments?: string[];
+  structuredSpecs?: Record<string, unknown> | null;
   basePrice: string | number;
   currency: string;
   validFrom?: string | null;
@@ -187,6 +217,8 @@ export interface AiDraft {
 
 export interface Lead {
   id: string;
+  trackingCode?: string | null;
+  category?: ServiceCategory;
   customerName: string;
   customerPhone?: string | null;
   customerEmail?: string | null;
@@ -198,6 +230,10 @@ export interface Lead {
   budget?: string | number | null;
   requirements?: string | null;
   stage: LeadStage;
+  eligibilityStatus?: string | null;
+  documentChecklist?: LeadDocumentChecklistItem[] | null;
+  milestoneChecklist?: LeadMilestoneItem[] | null;
+  metadata?: Record<string, unknown> | null;
   assignedToId?: string | null;
   createdAt: string;
   updatedAt: string;

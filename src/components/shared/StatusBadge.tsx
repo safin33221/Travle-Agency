@@ -1,6 +1,10 @@
 import { Badge } from '@/components/ui/badge';
 
-export function StatusBadge({ status }: { status: string }) {
+export function StatusBadge({ status }: { status?: string | null }) {
+  if (!status) {
+    return <Badge variant="neutral">—</Badge>;
+  }
+
   const map: Record<
     string,
     'default' | 'success' | 'warning' | 'danger' | 'info' | 'neutral'
@@ -23,5 +27,9 @@ export function StatusBadge({ status }: { status: string }) {
     SALES_AGENT: 'info',
   };
 
-  return <Badge variant={map[status] ?? 'neutral'}>{status.replace('_', ' ')}</Badge>;
+  return (
+    <Badge variant={map[status] ?? 'neutral'}>
+      {String(status).replace(/_/g, ' ')}
+    </Badge>
+  );
 }

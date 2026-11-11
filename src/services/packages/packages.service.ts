@@ -2,11 +2,12 @@
 
 import { revalidatePath } from 'next/cache';
 import { serverFetch } from '@/lib/serverFetch';
-import { PaginatedResponse, TourPackage } from '@/types/api';
+import { PaginatedResponse, ServiceCategory, TourPackage } from '@/types/api';
 
 export async function getPackages(params?: {
   page?: number;
   limit?: number;
+  category?: ServiceCategory;
   search?: string;
   destination?: string;
   isArchived?: boolean;
@@ -14,8 +15,11 @@ export async function getPackages(params?: {
   const query = new URLSearchParams();
   if (params?.page) query.set('page', String(params.page));
   if (params?.limit) query.set('limit', String(params.limit));
+  if (params?.category) query.set('category', params.category);
   if (params?.search) query.set('search', params.search);
   if (params?.destination) query.set('destination', params.destination);
+  // Only send isArchived when explicitly true.
+  // Sending 'false' causes class-transformer's Boolean("false") to parse as true on the backend!
   if (params?.isArchived === true) {
     query.set('isArchived', 'true');
   }
@@ -30,11 +34,7 @@ export async function getPackages(params?: {
     };
   }
 
-  const json = (await res.json().catch(() => null)) as {
-    data?: TourPackage[];
-    meta?: PaginatedResponse<TourPackage>['meta'];
-  } | null;
-
+  const json = (await res.json().catch(() => null)) as PaginatedResponse<TourPackage> | null;
   return {
     data: Array.isArray(json?.data) ? json.data : [],
     meta: json?.meta ?? { total: 0, page: 1, limit: 20, totalPages: 0 },
@@ -50,12 +50,15 @@ export async function getSinglePackage(
 }
 
 export async function createPackage(payload: {
+  category?: ServiceCategory;
   title: string;
   destination: string;
   durationDays: number;
   description: string;
   inclusions: string[];
   exclusions: string[];
+  requiredDocuments?: string[];
+  structuredSpecs?: Record<string, unknown>;
   basePrice: number;
   currency?: string;
   validFrom?: string;

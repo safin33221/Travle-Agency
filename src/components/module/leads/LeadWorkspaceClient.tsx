@@ -6,15 +6,25 @@ import {
   addLeadNote,
   createFollowUpTask,
   updateFollowUpTaskStatus,
+  updateLeadChecklists,
   updateLeadStage,
 } from '@/services/leads/leads.service';
 import { generateAiDraft } from '@/services/ai/ai.service';
 import { createQuotation } from '@/services/quotations/quotations.service';
-import { Lead, LeadStage, TourPackage } from '@/types/api';
+import {
+  DocumentItemStatus,
+  Lead,
+  LeadDocumentChecklistItem,
+  LeadMilestoneItem,
+  LeadStage,
+  MilestoneItemStatus,
+  TourPackage,
+} from '@/types/api';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input, Label, Textarea } from '@/components/ui/input';
 import { StatusBadge } from '@/components/shared/StatusBadge';
+import { SECTOR_CATALOG } from '@/config/brand.config';
 import { formatCurrency, formatDate } from '@/lib/utils';
 
 const STAGES: LeadStage[] = [
@@ -24,6 +34,19 @@ const STAGES: LeadStage[] = [
   'FOLLOW_UP',
   'WON',
   'LOST',
+];
+
+const DOC_STATUS_CYCLE: DocumentItemStatus[] = [
+  'PENDING',
+  'RECEIVED',
+  'VERIFIED',
+  'REJECTED',
+];
+
+const MILESTONE_STATUS_CYCLE: MilestoneItemStatus[] = [
+  'PENDING',
+  'IN_PROGRESS',
+  'DONE',
 ];
 
 export function LeadWorkspaceClient({
@@ -38,10 +61,17 @@ export function LeadWorkspaceClient({
   const [followUpDate, setFollowUpDate] = useState('');
   const [followUpNote, setFollowUpNote] = useState('');
 
+  const [docs, setDocs] = useState<LeadDocumentChecklistItem[]>(
+    Array.isArray(lead.documentChecklist) ? lead.documentChecklist : [],
+  );
+  const [milestones, setMilestones] = useState<LeadMilestoneItem[]>(
+    Array.isArray(lead.milestoneChecklist) ? lead.milestoneChecklist : [],
+  );
+
   // AI Draft state
   const [aiInquiry, setAiInquiry] = useState(
     lead.requirements ||
-      `Customer ${lead.customerName} is asking for ${lead.destination || 'a tour package'} for ${lead.travelerCount || 2} travelers.`,
+      `Customer ${lead.customerName} is inquiring about ${lead.category || 'TOUR'} for ${lead.destination || 'preferred destination'}.`,
   );
   const [aiLang, setAiLang] = useState<'en' | 'bn' | 'banglish'>('bn');
   const [latestDraft, setLatestDraft] = useState<string>(
@@ -53,17 +83,85 @@ export function LeadWorkspaceClient({
     packages[0]?.id || '',
   );
   const [itemLabel, setItemLabel] = useState<string>(
-    packages[0]?.title || `${lead.destination || 'Tour'} Package`,
+    packages[0]?.title || `${lead.destination || 'Service'} Package`,
   );
-  const [qty, setQty] = useState<number>(lead.travelerCount || 2);
+  const [qty, setQty] = useState<number>(lead.travelerCount || 1);
   const [unitPrice, setUnitPrice] = useState<number>(
-    Number(packages[0]?.basePrice || 15000),
+    Number(packages[0]?.basePrice || 20000),
   );
   const [discount, setDiscount] = useState<number>(0);
+
+  const sectorMeta =
+    SECTOR_CATALOG[lead.category ?? 'TOUR'] ?? SECTOR_CATALOG.TOUR;
 
   const handleStageChange = (stage: LeadStage) => {
     startTransition(async () => {
       await updateLeadStage(lead.id, stage);
+    });
+  };
+
+  const handleToggleDocStatus = (index: number) => {
+    const current = docs[index];
+    if (!current) return;
+    const currentStatus = current.status || 'PENDING';
+    const nextIdx =
+      (DOC_STATUS_CYCLE.indexOf(currentStatus) + 1) % DOC_STATUS_CYCLE.length;
+    const nextStatus = DOC_STATUS_CYCLE[nextIdx];
+    const updated = docs.map((d, idx) =>
+      idx === index
+        ? { ...d, status: nextStatus, updatedAt: new Date().toISOString() }
+        : d,
+    );
+    setDocs(updated);
+    startTransition(async () => {
+      await updateLeadChecklists(lead.id, { documentChecklist: updated });
+    });
+  };
+
+  const handleToggleMilestoneStatus = (index: number) => {
+    const current = milestones[index];
+    if (!current) return;
+    const currentStatus = current.status || 'PENDING';
+    const nextIdx =
+      (MILESTONE_STATUS_CYCLE.indexOf(currentStatus) + 1) %
+      MILESTONE_STATUS_CYCLE.length;
+    const nextStatus = MILESTONE_STATUS_CYCLE[nextIdx];
+    const updated = milestones.map((m, idx) =>
+      idx === index
+        ? {
+            ...m,
+            status: nextStatus,
+            completedAt:
+              nextStatus === 'DONE' ? new Date().toISOString() : undefined,
+          }
+        : m,
+    );
+    setMilestones(updated);
+    startTransition(async () => {
+      await updateLeadChecklists(lead.id, { milestoneChecklist: updated });
+    });
+  };
+
+  const handleDraftMissingDocsReminder = () => {
+    const missing = docs
+      .filter((d) => d.status === 'PENDING' || d.status === 'REJECTED')
+      .map((d) => d.title);
+    const prompt =
+      missing.length > 0
+        ? `Please remind ${lead.customerName} (Tracking ID: ${lead.trackingCode || 'N/A'}) to submit pending documents: ${missing.join(', ')}.`
+        : `All required documents for ${lead.customerName} are verified. Provide a status update for ${lead.destination || 'their file'}.`;
+    setAiInquiry(prompt);
+
+    startTransition(async () => {
+      const res = await generateAiDraft({
+        leadId: lead.id,
+        customerInquiry: prompt,
+        language: aiLang,
+        type: 'CUSTOMER_REPLY',
+      });
+      if (res.data?.suggestedText) {
+        setLatestDraft(res.data.suggestedText);
+      }
     });
   };
 
@@ -131,17 +229,35 @@ export function LeadWorkspaceClient({
 
   return (
     <div className="space-y-6">
-      {/* Stage Pipeline Bar */}
+      {/* Stage & File Header Bar */}
       <Card className="p-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="text-xs font-semibold uppercase text-slate-400">
-              Current Pipeline Stage
-            </p>
-            <div className="mt-1 flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2 mb-1.5">
+              <span
+                className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${sectorMeta.badgeColor}`}
+              >
+                {sectorMeta.label}
+              </span>
+              {lead.trackingCode && (
+                <Link
+                  href={`/track-status?code=${lead.trackingCode}`}
+                  target="_blank"
+                  className="rounded bg-slate-100 px-2 py-0.5 font-mono text-xs font-bold text-sky-700 hover:underline"
+                >
+                  🔍 Public Tracker: #{lead.trackingCode} ↗
+                </Link>
+              )}
+              {lead.eligibilityStatus && (
+                <span className="rounded bg-emerald-100 px-2 py-0.5 text-xs font-bold text-emerald-800">
+                  Eligibility: {String(lead.eligibilityStatus).replace(/_/g, ' ')}
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
               <StatusBadge status={lead.stage} />
               <span className="text-xs text-slate-500">
-                Source: {lead.source} • Assigned to:{' '}
+                Source: {lead.source} • Counselor:{' '}
                 {lead.assignedTo?.name || 'Unassigned'}
               </span>
             </div>
@@ -163,6 +279,105 @@ export function LeadWorkspaceClient({
         </div>
       </Card>
 
+      {/* Automated Application Milestones & Document Checklist */}
+      {(milestones.length > 0 || docs.length > 0) && (
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          {/* Application Milestones (Synced with Public /track-status) */}
+          <Card>
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base">
+                  🚀 Processing Milestones (Click to Update)
+                </CardTitle>
+                <span className="text-[11px] text-slate-500">
+                  Live on /track-status
+                </span>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {milestones.map((m, idx) => (
+                <button
+                  key={m.key || idx}
+                  type="button"
+                  disabled={isPending}
+                  onClick={() => handleToggleMilestoneStatus(idx)}
+                  className={`flex w-full items-center justify-between rounded-lg border p-3 text-left text-xs transition-all ${
+                    m.status === 'DONE'
+                      ? 'border-emerald-200 bg-emerald-50/70'
+                      : m.status === 'IN_PROGRESS'
+                        ? 'border-sky-300 bg-sky-50'
+                        : 'border-slate-200 bg-white hover:bg-slate-50'
+                  }`}
+                >
+                  <span className="font-semibold text-slate-900">
+                    {idx + 1}. {m.title}
+                  </span>
+                  <span
+                    className={`rounded-full px-2.5 py-0.5 font-bold ${
+                      m.status === 'DONE'
+                        ? 'bg-emerald-600 text-white'
+                        : m.status === 'IN_PROGRESS'
+                          ? 'bg-sky-600 text-white'
+                          : 'bg-slate-200 text-slate-700'
+                    }`}
+                  >
+                    {String(m.status || 'PENDING').replace(/_/g, ' ')}
+                  </span>
+                </button>
+              ))}
+            </CardContent>
+          </Card>
+
+          {/* Document Verification Checklist + 1-Click Missing Docs Chaser */}
+          <Card>
+            <CardHeader className="pb-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <CardTitle className="text-base">
+                  📋 Document Checklist (Click to Cycle Status)
+                </CardTitle>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  disabled={isPending}
+                  onClick={handleDraftMissingDocsReminder}
+                >
+                  ✨ Draft Missing Docs Reminder
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {docs.map((doc, idx) => (
+                <button
+                  key={doc.key || idx}
+                  type="button"
+                  disabled={isPending}
+                  onClick={() => handleToggleDocStatus(idx)}
+                  className="flex w-full items-center justify-between rounded-lg border border-slate-200 bg-white p-2.5 text-left text-xs hover:bg-slate-50"
+                >
+                  <span className="font-medium text-slate-800 pr-2">
+                    {doc.title}
+                  </span>
+                  <span
+                    className={`shrink-0 rounded-full px-2.5 py-0.5 font-bold ${
+                      doc.status === 'VERIFIED'
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : doc.status === 'RECEIVED'
+                          ? 'bg-sky-100 text-sky-800'
+                          : doc.status === 'REJECTED'
+                            ? 'bg-rose-100 text-rose-800'
+                            : 'bg-amber-100 text-amber-800'
+                    }`}
+                  >
+                    {String(doc.status || 'PENDING').replace(/_/g, ' ')}
+                  </span>
+                </button>
+              ))}
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* AI Copilot Panel */}
         <Card className="border-sky-200">
@@ -179,7 +394,7 @@ export function LeadWorkspaceClient({
           <CardContent className="pt-4 space-y-4">
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               <div className="sm:col-span-2">
-                <Label>Customer Inquiry Context</Label>
+                <Label>Customer Inquiry / Reminder Context</Label>
                 <Input
                   value={aiInquiry}
                   onChange={(e) => setAiInquiry(e.target.value)}
@@ -220,7 +435,7 @@ export function LeadWorkspaceClient({
                   className="min-h-[140px] bg-slate-50"
                 />
                 <p className="text-xs text-amber-700">
-                  ⚠️ AI never sends messages autonomously. Review prices and dates before copying to WhatsApp/Messenger.
+                  ⚠️ AI never sends messages autonomously. Review prices and checklist items before copying to WhatsApp/Email.
                 </p>
               </div>
             )}
@@ -244,9 +459,10 @@ export function LeadWorkspaceClient({
                   className="flex h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
                 >
                   <option value="">-- Custom Line Item --</option>
-                  {packages.map((p) => (
+                  {(packages || []).map((p) => (
                     <option key={p.id} value={p.id}>
-                      {p.title} — {formatCurrency(p.basePrice, p.currency)}
+                      [{p.category || 'TOUR'}] {p.title} —{' '}
+                      {formatCurrency(p.basePrice, p.currency)}
                     </option>
                   ))}
                 </select>
@@ -263,7 +479,7 @@ export function LeadWorkspaceClient({
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <Label>Travelers / Qty</Label>
+                  <Label>Pax / Qty</Label>
                   <Input
                     type="number"
                     min={1}
@@ -306,12 +522,12 @@ export function LeadWorkspaceClient({
             </form>
 
             {/* Existing Quotations List */}
-            {lead.quotations && lead.quotations.length > 0 && (
+            {Array.isArray(lead?.quotations) && lead.quotations.length > 0 && (
               <div className="mt-6 pt-4 border-t border-slate-200 space-y-2">
                 <p className="text-xs font-semibold uppercase text-slate-400">
                   Quotation History
                 </p>
-                {lead.quotations.map((q) => (
+                {(lead.quotations || []).map((q) => (
                   <div
                     key={q.id}
                     className="flex items-center justify-between rounded-lg border border-slate-200 p-2.5 text-sm"
@@ -355,7 +571,7 @@ export function LeadWorkspaceClient({
             </form>
 
             <div className="space-y-2.5 max-h-60 overflow-y-auto">
-              {lead.notes?.map((note) => (
+              {(lead?.notes || []).map((note) => (
                 <div
                   key={note.id}
                   className="rounded-lg bg-slate-50 p-3 text-sm border border-slate-100"
@@ -366,7 +582,7 @@ export function LeadWorkspaceClient({
                   </p>
                 </div>
               ))}
-              {(!lead.notes || lead.notes.length === 0) && (
+              {(!lead?.notes || lead.notes.length === 0) && (
                 <p className="text-xs text-slate-400">No notes recorded yet.</p>
               )}
             </div>
@@ -380,7 +596,10 @@ export function LeadWorkspaceClient({
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <form onSubmit={handleAddFollowUp} className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+            <form
+              onSubmit={handleAddFollowUp}
+              className="grid grid-cols-1 gap-2 sm:grid-cols-3"
+            >
               <Input
                 type="date"
                 value={followUpDate}
@@ -399,7 +618,7 @@ export function LeadWorkspaceClient({
             </form>
 
             <div className="space-y-2 max-h-60 overflow-y-auto">
-              {lead.followUpTasks?.map((task) => (
+              {(lead?.followUpTasks || []).map((task) => (
                 <div
                   key={task.id}
                   className="flex items-center justify-between rounded-lg border border-slate-200 p-3 text-sm"
@@ -433,7 +652,7 @@ export function LeadWorkspaceClient({
                   </div>
                 </div>
               ))}
-              {(!lead.followUpTasks || lead.followUpTasks.length === 0) && (
+              {(!lead?.followUpTasks || lead.followUpTasks.length === 0) && (
                 <p className="text-xs text-slate-400">
                   No follow-up tasks scheduled.
                 </p>

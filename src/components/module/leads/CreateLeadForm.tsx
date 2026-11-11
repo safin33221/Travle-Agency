@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { createLead } from '@/services/leads/leads.service';
-import { LeadSource } from '@/types/api';
+import { LeadSource, ServiceCategory } from '@/types/api';
 import { Button } from '@/components/ui/button';
 import { Input, Label, Textarea } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,6 +22,7 @@ export function CreateLeadForm({ redirectPath = '/dashboard/leads' }: { redirect
 
     startTransition(async () => {
       const res = await createLead({
+        category: (formData.get('category') as ServiceCategory) || 'TOUR',
         customerName: String(formData.get('customerName') || ''),
         customerPhone: String(formData.get('customerPhone') || '') || undefined,
         customerEmail: String(formData.get('customerEmail') || '') || undefined,
@@ -66,6 +67,20 @@ export function CreateLeadForm({ redirectPath = '/dashboard/leads' }: { redirect
           )}
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <Label htmlFor="category">Service Sector *</Label>
+              <select
+                id="category"
+                name="category"
+                className="flex h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+                defaultValue="WORK_PERMIT"
+              >
+                <option value="WORK_PERMIT">Work Permit & Job Visa</option>
+                <option value="STUDENT_VISA">Study Abroad & Student Visa</option>
+                <option value="HAJJ_UMRAH">Hajj & Umrah Package</option>
+                <option value="TOUR">Holiday Tour & Tourist Visa</option>
+              </select>
+            </div>
             <div>
               <Label htmlFor="customerName">Customer Name *</Label>
               <Input

@@ -4,6 +4,8 @@ import { getPackages } from '@/services/packages/packages.service';
 import { ManagementPageHeader } from '@/components/shared/ManagementPageHeader';
 import { LeadWorkspaceClient } from '@/components/module/leads/LeadWorkspaceClient';
 
+export const instant = false;
+
 export default async function LeadDetailsPage({
   params,
 }: {

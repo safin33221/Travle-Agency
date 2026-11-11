@@ -7,8 +7,12 @@ import { StatusBadge } from '@/components/shared/StatusBadge';
 import { Button } from '@/components/ui/button';
 import { formatCurrency, formatDate } from '@/lib/utils';
 
+export const instant = false;
+
 export default async function DashboardOverviewPage() {
   const summary = await getDashboardSummary();
+  const upcomingTasks = summary?.followUps?.upcomingTasks || [];
+  const stageEntries = Object.entries(summary?.leads?.byStage || {});
 
   return (
     <div className="space-y-6">
@@ -35,7 +39,7 @@ export default async function DashboardOverviewPage() {
         />
         <StatCard
           title="Won Quote Value"
-          value={formatCurrency(summary?.quotations?.wonRevenue)}
+          value={formatCurrency(summary?.quotations?.wonRevenue ?? '0')}
           subtitle={`From ${summary?.leads?.byStage?.WON || 0} won leads`}
           trend="up"
         />
@@ -57,7 +61,7 @@ export default async function DashboardOverviewPage() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-              {Object.entries(summary?.leads?.byStage || {}).map(([stage, count]) => (
+              {stageEntries.map(([stage, count]) => (
                 <div
                   key={stage}
                   className="rounded-lg border border-slate-200 p-3 flex flex-col justify-between"
@@ -85,7 +89,7 @@ export default async function DashboardOverviewPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {(summary?.followUps?.upcomingTasks || []).map((task) => (
+              {upcomingTasks.map((task) => (
                 <div
                   key={task.id}
                   className="flex items-center justify-between rounded-lg border border-slate-200 p-3 text-sm"
@@ -109,7 +113,7 @@ export default async function DashboardOverviewPage() {
                   )}
                 </div>
               ))}
-              {(summary?.followUps?.upcomingTasks || []).length === 0 && (
+              {upcomingTasks.length === 0 && (
                 <p className="text-sm text-slate-500 py-6 text-center">
                   No pending follow-up tasks scheduled.
                 </p>

@@ -8,15 +8,21 @@ export function Navbar() {
     <header className="sticky top-0 z-40 w-full border-b border-slate-200 bg-white/95 backdrop-blur-xs">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Logo href="/" />
-        <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
+        <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-slate-600">
           <Link href="/" className="hover:text-sky-600 transition-colors">
             Home
           </Link>
           <Link href="/packages" className="hover:text-sky-600 transition-colors">
-            Tour Packages
+            Packages & Visas
           </Link>
           <Link href="/contact" className="hover:text-sky-600 transition-colors">
-            Contact & Quote
+            Free Eligibility Check
+          </Link>
+          <Link
+            href="/track-status"
+            className="rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700 border border-sky-200 hover:bg-sky-100 transition-colors"
+          >
+            🔍 Track Visa / File
           </Link>
         </nav>
         <div className="flex items-center gap-3">

@@ -5,8 +5,11 @@ import { FeaturesSection } from '@/components/module/Home/FeaturesSection';
 import { PackagePreviewCard } from '@/components/common/PackagePreviewCard';
 import { Button } from '@/components/ui/button';
 
+export const instant = false;
+
 export default async function PublicHomePage() {
   const packagesRes = await getPackages({ limit: 6, isArchived: false });
+  const packages = packagesRes?.data || [];
 
   return (
     <div>
@@ -27,9 +30,9 @@ export default async function PublicHomePage() {
           </Link>
         </div>
 
-        {packagesRes.data.length > 0 ? (
+        {packages.length > 0 ? (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {packagesRes.data.map((pkg) => (
+            {packages.map((pkg) => (
               <PackagePreviewCard key={pkg.id} pkg={pkg} />
             ))}
           </div>

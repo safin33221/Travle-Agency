@@ -6,12 +6,15 @@ import { Badge } from '@/components/ui/badge';
 import { PackageArchiveBtn } from '@/components/module/packages/PackageArchiveBtn';
 import { formatCurrency } from '@/lib/utils';
 
+export const instant = false;
+
 export default async function DashboardPackagesPage() {
   const [packagesRes, user] = await Promise.all([
     getPackages({ limit: 50, isArchived: false }),
     getMe(),
   ]);
 
+  const packages = packagesRes?.data || [];
   const isAdmin = user?.role === 'OWNER_ADMIN';
 
   return (
@@ -38,7 +41,7 @@ export default async function DashboardPackagesPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {packagesRes.data.map((pkg) => (
+                {packages.map((pkg) => (
                   <tr key={pkg.id} className="hover:bg-slate-50">
                     <td className="py-3.5 px-4 font-semibold text-slate-900">
                       {pkg.title}
@@ -53,7 +56,7 @@ export default async function DashboardPackagesPage() {
                       {formatCurrency(pkg.basePrice, pkg.currency)}
                     </td>
                     <td className="py-3.5 px-4 text-xs text-slate-500">
-                      {pkg.inclusions.slice(0, 3).join(', ') || '—'}
+                      {(pkg.inclusions || []).slice(0, 3).join(', ') || '—'}
                     </td>
                     {isAdmin && (
                       <td className="py-3.5 px-4 text-right">
@@ -62,7 +65,7 @@ export default async function DashboardPackagesPage() {
                     )}
                   </tr>
                 ))}
-                {packagesRes.data.length === 0 && (
+                {packages.length === 0 && (
                   <tr>
                     <td
                       colSpan={6}

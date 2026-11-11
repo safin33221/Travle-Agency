@@ -1,6 +1,8 @@
 import { ManagementPageHeader } from '@/components/shared/ManagementPageHeader';
 import { CreatePackageForm } from '@/components/module/packages/CreatePackageForm';
 
+export const instant = false;
+
 export default function CreatePackagePage() {
   return (
     <div>

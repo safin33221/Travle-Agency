@@ -3,6 +3,8 @@ import { ManagementPageHeader } from '@/components/shared/ManagementPageHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 
+export const instant = false;
+
 export default async function MyProfilePage() {
   const user = await getMe();
 
