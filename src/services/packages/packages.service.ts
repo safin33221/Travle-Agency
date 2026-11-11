@@ -16,8 +16,8 @@ export async function getPackages(params?: {
   if (params?.limit) query.set('limit', String(params.limit));
   if (params?.search) query.set('search', params.search);
   if (params?.destination) query.set('destination', params.destination);
-  if (params?.isArchived !== undefined) {
-    query.set('isArchived', String(params.isArchived));
+  if (params?.isArchived === true) {
+    query.set('isArchived', 'true');
   }
 
   const endpoint = `/packages${query.toString() ? `?${query.toString()}` : ''}`;
@@ -34,6 +34,7 @@ export async function getPackages(params?: {
     data?: TourPackage[];
     meta?: PaginatedResponse<TourPackage>['meta'];
   } | null;
+
   return {
     data: Array.isArray(json?.data) ? json.data : [],
     meta: json?.meta ?? { total: 0, page: 1, limit: 20, totalPages: 0 },
