@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils';
 import { brandConfig, SECTOR_CATALOG } from '@/config/brand.config';
 
+
 export const instant = false;
 
 export default async function PublicPackageDetailsPage({
@@ -90,7 +91,7 @@ export default async function PublicPackageDetailsPage({
           )}
 
           {/* Required Document Checklist */}
-          {Array.isArray(pkg.requiredDocuments) && pkg.requiredDocuments.length > 0 && (
+          {pkg.requiredDocuments && pkg.requiredDocuments.length > 0 && (
             <Card className="p-6 border-sky-200 bg-sky-50/40">
               <h2 className="text-lg font-bold text-slate-900 mb-2">
                 📋 Required Documents Checklist
@@ -99,7 +100,7 @@ export default async function PublicPackageDetailsPage({
                 Please prepare the following documents for smooth file opening and visa/application processing:
               </p>
               <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2 text-sm text-slate-800">
-                {(pkg.requiredDocuments || []).map((doc, idx) => (
+                {pkg.requiredDocuments.map((doc, idx) => (
                   <li
                     key={idx}
                     className="flex items-start gap-2 rounded-md bg-white p-2.5 border border-slate-200/80"
@@ -118,7 +119,7 @@ export default async function PublicPackageDetailsPage({
                 ✓ What Is Included
               </h3>
               <ul className="space-y-2 text-sm text-slate-700">
-                {(pkg.inclusions || []).map((inc, i) => (
+                {pkg.inclusions.map((inc, i) => (
                   <li key={i}>• {inc}</li>
                 ))}
               </ul>
@@ -128,7 +129,7 @@ export default async function PublicPackageDetailsPage({
                 ✕ What Is Excluded
               </h3>
               <ul className="space-y-2 text-sm text-slate-700">
-                {(pkg.exclusions || []).map((exc, i) => (
+                {pkg.exclusions.map((exc, i) => (
                   <li key={i}>• {exc}</li>
                 ))}
               </ul>

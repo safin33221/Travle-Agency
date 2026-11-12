@@ -54,27 +54,19 @@ function TrackStatusContent() {
   };
 
   useEffect(() => {
-    if (!initialCode) return;
-    let cancelled = false;
-
-    void (async () => {
-      const res = await trackPublicFileStatus(initialCode);
-      if (cancelled) return;
-      if (!res.success || !res.data) {
-        setTrackedFile(null);
-        setError(
-          res.message ||
-            'No file found with that Tracking Code. Try demo code: WP-102938',
-        );
-      } else {
-        setError(null);
+    if (initialCode) {
+      void trackPublicFileStatus(initialCode.trim()).then((res) => {
+        if (!res.success || !res.data) {
+          setTrackedFile(null);
+          setError(
+            res.message ||
+              'No file found with that Tracking Code. Try demo code: WP-102938',
+          );
+          return;
+        }
         setTrackedFile(res.data);
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
+      });
+    }
   }, [initialCode]);
 
   const sectorMeta = trackedFile
@@ -198,7 +190,7 @@ function TrackStatusContent() {
                       </span>
                       <div>
                         <p className="text-sm font-semibold text-slate-900">
-                          {m.title}
+                          {m.title || `Step ${idx + 1}`}
                         </p>
                         {m.completedAt && (
                           <p className="text-[11px] text-slate-500">
@@ -216,7 +208,7 @@ function TrackStatusContent() {
                             : 'bg-slate-100 text-slate-600'
                       }`}
                     >
-                      {String(m.status || 'PENDING').replace(/_/g, ' ')}
+                      {(m.status || 'PENDING').replace(/_/g, ' ')}
                     </span>
                   </div>
                 );
@@ -239,7 +231,7 @@ function TrackStatusContent() {
                   className="flex items-center justify-between rounded-lg border border-slate-200 p-3 text-xs"
                 >
                   <span className="font-medium text-slate-800 pr-2">
-                    {doc.title}
+                    {doc.title || `Document ${idx + 1}`}
                   </span>
                   <span
                     className={`shrink-0 rounded-full px-2.5 py-0.5 font-semibold ${
@@ -252,7 +244,7 @@ function TrackStatusContent() {
                             : 'bg-amber-100 text-amber-800'
                     }`}
                   >
-                    {doc.status}
+                    {doc.status || 'PENDING'}
                   </span>
                 </div>
               ))}
@@ -269,7 +261,7 @@ export default function PublicTrackStatusPage() {
     <Suspense
       fallback={
         <div className="mx-auto max-w-4xl px-4 py-12 text-center text-sm text-slate-500">
-          Loading file tracking...
+          Loading file status tracker...
         </div>
       }
     >

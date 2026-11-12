@@ -73,6 +73,8 @@ export interface PaginationMeta {
   page: number;
   limit: number;
   totalPages: number;
+  hasNextPage?: boolean;
+  hasPrevPage?: boolean;
 }
 
 export interface PaginatedResponse<T> {
@@ -298,3 +300,154 @@ export interface AuditLog {
     role: StaffRole;
   } | null;
 }
+
+// ============================================================================
+// VISA & IMMIGRATION SERVICES MANAGEMENT TYPES (MODULE MVP)
+// ============================================================================
+
+export type CountryCoverageStatus = 'ACTIVE' | 'LIMITED' | 'PAUSED' | 'ARCHIVED';
+
+export type VisaCategory =
+  | 'WORK_VISA'
+  | 'WORK_PERMIT'
+  | 'STUDENT_VISA'
+  | 'TOURIST_VISA'
+  | 'BUSINESS_VISA'
+  | 'OTHER';
+
+export type VisaPublicationStatus = 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
+
+export type AgencyServiceStatus =
+  | 'ACCEPTING_INQUIRIES'
+  | 'LIMITED'
+  | 'TEMPORARILY_PAUSED'
+  | 'NOT_OFFERED';
+
+export interface VisaServiceRequirement {
+  id?: string;
+  visaServiceId?: string;
+  title: string;
+  description?: string | null;
+  isMandatory: boolean;
+  displayOrder: number;
+}
+
+export interface Country {
+  id: string;
+  name: string;
+  isoCode: string;
+  slug: string;
+  flagEmoji?: string | null;
+  flagUrl?: string | null;
+  coverImageUrl?: string | null;
+  shortIntro: string;
+  detailedDescription?: string | null;
+  coverageStatus: CountryCoverageStatus;
+  isFeatured: boolean;
+  displayOrder: number;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  visaServices?: VisaService[];
+  _count?: {
+    visaServices: number;
+    visaInquiries?: number;
+  };
+}
+
+export interface VisaService {
+  id: string;
+  countryId: string;
+  country?: {
+    id: string;
+    name: string;
+    slug: string;
+    isoCode: string;
+    flagEmoji?: string | null;
+    flagUrl?: string | null;
+    shortIntro?: string;
+    coverageStatus?: CountryCoverageStatus;
+  };
+  category: VisaCategory;
+  customCategoryLabel?: string | null;
+  title: string;
+  slug: string;
+  shortDescription: string;
+  fullDescription: string;
+  eligibilityInfo?: string | null;
+  applicationProcessSteps: string[];
+  estimatedProcessingTime?: string | null;
+  agencyServiceFee?: string | number | null;
+  governmentFeeInfo?: string | null;
+  currency: string;
+  importantNotes?: string | null;
+  disclaimer: string;
+  informationSourceUrl?: string | null;
+  lastVerifiedAt?: string | null;
+  displayOrder: number;
+  isFeatured: boolean;
+  publicationStatus: VisaPublicationStatus;
+  serviceStatus: AgencyServiceStatus;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  requirements?: VisaServiceRequirement[];
+  relatedServices?: VisaService[];
+  createdAt: string;
+  updatedAt: string;
+  _count?: {
+    requirements: number;
+    inquiries: number;
+  };
+}
+
+export interface VisaInquiry {
+  id: string;
+  leadId: string;
+  countryId: string;
+  visaServiceId?: string | null;
+  category: VisaCategory;
+  fullName: string;
+  phone: string;
+  email?: string | null;
+  message?: string | null;
+  consentGiven: boolean;
+  source: LeadSource;
+  createdAt: string;
+  updatedAt: string;
+  country?: {
+    id: string;
+    name: string;
+    slug: string;
+    isoCode: string;
+    flagEmoji?: string | null;
+  };
+  visaService?: {
+    id: string;
+    title: string;
+    slug: string;
+    category: VisaCategory;
+    serviceStatus: AgencyServiceStatus;
+  } | null;
+  lead?: {
+    id: string;
+    trackingCode?: string | null;
+    stage: LeadStage;
+    assignedTo?: {
+      id: string;
+      name: string;
+      email: string;
+    } | null;
+  };
+}
+
+export interface VisaAdminOverview {
+  totalCountries: number;
+  countriesWithPublishedServices: number;
+  publishedServicesCount: number;
+  acceptingInquiriesCount: number;
+  pausedServicesCount: number;
+  visaInquiriesCount: number;
+  visaLeadsCount: number;
+}
+

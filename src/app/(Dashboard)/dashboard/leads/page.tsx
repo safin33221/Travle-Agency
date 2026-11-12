@@ -93,8 +93,6 @@ export default async function DashboardLeadsPage({
     sortOrder: resolvedParams.sortOrder,
   });
 
-  const leads = leadsRes?.data || [];
-
   return (
     <div>
       <ManagementPageHeader
@@ -158,7 +156,7 @@ export default async function DashboardLeadsPage({
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {leads.map((lead) => {
+                {leadsRes.data.map((lead) => {
                   const cat = lead.category ?? 'TOUR';
                   const sectorMeta = SECTOR_CATALOG[cat] ?? SECTOR_CATALOG.TOUR;
                   return (
@@ -227,7 +225,7 @@ export default async function DashboardLeadsPage({
                     </tr>
                   );
                 })}
-                {leads.length === 0 && (
+                {leadsRes.data.length === 0 && (
                   <tr>
                     <td
                       colSpan={6}
@@ -242,10 +240,10 @@ export default async function DashboardLeadsPage({
           </div>
 
           <TablePagination
-            page={leadsRes?.meta?.page ?? 1}
-            limit={leadsRes?.meta?.limit ?? 20}
-            total={leadsRes?.meta?.total ?? 0}
-            totalPages={leadsRes?.meta?.totalPages ?? 1}
+            page={leadsRes.meta.page}
+            limit={leadsRes.meta.limit}
+            total={leadsRes.meta.total}
+            totalPages={leadsRes.meta.totalPages}
           />
         </CardContent>
       </Card>

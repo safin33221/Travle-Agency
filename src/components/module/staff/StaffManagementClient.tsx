@@ -110,7 +110,7 @@ export function StaffManagementClient({ staff }: { staff: StaffUser[] }) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {(staff || []).map((u) => (
+                {staff.map((u) => (
                   <tr key={u.id}>
                     <td className="py-3 px-3">
                       <p className="font-medium text-slate-900">{u.name}</p>
@@ -145,16 +145,6 @@ export function StaffManagementClient({ staff }: { staff: StaffUser[] }) {
                     </td>
                   </tr>
                 ))}
-                {(staff || []).length === 0 && (
-                  <tr>
-                    <td
-                      colSpan={5}
-                      className="py-8 text-center text-sm text-slate-500"
-                    >
-                      No staff members found.
-                    </td>
-                  </tr>
-                )}
               </tbody>
             </table>
           </div>

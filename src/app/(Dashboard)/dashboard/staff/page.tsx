@@ -13,7 +13,7 @@ export default async function StaffManagementPage() {
         title="Staff & Access Control (RBAC)"
         description="Provision staff accounts, assign OWNER_ADMIN or SALES_AGENT roles, and manage active status."
       />
-      <StaffManagementClient staff={staffRes?.data || []} />
+      <StaffManagementClient staff={staffRes.data} />
     </div>
   );
 }

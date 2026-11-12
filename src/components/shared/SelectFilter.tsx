@@ -58,7 +58,7 @@ export function SelectFilter({
         className="h-10 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:border-blue-600 focus:outline-none"
       >
         <option value="">{placeholder}</option>
-        {(options || []).map((opt) => (
+        {options.map((opt) => (
           <option key={opt.value} value={opt.value}>
             {opt.label}
           </option>
@@ -67,3 +67,5 @@ export function SelectFilter({
     </div>
   );
 }
+
+export default SelectFilter;

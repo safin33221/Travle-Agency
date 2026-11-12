@@ -57,7 +57,7 @@ export function TablePagination({
             }
             className="rounded border border-slate-300 bg-white px-2 py-1 text-xs text-slate-800"
           >
-            {(pageSizeOptions || []).map((size) => (
+            {pageSizeOptions.map((size) => (
               <option key={size} value={String(size)}>
                 {size}
               </option>
@@ -94,3 +94,5 @@ export function TablePagination({
     </div>
   );
 }
+
+export default TablePagination;

@@ -64,7 +64,7 @@ export default async function QuotationDetailPage({
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {(quotation.items || []).map((item, idx) => (
+              {quotation.items.map((item, idx) => (
                 <tr key={item.id || idx}>
                   <td className="py-3 font-medium text-slate-900">
                     {item.label}

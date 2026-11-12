@@ -61,11 +61,33 @@ export function LeadWorkspaceClient({
   const [followUpDate, setFollowUpDate] = useState('');
   const [followUpNote, setFollowUpNote] = useState('');
 
-  const [docs, setDocs] = useState<LeadDocumentChecklistItem[]>(
-    Array.isArray(lead.documentChecklist) ? lead.documentChecklist : [],
+  const [docs, setDocs] = useState<LeadDocumentChecklistItem[]>(() =>
+    (Array.isArray(lead.documentChecklist) ? lead.documentChecklist : []).map(
+      (d, idx) => ({
+        key: d?.key || `DOC_${idx + 1}`,
+        title:
+          typeof d === 'string'
+            ? d
+            : d?.title || `Document ${idx + 1}`,
+        required: d?.required ?? true,
+        status: d?.status || 'PENDING',
+        note: d?.note,
+        updatedAt: d?.updatedAt,
+      }),
+    ),
   );
-  const [milestones, setMilestones] = useState<LeadMilestoneItem[]>(
-    Array.isArray(lead.milestoneChecklist) ? lead.milestoneChecklist : [],
+  const [milestones, setMilestones] = useState<LeadMilestoneItem[]>(() =>
+    (Array.isArray(lead.milestoneChecklist) ? lead.milestoneChecklist : []).map(
+      (m, idx) => ({
+        key: m?.key || `MILESTONE_${idx + 1}`,
+        title:
+          typeof m === 'string'
+            ? m
+            : m?.title || `Step ${idx + 1}`,
+        status: m?.status || 'PENDING',
+        completedAt: m?.completedAt,
+      }),
+    ),
   );
 
   // AI Draft state
@@ -103,9 +125,8 @@ export function LeadWorkspaceClient({
   const handleToggleDocStatus = (index: number) => {
     const current = docs[index];
     if (!current) return;
-    const currentStatus = current.status || 'PENDING';
     const nextIdx =
-      (DOC_STATUS_CYCLE.indexOf(currentStatus) + 1) % DOC_STATUS_CYCLE.length;
+      (DOC_STATUS_CYCLE.indexOf(current.status) + 1) % DOC_STATUS_CYCLE.length;
     const nextStatus = DOC_STATUS_CYCLE[nextIdx];
     const updated = docs.map((d, idx) =>
       idx === index
@@ -121,9 +142,8 @@ export function LeadWorkspaceClient({
   const handleToggleMilestoneStatus = (index: number) => {
     const current = milestones[index];
     if (!current) return;
-    const currentStatus = current.status || 'PENDING';
     const nextIdx =
-      (MILESTONE_STATUS_CYCLE.indexOf(currentStatus) + 1) %
+      (MILESTONE_STATUS_CYCLE.indexOf(current.status) + 1) %
       MILESTONE_STATUS_CYCLE.length;
     const nextStatus = MILESTONE_STATUS_CYCLE[nextIdx];
     const updated = milestones.map((m, idx) =>
@@ -310,7 +330,7 @@ export function LeadWorkspaceClient({
                   }`}
                 >
                   <span className="font-semibold text-slate-900">
-                    {idx + 1}. {m.title}
+                    {idx + 1}. {m.title || `Step ${idx + 1}`}
                   </span>
                   <span
                     className={`rounded-full px-2.5 py-0.5 font-bold ${
@@ -321,7 +341,7 @@ export function LeadWorkspaceClient({
                           : 'bg-slate-200 text-slate-700'
                     }`}
                   >
-                    {String(m.status || 'PENDING').replace(/_/g, ' ')}
+                    {(m.status || 'PENDING').replace(/_/g, ' ')}
                   </span>
                 </button>
               ))}
@@ -356,7 +376,7 @@ export function LeadWorkspaceClient({
                   className="flex w-full items-center justify-between rounded-lg border border-slate-200 bg-white p-2.5 text-left text-xs hover:bg-slate-50"
                 >
                   <span className="font-medium text-slate-800 pr-2">
-                    {doc.title}
+                    {doc.title || `Document ${idx + 1}`}
                   </span>
                   <span
                     className={`shrink-0 rounded-full px-2.5 py-0.5 font-bold ${
@@ -369,7 +389,7 @@ export function LeadWorkspaceClient({
                             : 'bg-amber-100 text-amber-800'
                     }`}
                   >
-                    {String(doc.status || 'PENDING').replace(/_/g, ' ')}
+                    {doc.status || 'PENDING'}
                   </span>
                 </button>
               ))}
@@ -459,7 +479,7 @@ export function LeadWorkspaceClient({
                   className="flex h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
                 >
                   <option value="">-- Custom Line Item --</option>
-                  {(packages || []).map((p) => (
+                  {packages.map((p) => (
                     <option key={p.id} value={p.id}>
                       [{p.category || 'TOUR'}] {p.title} —{' '}
                       {formatCurrency(p.basePrice, p.currency)}
@@ -522,12 +542,12 @@ export function LeadWorkspaceClient({
             </form>
 
             {/* Existing Quotations List */}
-            {Array.isArray(lead?.quotations) && lead.quotations.length > 0 && (
+            {lead.quotations && lead.quotations.length > 0 && (
               <div className="mt-6 pt-4 border-t border-slate-200 space-y-2">
                 <p className="text-xs font-semibold uppercase text-slate-400">
                   Quotation History
                 </p>
-                {(lead.quotations || []).map((q) => (
+                {lead.quotations.map((q) => (
                   <div
                     key={q.id}
                     className="flex items-center justify-between rounded-lg border border-slate-200 p-2.5 text-sm"
@@ -571,7 +591,7 @@ export function LeadWorkspaceClient({
             </form>
 
             <div className="space-y-2.5 max-h-60 overflow-y-auto">
-              {(lead?.notes || []).map((note) => (
+              {lead.notes?.map((note) => (
                 <div
                   key={note.id}
                   className="rounded-lg bg-slate-50 p-3 text-sm border border-slate-100"
@@ -582,7 +602,7 @@ export function LeadWorkspaceClient({
                   </p>
                 </div>
               ))}
-              {(!lead?.notes || lead.notes.length === 0) && (
+              {(!lead.notes || lead.notes.length === 0) && (
                 <p className="text-xs text-slate-400">No notes recorded yet.</p>
               )}
             </div>
@@ -618,7 +638,7 @@ export function LeadWorkspaceClient({
             </form>
 
             <div className="space-y-2 max-h-60 overflow-y-auto">
-              {(lead?.followUpTasks || []).map((task) => (
+              {lead.followUpTasks?.map((task) => (
                 <div
                   key={task.id}
                   className="flex items-center justify-between rounded-lg border border-slate-200 p-3 text-sm"
@@ -652,7 +672,7 @@ export function LeadWorkspaceClient({
                   </div>
                 </div>
               ))}
-              {(!lead?.followUpTasks || lead.followUpTasks.length === 0) && (
+              {(!lead.followUpTasks || lead.followUpTasks.length === 0) && (
                 <p className="text-xs text-slate-400">
                   No follow-up tasks scheduled.
                 </p>

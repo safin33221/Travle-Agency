@@ -20,6 +20,30 @@ export const DASHBOARD_NAV_ITEMS: NavItem[] = [
     roles: ['OWNER_ADMIN', 'SALES_AGENT'],
   },
   {
+    title: 'Visa & Immigration',
+    href: '/dashboard/visa-immigration',
+    icon: 'Globe',
+    roles: ['OWNER_ADMIN', 'SALES_AGENT'],
+  },
+  {
+    title: 'Visa Countries',
+    href: '/dashboard/visa-immigration/countries',
+    icon: 'MapPin',
+    roles: ['OWNER_ADMIN', 'SALES_AGENT'],
+  },
+  {
+    title: 'Visa Services',
+    href: '/dashboard/visa-immigration/services',
+    icon: 'FileCheck2',
+    roles: ['OWNER_ADMIN', 'SALES_AGENT'],
+  },
+  {
+    title: 'Visa Inquiries',
+    href: '/dashboard/visa-immigration/inquiries',
+    icon: 'Inbox',
+    roles: ['OWNER_ADMIN', 'SALES_AGENT'],
+  },
+  {
     title: 'AI Draft Copilot',
     href: '/dashboard/ai-copilot',
     icon: 'Sparkles',

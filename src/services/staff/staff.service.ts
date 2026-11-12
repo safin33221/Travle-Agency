@@ -17,11 +17,7 @@ export async function getStaffList(): Promise<PaginatedResponse<StaffUser>> {
       meta: { total: 0, page: 1, limit: 20, totalPages: 0 },
     };
   }
-  const json = (await res.json().catch(() => null)) as PaginatedResponse<StaffUser> | null;
-  return {
-    data: Array.isArray(json?.data) ? json.data : [],
-    meta: json?.meta ?? { total: 0, page: 1, limit: 20, totalPages: 0 },
-  };
+  return (await res.json()) as PaginatedResponse<StaffUser>;
 }
 
 export async function createStaff(payload: {

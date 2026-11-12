@@ -73,13 +73,13 @@ export function PackagePreviewCard({ pkg }: { pkg: TourPackage }) {
           </div>
         )}
 
-        {Array.isArray(pkg.inclusions) && pkg.inclusions.length > 0 && (
+        {pkg.inclusions?.length > 0 && (
           <div className="mt-4">
             <p className="text-xs font-semibold uppercase text-slate-400 mb-1.5">
               Key Inclusions
             </p>
             <div className="flex flex-wrap gap-1.5">
-              {(pkg.inclusions || []).slice(0, 3).map((inc, idx) => (
+              {pkg.inclusions.slice(0, 3).map((inc, idx) => (
                 <span
                   key={idx}
                   className="rounded-md bg-slate-100 px-2 py-0.5 text-xs text-slate-700"

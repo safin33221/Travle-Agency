@@ -68,3 +68,5 @@ export function SearchFilter({
     </div>
   );
 }
+
+export default SearchFilter;

@@ -1,10 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 
 export function StatusBadge({ status }: { status?: string | null }) {
-  if (!status) {
-    return <Badge variant="neutral">—</Badge>;
-  }
-
+  const safeStatus = typeof status === 'string' && status ? status : 'PENDING';
   const map: Record<
     string,
     'default' | 'success' | 'warning' | 'danger' | 'info' | 'neutral'
@@ -28,8 +25,8 @@ export function StatusBadge({ status }: { status?: string | null }) {
   };
 
   return (
-    <Badge variant={map[status] ?? 'neutral'}>
-      {String(status).replace(/_/g, ' ')}
+    <Badge variant={map[safeStatus] ?? 'neutral'}>
+      {safeStatus.replace(/_/g, ' ')}
     </Badge>
   );
 }

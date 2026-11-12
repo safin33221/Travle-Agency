@@ -1,8 +1,6 @@
 import { Navbar } from '@/components/common/Navbar';
 import { Footer } from '@/components/common/Footer';
 
-export const instant = false;
-
 export default function PublicLayout({
   children,
 }: {

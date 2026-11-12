@@ -10,8 +10,108 @@ import {
   LeadSource,
   LeadStage,
   PaginatedResponse,
+  PaginationMeta,
   ServiceCategory,
 } from '@/types/api';
+
+function normalizeMilestones(raw: unknown): LeadMilestoneItem[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.map((item, idx) => {
+    if (typeof item === 'string') {
+      return {
+        key: `MILESTONE_${idx + 1}`,
+        title: item,
+        status: 'PENDING',
+      };
+    }
+    const obj = (item && typeof item === 'object' ? item : {}) as Record<string, unknown>;
+    const rawStatus = typeof obj.status === 'string' ? obj.status.toUpperCase() : '';
+    const status: LeadMilestoneItem['status'] =
+      rawStatus === 'DONE' ||
+      rawStatus === 'COMPLETED' ||
+      obj.completed === true ||
+      obj.done === true
+        ? 'DONE'
+        : rawStatus === 'IN_PROGRESS'
+          ? 'IN_PROGRESS'
+          : 'PENDING';
+    return {
+      key: typeof obj.key === 'string' && obj.key ? obj.key : `MILESTONE_${idx + 1}`,
+      title:
+        typeof obj.title === 'string' && obj.title
+          ? obj.title
+          : typeof obj.label === 'string' && obj.label
+            ? obj.label
+            : typeof obj.name === 'string' && obj.name
+              ? obj.name
+              : `Step ${idx + 1}`,
+      status,
+      completedAt: typeof obj.completedAt === 'string' ? obj.completedAt : undefined,
+    };
+  });
+}
+
+function normalizeDocuments(raw: unknown): LeadDocumentChecklistItem[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.map((item, idx) => {
+    if (typeof item === 'string') {
+      return {
+        key: `DOC_${idx + 1}`,
+        title: item,
+        required: true,
+        status: 'PENDING',
+      };
+    }
+    const obj = (item && typeof item === 'object' ? item : {}) as Record<string, unknown>;
+    const rawStatus = typeof obj.status === 'string' ? obj.status.toUpperCase() : '';
+    const status: LeadDocumentChecklistItem['status'] =
+      rawStatus === 'VERIFIED' || rawStatus === 'APPROVED'
+        ? 'VERIFIED'
+        : rawStatus === 'RECEIVED' || rawStatus === 'SUBMITTED'
+          ? 'RECEIVED'
+          : rawStatus === 'REJECTED'
+            ? 'REJECTED'
+            : 'PENDING';
+    return {
+      key: typeof obj.key === 'string' && obj.key ? obj.key : `DOC_${idx + 1}`,
+      title:
+        typeof obj.title === 'string' && obj.title
+          ? obj.title
+          : typeof obj.label === 'string' && obj.label
+            ? obj.label
+            : typeof obj.name === 'string' && obj.name
+              ? obj.name
+              : `Document ${idx + 1}`,
+      required: typeof obj.required === 'boolean' ? obj.required : true,
+      status,
+      note: typeof obj.note === 'string' ? obj.note : undefined,
+      updatedAt: typeof obj.updatedAt === 'string' ? obj.updatedAt : undefined,
+    };
+  });
+}
+
+function normalizeLead(raw: unknown): Lead {
+  const obj = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>;
+  const unwrapped = (
+    'data' in obj && obj.data && typeof obj.data === 'object' ? obj.data : obj
+  ) as Record<string, unknown>;
+  return {
+    ...(unwrapped as unknown as Lead),
+    stage: (typeof unwrapped.stage === 'string' ? unwrapped.stage : 'NEW') as LeadStage,
+    source: (typeof unwrapped.source === 'string' ? unwrapped.source : 'OTHER') as LeadSource,
+    category: (
+      typeof unwrapped.category === 'string' ? unwrapped.category : 'TOUR'
+    ) as ServiceCategory,
+    eligibilityStatus:
+      typeof unwrapped.eligibilityStatus === 'string' ? unwrapped.eligibilityStatus : undefined,
+    documentChecklist: normalizeDocuments(unwrapped.documentChecklist),
+    milestoneChecklist: normalizeMilestones(unwrapped.milestoneChecklist),
+    notes: Array.isArray(unwrapped.notes) ? unwrapped.notes : [],
+    followUpTasks: Array.isArray(unwrapped.followUpTasks) ? unwrapped.followUpTasks : [],
+    quotations: Array.isArray(unwrapped.quotations) ? unwrapped.quotations : [],
+    aiDrafts: Array.isArray(unwrapped.aiDrafts) ? unwrapped.aiDrafts : [],
+  };
+}
 
 export async function getLeads(params?: {
   page?: number;
@@ -57,17 +157,35 @@ export async function getLeads(params?: {
     };
   }
 
-  const json = (await res.json().catch(() => null)) as PaginatedResponse<Lead> | null;
+  const raw = (await res.json().catch(() => null)) as
+    | { data?: unknown[]; meta?: PaginationMeta }
+    | unknown[]
+    | null;
+  const list = Array.isArray((raw as { data?: unknown[] })?.data)
+    ? (raw as { data: unknown[] }).data
+    : Array.isArray(raw)
+      ? raw
+      : [];
+  const leads = list.map((item) => normalizeLead(item));
+  const meta: PaginationMeta = (raw as { meta?: PaginationMeta })?.meta ?? {
+    total: leads.length,
+    page: params?.page ?? 1,
+    limit: params?.limit ?? 20,
+    totalPages: Math.ceil(leads.length / (params?.limit ?? 20)),
+  };
+
   return {
-    data: Array.isArray(json?.data) ? json.data : [],
-    meta: json?.meta ?? { total: 0, page: 1, limit: 20, totalPages: 0 },
+    data: leads,
+    meta,
   };
 }
 
 export async function getSingleLead(id: string): Promise<Lead | null> {
   const res = await serverFetch.get(`/leads/${id}`);
   if (!res.ok) return null;
-  return (await res.json()) as Lead;
+  const raw = await res.json().catch(() => null);
+  if (!raw) return null;
+  return normalizeLead(raw);
 }
 
 export async function createLead(payload: {
@@ -305,16 +423,24 @@ export async function trackPublicFileStatus(trackingCode: string): Promise<{
   const res = await serverFetch.get(`/leads/track/${cleanCode}`);
 
   const body = await res.json().catch(() => null);
-  if (!res.ok) {
+  if (!res.ok || !body) {
     return {
       success: false,
       message: body?.message || 'Tracking ID not found',
     };
   }
 
+  const unwrapped = body.data ?? body;
+
   return {
     success: true,
-    data: body,
+    data: {
+      ...unwrapped,
+      stage: unwrapped.stage ?? 'NEW',
+      category: unwrapped.category ?? 'TOUR',
+      milestoneChecklist: normalizeMilestones(unwrapped.milestoneChecklist),
+      documentChecklist: normalizeDocuments(unwrapped.documentChecklist),
+    },
   };
 }
 

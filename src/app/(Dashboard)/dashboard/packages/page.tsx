@@ -14,8 +14,8 @@ export default async function DashboardPackagesPage() {
     getMe(),
   ]);
 
-  const packages = packagesRes?.data || [];
   const isAdmin = user?.role === 'OWNER_ADMIN';
+  const packages = packagesRes?.data || [];
 
   return (
     <div>
@@ -56,7 +56,7 @@ export default async function DashboardPackagesPage() {
                       {formatCurrency(pkg.basePrice, pkg.currency)}
                     </td>
                     <td className="py-3.5 px-4 text-xs text-slate-500">
-                      {(pkg.inclusions || []).slice(0, 3).join(', ') || '—'}
+                      {pkg.inclusions.slice(0, 3).join(', ') || '—'}
                     </td>
                     {isAdmin && (
                       <td className="py-3.5 px-4 text-right">

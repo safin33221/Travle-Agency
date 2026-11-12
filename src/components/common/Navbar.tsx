@@ -12,8 +12,11 @@ export function Navbar() {
           <Link href="/" className="hover:text-sky-600 transition-colors">
             Home
           </Link>
+          <Link href="/visa-services" className="hover:text-sky-600 transition-colors font-semibold text-slate-800">
+            Visa & Immigration
+          </Link>
           <Link href="/packages" className="hover:text-sky-600 transition-colors">
-            Packages & Visas
+            Tour & Hajj Packages
           </Link>
           <Link href="/contact" className="hover:text-sky-600 transition-colors">
             Free Eligibility Check

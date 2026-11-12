@@ -118,13 +118,14 @@ function ContactFormContent() {
                   </h2>
                 </div>
                 <span className="rounded-full bg-emerald-600 px-4 py-1.5 text-xs font-bold text-white">
-                  Match Score: {result.eligibility.score}% ({String(result.eligibility.status || '').replace(/_/g, ' ')})
+                  Match Score: {result.eligibility?.score ?? 70}% (
+                  {String(result.eligibility?.status || 'CONDITIONAL_MATCH').replace(/_/g, ' ')})
                 </span>
               </div>
 
               <div className="rounded-lg bg-white p-4 border border-emerald-200 space-y-2">
                 <p className="text-sm font-bold text-slate-900">
-                  {result.eligibility.summary}
+                  {result.eligibility?.summary}
                 </p>
                 <ul className="space-y-1 text-xs text-slate-600">
                   {(result.eligibility?.reasons || []).map((r, i) => (
@@ -443,7 +444,7 @@ export default function PublicContactAndAssessmentPage() {
     <Suspense
       fallback={
         <div className="mx-auto max-w-5xl px-4 py-12 text-center text-sm text-slate-500">
-          Loading inquiry form...
+          Loading contact and assessment form...
         </div>
       }
     >

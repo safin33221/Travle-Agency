@@ -53,7 +53,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t border-slate-800 pt-6 text-center text-xs text-slate-500">
-          © {brandConfig.establishedYear} {brandConfig.legalName}. All rights reserved.
+          © 2026 {brandConfig.legalName}. All rights reserved.
         </div>
       </div>
     </footer>

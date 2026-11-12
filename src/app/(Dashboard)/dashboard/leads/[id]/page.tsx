@@ -4,6 +4,7 @@ import { getPackages } from '@/services/packages/packages.service';
 import { ManagementPageHeader } from '@/components/shared/ManagementPageHeader';
 import { LeadWorkspaceClient } from '@/components/module/leads/LeadWorkspaceClient';
 
+
 export const instant = false;
 
 export default async function LeadDetailsPage({
@@ -30,7 +31,7 @@ export default async function LeadDetailsPage({
         actionHref="/dashboard/leads"
       />
 
-      <LeadWorkspaceClient lead={lead} packages={packagesRes.data} />
+      <LeadWorkspaceClient lead={lead} packages={packagesRes?.data || []} />
     </div>
   );
 }

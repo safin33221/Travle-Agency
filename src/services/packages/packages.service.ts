@@ -2,7 +2,12 @@
 
 import { revalidatePath } from 'next/cache';
 import { serverFetch } from '@/lib/serverFetch';
-import { PaginatedResponse, ServiceCategory, TourPackage } from '@/types/api';
+import {
+  PaginatedResponse,
+  PaginationMeta,
+  ServiceCategory,
+  TourPackage,
+} from '@/types/api';
 
 export async function getPackages(params?: {
   page?: number;
@@ -18,8 +23,8 @@ export async function getPackages(params?: {
   if (params?.category) query.set('category', params.category);
   if (params?.search) query.set('search', params.search);
   if (params?.destination) query.set('destination', params.destination);
-  // Only send isArchived when explicitly true.
-  // Sending 'false' causes class-transformer's Boolean("false") to parse as true on the backend!
+  // Note: Backend uses @Type(() => Boolean) without custom transform, which parses "false" as true.
+  // Backend defaults to isArchived = false when omitted. Only send isArchived when explicitly true.
   if (params?.isArchived === true) {
     query.set('isArchived', 'true');
   }
@@ -30,14 +35,33 @@ export async function getPackages(params?: {
   if (!res.ok) {
     return {
       data: [],
-      meta: { total: 0, page: 1, limit: 20, totalPages: 0 },
+      meta: { total: 0, page: 1, limit: 20, totalPages: 0, hasNextPage: false, hasPrevPage: false },
     };
   }
 
-  const json = (await res.json().catch(() => null)) as PaginatedResponse<TourPackage> | null;
+  const raw = (await res.json().catch(() => null)) as {
+    data?: TourPackage[];
+    meta?: PaginationMeta;
+  } | TourPackage[] | null;
+
+  const packages: TourPackage[] = Array.isArray((raw as { data?: TourPackage[] })?.data)
+    ? ((raw as { data: TourPackage[] }).data)
+    : Array.isArray(raw)
+      ? (raw as TourPackage[])
+      : [];
+
+  const meta: PaginationMeta = (raw as { meta?: PaginationMeta })?.meta ?? {
+    total: packages.length,
+    page: params?.page ?? 1,
+    limit: params?.limit ?? 20,
+    totalPages: Math.ceil(packages.length / (params?.limit ?? 20)),
+    hasNextPage: false,
+    hasPrevPage: false,
+  };
+
   return {
-    data: Array.isArray(json?.data) ? json.data : [],
-    meta: json?.meta ?? { total: 0, page: 1, limit: 20, totalPages: 0 },
+    data: packages,
+    meta,
   };
 }
 
@@ -46,7 +70,12 @@ export async function getSinglePackage(
 ): Promise<TourPackage | null> {
   const res = await serverFetch.get(`/packages/${id}`);
   if (!res.ok) return null;
-  return (await res.json()) as TourPackage;
+  const raw = (await res.json().catch(() => null)) as
+    | { data?: TourPackage }
+    | TourPackage
+    | null;
+  if (!raw) return null;
+  return ('data' in raw && raw.data ? raw.data : raw) as TourPackage;
 }
 
 export async function createPackage(payload: {

@@ -11,9 +11,5 @@ export async function getAuditLogs(): Promise<PaginatedResponse<AuditLog>> {
       meta: { total: 0, page: 1, limit: 50, totalPages: 0 },
     };
   }
-  const json = (await res.json().catch(() => null)) as PaginatedResponse<AuditLog> | null;
-  return {
-    data: Array.isArray(json?.data) ? json.data : [],
-    meta: json?.meta ?? { total: 0, page: 1, limit: 50, totalPages: 0 },
-  };
+  return (await res.json()) as PaginatedResponse<AuditLog>;
 }
