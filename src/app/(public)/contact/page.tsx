@@ -33,6 +33,7 @@ function ContactFormContent() {
   const [studyGapYears, setStudyGapYears] = useState('0');
 
   const [isPending, startTransition] = useTransition();
+  const [copiedCode, setCopiedCode] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<{
     trackingCode: string;
@@ -92,30 +93,77 @@ function ContactFormContent() {
   const enabledSectors = brandConfig.enabledCategories.map(
     (k) => SECTOR_CATALOG[k],
   );
+  const cleanWhatsapp = brandConfig.contact.whatsapp.replace(/[^0-9]/g, '');
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
-          Free Eligibility Assessment & File Opening Inquiry
+    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+      {/* Clear User-Friendly Header + 3-Step Visual Guide */}
+      <div className="mb-8 rounded-2xl border border-sky-100 bg-gradient-to-r from-sky-50/90 via-white to-emerald-50/50 p-6 sm:p-8">
+        <span className="inline-block rounded-full bg-sky-100 px-3 py-0.5 text-xs font-bold text-sky-800">
+          100% Free • Instant Tracking ID
+        </span>
+        <h1 className="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+          Free Eligibility Assessment & File Opening
         </h1>
-        <p className="mt-2 text-sm text-slate-600">
-          Check your instant eligibility for Work Permits, Student Visas, Hajj & Umrah, or Holiday Packages and receive a live File Tracking ID.
+        <p className="mt-1.5 text-sm text-slate-600 max-w-2xl">
+          Fill out this quick 1-minute form to see your eligibility match score and automatically receive a live File Tracking ID—no registration required.
         </p>
+
+        <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3 text-xs">
+          <div className="flex items-center gap-2.5 rounded-xl bg-white border border-slate-200/80 p-3">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sky-600 text-white font-bold">
+              1
+            </span>
+            <span className="font-semibold text-slate-800">
+              Select your service & fill basic info
+            </span>
+          </div>
+          <div className="flex items-center gap-2.5 rounded-xl bg-white border border-slate-200/80 p-3">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white font-bold">
+              2
+            </span>
+            <span className="font-semibold text-slate-800">
+              Get instant Eligibility Score + Tracking Code
+            </span>
+          </div>
+          <div className="flex items-center gap-2.5 rounded-xl bg-white border border-slate-200/80 p-3">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-white font-bold">
+              3
+            </span>
+            <span className="font-semibold text-slate-800">
+              Track checklist & visa steps 24/7 online
+            </span>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2">
           {result ? (
-            <Card className="p-8 border-emerald-300 bg-emerald-50/40 space-y-6">
+            <Card className="p-6 sm:p-8 border-emerald-300 bg-emerald-50/40 space-y-6">
               <div className="flex flex-wrap items-center justify-between gap-4 border-b border-emerald-200 pb-4">
                 <div>
                   <span className="text-xs font-bold uppercase text-emerald-700">
                     ✓ Inquiry & Pre-Assessment Recorded
                   </span>
-                  <h2 className="mt-1 text-2xl font-extrabold text-slate-900">
-                    Tracking ID: {result.trackingCode}
-                  </h2>
+                  <div className="mt-1 flex flex-wrap items-center gap-2.5">
+                    <h2 className="text-2xl font-extrabold text-slate-900 font-mono">
+                      #{result.trackingCode}
+                    </h2>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (typeof window !== 'undefined') {
+                          void navigator.clipboard.writeText(result.trackingCode);
+                          setCopiedCode(true);
+                          setTimeout(() => setCopiedCode(false), 2500);
+                        }
+                      }}
+                      className="rounded-lg border border-emerald-300 bg-white px-2.5 py-1 text-xs font-semibold text-emerald-800 hover:bg-emerald-50"
+                    >
+                      {copiedCode ? '✓ Copied!' : '📋 Copy Code'}
+                    </button>
+                  </div>
                 </div>
                 <span className="rounded-full bg-emerald-600 px-4 py-1.5 text-xs font-bold text-white">
                   Match Score: {result.eligibility?.score ?? 70}% (
@@ -134,14 +182,23 @@ function ContactFormContent() {
                 </ul>
               </div>
 
-              <p className="text-xs text-slate-600">
-                Save your Tracking ID <strong>{result.trackingCode}</strong>. Our specialist counselor will review your profile and update your document & visa milestones.
-              </p>
+              <div className="rounded-xl bg-white border border-slate-200 p-4 text-xs text-slate-600 space-y-1.5">
+                <p className="font-bold text-slate-900">What Happens Next?</p>
+                <p>
+                  1. Save your Tracking ID <strong className="font-mono text-sky-700">#{result.trackingCode}</strong> (take a screenshot or click Copy Code).
+                </p>
+                <p>
+                  2. Our specialist counselor will contact you on <strong>{customerPhone}</strong> and update your required document checklist.
+                </p>
+                <p>
+                  3. Open <strong>Track My File Status</strong> below anytime to see live progress.
+                </p>
+              </div>
 
               <div className="flex flex-wrap items-center gap-3 pt-2">
                 <Link href={`/track-status?code=${result.trackingCode}`}>
                   <Button variant="secondary">
-                    Track My File Status ({result.trackingCode}) →
+                    🔍 Track My File Status ({result.trackingCode}) →
                   </Button>
                 </Link>
                 <Button
@@ -395,13 +452,13 @@ function ContactFormContent() {
         </div>
 
         {/* Contact & Live Tracker Sidebar */}
-        <div className="space-y-6">
+        <div className="space-y-5">
           <Card className="p-6 bg-slate-900 text-white">
             <h3 className="text-sm font-bold uppercase text-sky-400">
-              Already Applied?
+              Already Applied With Us?
             </h3>
             <p className="mt-2 text-xs text-slate-300 leading-relaxed">
-              Track your Passport, GAMCA Medical, Offer Letter, BMET Manpower, or Umrah Visa status online using your Tracking Code.
+              Check your Passport, GAMCA Medical, Offer Letter, BMET Manpower, or Umrah Visa progress 24/7 using your Tracking Code.
             </p>
             <Link href="/track-status" className="mt-4 block">
               <Button variant="secondary" size="sm" className="w-full">
@@ -410,28 +467,42 @@ function ContactFormContent() {
             </Link>
           </Card>
 
-          <Card className="p-6">
+          <Card className="p-6 space-y-3">
             <h3 className="text-sm font-bold uppercase text-sky-600">
-              Direct Counseling Hotline
+              Talk to a Counselor Directly
             </h3>
-            <p className="mt-2 text-lg font-semibold text-slate-900">
-              {brandConfig.contact.phone}
-            </p>
-            <p className="mt-1 text-xs text-slate-500">
-              {brandConfig.contact.officeHours}
+            <a
+              href={`tel:${brandConfig.contact.phone.replace(/\s+/g, '')}`}
+              className="block text-lg font-bold text-slate-900 hover:text-sky-600"
+            >
+              📞 {brandConfig.contact.phone}
+            </a>
+            <a
+              href={`https://wa.me/${cleanWhatsapp}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex w-full items-center justify-center rounded-lg bg-emerald-600 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-700 transition"
+            >
+              💬 Message on WhatsApp ↗
+            </a>
+            <p className="text-xs text-slate-500">
+              Office Hours: {brandConfig.contact.officeHours}
             </p>
           </Card>
 
           <Card className="p-6">
             <h3 className="text-sm font-bold uppercase text-sky-600">
-              Head Office
+              Visit Our Head Office
             </h3>
             <p className="mt-2 text-sm font-medium text-slate-900">
               {brandConfig.contact.address}
             </p>
-            <p className="mt-2 text-xs text-slate-500">
-              Email: {brandConfig.contact.email}
-            </p>
+            <a
+              href={`mailto:${brandConfig.contact.email}`}
+              className="mt-2 inline-block text-xs font-medium text-sky-700 hover:underline"
+            >
+              ✉️ {brandConfig.contact.email}
+            </a>
           </Card>
         </div>
       </div>

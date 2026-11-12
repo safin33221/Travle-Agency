@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { AgencyServiceStatus, VisaCategory } from '@/types/api';
 import { submitPublicVisaInquiryAction } from '@/services/visa/visa.service';
 
@@ -33,6 +34,7 @@ export default function VisaInquiryForm({
   });
 
   const [loading, setLoading] = useState(false);
+  const [copiedCode, setCopiedCode] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submittedResult, setSubmittedResult] = useState<{
     trackingCode: string | null;
@@ -90,25 +92,48 @@ export default function VisaInquiryForm({
 
   if (submittedResult) {
     return (
-      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6">
-        <div className="mb-2 inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800">
-          Inquiry Received
+      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 space-y-4">
+        <div className="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800">
+          ✓ Consultation Request Registered
         </div>
         <h3 className="text-lg font-bold text-emerald-950">
-          Thank you! Your Visa Consultation Request is Registered
+          Thank you! Your Visa File Has Been Created
         </h3>
-        <p className="mt-1 text-sm text-emerald-800">{submittedResult.message}</p>
+        <p className="text-sm text-emerald-800">{submittedResult.message}</p>
         {submittedResult.trackingCode && (
-          <div className="mt-4 rounded-xl border border-emerald-300 bg-white p-4">
-            <p className="text-xs font-medium uppercase tracking-wider text-slate-500">
-              Your Application Tracking Code
+          <div className="rounded-xl border border-emerald-300 bg-white p-4 space-y-3">
+            <div className="flex items-center justify-between gap-2">
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  Your File Tracking Code
+                </p>
+                <p className="mt-0.5 font-mono text-xl font-extrabold text-slate-900">
+                  #{submittedResult.trackingCode}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  if (typeof window !== 'undefined' && submittedResult.trackingCode) {
+                    void navigator.clipboard.writeText(submittedResult.trackingCode);
+                    setCopiedCode(true);
+                    setTimeout(() => setCopiedCode(false), 2500);
+                  }
+                }}
+                className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100"
+              >
+                {copiedCode ? '✓ Copied!' : '📋 Copy ID'}
+              </button>
+            </div>
+            <p className="text-xs text-slate-600">
+              Use this Tracking Code anytime to check document verification and visa processing milestones.
             </p>
-            <p className="mt-1 font-mono text-xl font-bold text-slate-900">
-              {submittedResult.trackingCode}
-            </p>
-            <p className="mt-1 text-xs text-slate-600">
-              Save this reference code to check your inquiry progress on our Track Status page.
-            </p>
+            <Link
+              href={`/track-status?code=${submittedResult.trackingCode}`}
+              className="block w-full rounded-xl bg-sky-600 px-4 py-2.5 text-center text-xs font-bold text-white hover:bg-sky-700 transition"
+            >
+              🔍 Track My File Status Now →
+            </Link>
           </div>
         )}
       </div>

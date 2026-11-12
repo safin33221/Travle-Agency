@@ -12,7 +12,7 @@ export function PackagePreviewCard({ pkg }: { pkg: TourPackage }) {
   const specs = (pkg.structuredSpecs ?? {}) as Record<string, unknown>;
 
   return (
-    <Card className="flex flex-col justify-between p-6 hover:border-sky-300 transition-all">
+    <Card className="flex flex-col justify-between p-6 hover:border-sky-400 hover:shadow-md transition-all">
       <div>
         <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
           <span
@@ -20,7 +20,12 @@ export function PackagePreviewCard({ pkg }: { pkg: TourPackage }) {
           >
             {sectorMeta.shortLabel}
           </span>
-          <Badge variant="info">{pkg.destination}</Badge>
+          <div className="flex items-center gap-1.5">
+            <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600">
+              ⏱ {pkg.durationDays} Days
+            </span>
+            <Badge variant="info">📍 {pkg.destination}</Badge>
+          </div>
         </div>
 
         <h3 className="text-lg font-bold text-slate-900">{pkg.title}</h3>

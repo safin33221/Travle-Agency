@@ -8,6 +8,7 @@ import {
 } from '@/components/module/visa/VisaStatusBadges';
 import SearchFilter from '@/components/shared/SearchFilter';
 import SelectFilter from '@/components/shared/SelectFilter';
+import { ClearFiltersButton } from '@/components/shared/ClearFiltersButton';
 import {
   AgencyServiceStatus,
   Country,
@@ -15,8 +16,16 @@ import {
   VisaService,
 } from '@/types/api';
 
-
 export const instant = false;
+
+const VISA_CATEGORY_TABS: Array<{ label: string; value: string; icon: string }> = [
+  { label: 'All Categories', value: '', icon: '🌍' },
+  { label: 'Student Visa', value: 'STUDENT_VISA', icon: '🎓' },
+  { label: 'Work Permit', value: 'WORK_PERMIT', icon: '💼' },
+  { label: 'Work Visa', value: 'WORK_VISA', icon: '🛠️' },
+  { label: 'Tourist Visa', value: 'TOURIST_VISA', icon: '✈️' },
+  { label: 'Business Visa', value: 'BUSINESS_VISA', icon: '🤝' },
+];
 
 export default async function PublicVisaServicesPage({
   searchParams,
@@ -69,33 +78,50 @@ export default async function PublicVisaServicesPage({
       </section>
 
       <div className="mx-auto max-w-7xl space-y-12 px-4 py-10 sm:px-6 lg:px-8">
-        {/* Search & Filter Bar */}
-        <div className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:flex-row md:items-center md:justify-between">
-          <div className="flex-1">
-            <SearchFilter placeholder="Search destination country or visa service..." />
+        {/* Quick 1-Click Visa Category Tabs + Search & Filter Bar */}
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
+          <div className="flex flex-wrap items-center gap-2 border-b border-slate-100 pb-4">
+            {VISA_CATEGORY_TABS.map((tab) => {
+              const isSelected = category === tab.value;
+              const qs = new URLSearchParams();
+              if (tab.value) qs.set('category', tab.value);
+              if (search) qs.set('search', search);
+              if (serviceStatus) qs.set('serviceStatus', serviceStatus);
+              const href = qs.toString()
+                ? `/visa-services?${qs.toString()}`
+                : '/visa-services';
+              return (
+                <Link
+                  key={tab.label}
+                  href={href}
+                  className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
+                    isSelected
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  }`}
+                >
+                  {tab.icon} {tab.label}
+                </Link>
+              );
+            })}
           </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <SelectFilter
-              paramName="category"
-              placeholder="All Visa Categories"
-              options={[
-                { label: 'Student Visa', value: 'STUDENT_VISA' },
-                { label: 'Work Visa', value: 'WORK_VISA' },
-                { label: 'Work Permit', value: 'WORK_PERMIT' },
-                { label: 'Tourist Visa', value: 'TOURIST_VISA' },
-                { label: 'Business Visa', value: 'BUSINESS_VISA' },
-                { label: 'Other Categories', value: 'OTHER' },
-              ]}
-            />
-            <SelectFilter
-              paramName="serviceStatus"
-              placeholder="All Availability"
-              options={[
-                { label: 'Accepting Inquiries', value: 'ACCEPTING_INQUIRIES' },
-                { label: 'Limited Intake', value: 'LIMITED' },
-                { label: 'Temporarily Paused', value: 'TEMPORARILY_PAUSED' },
-              ]}
-            />
+
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div className="flex-1">
+              <SearchFilter placeholder="Search destination country or visa service (e.g. UK, Malaysia, Romania)..." />
+            </div>
+            <div className="flex flex-wrap items-center gap-2.5">
+              <SelectFilter
+                paramName="serviceStatus"
+                placeholder="All Availability"
+                options={[
+                  { label: 'Accepting Inquiries', value: 'ACCEPTING_INQUIRIES' },
+                  { label: 'Limited Intake', value: 'LIMITED' },
+                  { label: 'Temporarily Paused', value: 'TEMPORARILY_PAUSED' },
+                ]}
+              />
+              <ClearFiltersButton />
+            </div>
           </div>
         </div>
 

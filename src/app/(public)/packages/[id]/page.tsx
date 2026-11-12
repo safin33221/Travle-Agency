@@ -138,28 +138,47 @@ export default async function PublicPackageDetailsPage({
         </div>
 
         <div>
-          <Card className="p-6 sticky top-24 space-y-4">
-            <p className="text-xs font-semibold uppercase text-slate-400">
-              {category === 'STUDENT_VISA'
-                ? 'Processing & File Charge'
-                : 'Indicative Package Price'}
-            </p>
-            <p className="text-3xl font-extrabold text-slate-900">
-              {formatCurrency(pkg.basePrice, pkg.currency)}
-            </p>
-            <p className="text-xs text-slate-500">
-              All files undergo mandatory eligibility and document verification by our counselors before official quotation approval.
-            </p>
-            <Link
-              href={`/contact?category=${category}&destination=${encodeURIComponent(pkg.destination)}`}
-              className="block"
-            >
-              <Button variant="secondary" className="w-full">
-                Check Eligibility & Apply →
-              </Button>
-            </Link>
-            <div className="pt-4 border-t border-slate-100 text-xs text-slate-500 space-y-1">
-              <p>Direct Helpline: {brandConfig.contact.phone}</p>
+          <Card className="p-6 sticky top-24 space-y-5 border-sky-200 shadow-sm">
+            <div>
+              <p className="text-xs font-semibold uppercase text-slate-400">
+                {category === 'STUDENT_VISA'
+                  ? 'Processing & File Charge'
+                  : 'Starting Package Price'}
+              </p>
+              <p className="mt-1 text-3xl font-extrabold text-slate-900">
+                {formatCurrency(pkg.basePrice, pkg.currency)}
+              </p>
+              <p className="mt-1.5 text-xs text-slate-500">
+                Transparent pricing with clear inclusions & zero hidden fees.
+              </p>
+            </div>
+
+            <div className="space-y-2.5">
+              <Link
+                href={`/contact?category=${category}&destination=${encodeURIComponent(pkg.destination)}`}
+                className="block"
+              >
+                <Button variant="secondary" className="w-full">
+                  ✓ Check Eligibility & Apply →
+                </Button>
+              </Link>
+              <a
+                href={`tel:${brandConfig.contact.phone.replace(/\s+/g, '')}`}
+                className="block w-full rounded-lg border border-slate-200 bg-slate-50 py-2 text-center text-xs font-semibold text-slate-700 hover:bg-slate-100"
+              >
+                📞 Call Desk: {brandConfig.contact.phone}
+              </a>
+            </div>
+
+            <div className="rounded-xl bg-slate-50 border border-slate-200/80 p-3.5 space-y-2 text-xs text-slate-600">
+              <p className="font-bold text-slate-900">How Booking Works:</p>
+              <p>1. Submit your inquiry above to get an instant Tracking ID.</p>
+              <p>2. Our counselor verifies your documents & sends an official PDF quote.</p>
+              <p>3. Track your file status anytime on <code className="font-mono text-sky-700">/track-status</code>.</p>
+            </div>
+
+            <div className="pt-3 border-t border-slate-100 text-xs text-slate-500 space-y-1">
+              <p>Office: {brandConfig.contact.officeHours}</p>
               <p>Email: {brandConfig.contact.email}</p>
             </div>
           </Card>
