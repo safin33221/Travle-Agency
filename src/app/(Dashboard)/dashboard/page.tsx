@@ -8,10 +8,15 @@ import { StatusBadge } from '@/components/shared/StatusBadge';
 import { Button } from '@/components/ui/button';
 import { SECTOR_CATALOG } from '@/config/brand.config';
 import { formatCurrency, formatDate } from '@/lib/utils';
+import { LeadStage } from '@/types/api';
 
 export const instant = false;
 
-const ORDERED_STAGES = [
+const ORDERED_STAGES: ReadonlyArray<{
+  key: LeadStage;
+  label: string;
+  hint: string;
+}> = [
   { key: 'NEW', label: 'New Inquiries', hint: 'Needs initial call & qualification' },
   { key: 'QUALIFIED', label: 'Qualified Files', hint: 'Collecting documents & preferences' },
   { key: 'QUOTED', label: 'Quotation Sent', hint: 'Awaiting client price approval' },
@@ -27,7 +32,7 @@ export default async function DashboardOverviewPage() {
   ]);
 
   const totalLeads = summary?.leads?.total ?? 0;
-  const byStage = summary?.leads?.byStage || {};
+  const byStage: Partial<Record<LeadStage, number>> = summary?.leads?.byStage || {};
   const upcomingTasks = summary?.followUps?.upcomingTasks || [];
   const recentLeads = recentLeadsRes?.data || [];
 
