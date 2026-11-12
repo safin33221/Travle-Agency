@@ -93,37 +93,126 @@ export default async function DashboardLeadsPage({
     sortOrder: resolvedParams.sortOrder,
   });
 
+  const activeStage = resolvedParams.stage || '';
+  const activeCategory = resolvedParams.category || '';
+
   return (
-    <div>
+    <div className="space-y-5">
       <ManagementPageHeader
         title="Multi-Sector Customer Leads & Visa Files"
         description="Manage Holiday Tours, Hajj & Umrah, Work Permit, and Student Visa files with automated checklists, AI drafts, and quotations."
         actionLabel="+ New Customer Inquiry"
         actionHref="/dashboard/leads/create"
-      />
+      >
+        <Link href="/dashboard/visa-immigration/inquiries">
+          <Button variant="outline" size="sm">
+            Web Visa Inquiries →
+          </Button>
+        </Link>
+      </ManagementPageHeader>
+
+      {/* Quick 1-Click Stage & Sector Filter Tabs */}
+      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-xs space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mr-1">
+              Stage:
+            </span>
+            <Link
+              href={
+                activeCategory
+                  ? `/dashboard/leads?category=${activeCategory}`
+                  : '/dashboard/leads'
+              }
+              className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
+                !activeStage
+                  ? 'bg-slate-900 text-white'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              All Stages
+            </Link>
+            {STAGE_OPTIONS.map((st) => {
+              const isSelected = activeStage === st.value;
+              const qs = new URLSearchParams();
+              if (activeCategory) qs.set('category', activeCategory);
+              if (resolvedParams.search) qs.set('search', resolvedParams.search);
+              qs.set('stage', st.value);
+              return (
+                <Link
+                  key={st.value}
+                  href={`/dashboard/leads?${qs.toString()}`}
+                  className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
+                    isSelected
+                      ? 'bg-sky-600 text-white shadow-xs'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  }`}
+                >
+                  {st.label}
+                </Link>
+              );
+            })}
+          </div>
+
+          <span className="text-xs font-medium text-slate-500">
+            Showing <strong>{leadsRes.data.length}</strong> of{' '}
+            <strong>{leadsRes.meta.total}</strong> files
+          </span>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-100">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mr-1">
+            Sector:
+          </span>
+          <Link
+            href={
+              activeStage
+                ? `/dashboard/leads?stage=${activeStage}`
+                : '/dashboard/leads'
+            }
+            className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
+              !activeCategory
+                ? 'bg-slate-800 text-white'
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+            }`}
+          >
+            All Sectors
+          </Link>
+          {CATEGORY_OPTIONS.map((cat) => {
+            const isSelected = activeCategory === cat.value;
+            const qs = new URLSearchParams();
+            if (activeStage) qs.set('stage', activeStage);
+            if (resolvedParams.search) qs.set('search', resolvedParams.search);
+            qs.set('category', cat.value);
+            return (
+              <Link
+                key={cat.value}
+                href={`/dashboard/leads?${qs.toString()}`}
+                className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
+                  isSelected
+                    ? 'bg-sky-600 text-white shadow-xs'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
+              >
+                {cat.label}
+              </Link>
+            );
+          })}
+        </div>
+      </div>
 
       <Card>
         <CardContent className="pt-6">
-          {/* Reusable Search, Filter & Sort Toolbar */}
+          {/* Search, Filter & Sort Toolbar */}
           <div className="mb-5 flex flex-wrap items-center gap-2.5">
             <SearchFilter
               paramName="search"
-              placeholder="Search tracking code, name, phone, destination..."
-            />
-            <SelectFilter
-              paramName="category"
-              placeholder="All Sectors"
-              options={CATEGORY_OPTIONS}
+              placeholder="Search tracking code (#SV-...), name, phone, destination..."
             />
             <SelectFilter
               paramName="eligibilityStatus"
               placeholder="All Eligibility"
               options={ELIGIBILITY_OPTIONS}
-            />
-            <SelectFilter
-              paramName="stage"
-              placeholder="All Stages"
-              options={STAGE_OPTIONS}
             />
             <SelectFilter
               paramName="source"
@@ -145,13 +234,13 @@ export default async function DashboardLeadsPage({
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-slate-200 text-xs uppercase text-slate-500">
+              <thead className="border-b border-slate-200 bg-slate-50/70 text-xs uppercase text-slate-500">
                 <tr>
-                  <th className="py-3 px-4">Applicant & File ID</th>
+                  <th className="py-3 px-4">Applicant & Tracking ID</th>
                   <th className="py-3 px-4">Sector & Destination</th>
+                  <th className="py-3 px-4">File Progress</th>
                   <th className="py-3 px-4">Budget / Eligibility</th>
                   <th className="py-3 px-4">Stage</th>
-                  <th className="py-3 px-4">Counselor</th>
                   <th className="py-3 px-4 text-right">Workspace</th>
                 </tr>
               </thead>
@@ -159,22 +248,46 @@ export default async function DashboardLeadsPage({
                 {leadsRes.data.map((lead) => {
                   const cat = lead.category ?? 'TOUR';
                   const sectorMeta = SECTOR_CATALOG[cat] ?? SECTOR_CATALOG.TOUR;
+                  const milestones = lead.milestoneChecklist || [];
+                  const doneMilestones = milestones.filter(
+                    (m) => m.status === 'DONE',
+                  ).length;
+                  const docs = lead.documentChecklist || [];
+                  const verifiedDocs = docs.filter(
+                    (d) => d.status === 'VERIFIED' || d.status === 'RECEIVED',
+                  ).length;
+                  const milestonePct =
+                    milestones.length > 0
+                      ? Math.round((doneMilestones / milestones.length) * 100)
+                      : 0;
+
                   return (
-                    <tr key={lead.id} className="hover:bg-slate-50">
+                    <tr
+                      key={lead.id}
+                      className="hover:bg-sky-50/30 transition-colors"
+                    >
                       <td className="py-3.5 px-4">
-                        <div className="flex items-center gap-2">
-                          <p className="font-semibold text-slate-900">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Link
+                            href={`/dashboard/leads/${lead.id}`}
+                            className="font-semibold text-slate-900 hover:text-sky-700 hover:underline"
+                          >
                             {lead.customerName}
-                          </p>
+                          </Link>
                           {lead.trackingCode && (
-                            <span className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-slate-700">
-                              #{lead.trackingCode}
-                            </span>
+                            <Link
+                              href={`/track-status?code=${lead.trackingCode}`}
+                              target="_blank"
+                              title="Open Public Client Tracker"
+                              className="rounded bg-sky-50 border border-sky-200 px-1.5 py-0.5 font-mono text-[11px] font-bold text-sky-700 hover:bg-sky-100"
+                            >
+                              #{lead.trackingCode} ↗
+                            </Link>
                           )}
                         </div>
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs text-slate-500 mt-0.5">
                           {lead.customerPhone || lead.customerEmail || 'No contact'} •{' '}
-                          {lead.source}
+                          <span className="font-medium">{lead.source}</span>
                         </p>
                       </td>
                       <td className="py-3.5 px-4">
@@ -183,12 +296,33 @@ export default async function DashboardLeadsPage({
                         >
                           {sectorMeta.shortLabel}
                         </span>
-                        <p className="mt-1 font-medium text-slate-800">
+                        <p className="mt-1 font-medium text-slate-800 text-xs">
                           {lead.destination || 'TBD'}
                         </p>
                       </td>
                       <td className="py-3.5 px-4">
-                        <p className="font-medium text-slate-800">
+                        <div className="w-36 space-y-1">
+                          <div className="flex items-center justify-between text-[11px]">
+                            <span className="text-slate-600 font-medium">
+                              Steps: {doneMilestones}/{milestones.length}
+                            </span>
+                            <span className="font-bold text-sky-700">
+                              {milestonePct}%
+                            </span>
+                          </div>
+                          <div className="h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
+                            <div
+                              className="h-full rounded-full bg-emerald-500 transition-all"
+                              style={{ width: `${milestonePct}%` }}
+                            />
+                          </div>
+                          <p className="text-[11px] text-slate-500">
+                            Docs: <strong>{verifiedDocs}</strong>/{docs.length} ready
+                          </p>
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <p className="font-medium text-slate-800 text-xs">
                           {formatCurrency(lead.budget)}
                         </p>
                         {lead.eligibilityStatus ? (
@@ -211,14 +345,14 @@ export default async function DashboardLeadsPage({
                       </td>
                       <td className="py-3.5 px-4">
                         <StatusBadge status={lead.stage} />
-                      </td>
-                      <td className="py-3.5 px-4 text-xs text-slate-600">
-                        {lead.assignedTo?.name || 'Unassigned'}
+                        <p className="text-[11px] text-slate-400 mt-1">
+                          {lead.assignedTo?.name || 'Unassigned'}
+                        </p>
                       </td>
                       <td className="py-3.5 px-4 text-right">
                         <Link href={`/dashboard/leads/${lead.id}`}>
-                          <Button variant="outline" size="sm">
-                            Open File →
+                          <Button variant="secondary" size="sm">
+                            Open Workspace →
                           </Button>
                         </Link>
                       </td>
@@ -229,9 +363,14 @@ export default async function DashboardLeadsPage({
                   <tr>
                     <td
                       colSpan={6}
-                      className="py-10 text-center text-sm text-slate-500"
+                      className="py-12 text-center text-sm text-slate-500"
                     >
-                      No leads matched your search or filter criteria.
+                      <p className="font-semibold text-slate-700">
+                        No customer files matched your current filters.
+                      </p>
+                      <p className="mt-1 text-xs text-slate-400">
+                        Try clearing the stage/sector filters or record a new inquiry.
+                      </p>
                     </td>
                   </tr>
                 )}

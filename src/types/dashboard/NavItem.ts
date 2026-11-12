@@ -6,4 +6,6 @@ export interface NavItem {
   icon: string;
   roles: StaffRole[];
   description?: string;
+  group?: string;
+  exact?: boolean;
 }

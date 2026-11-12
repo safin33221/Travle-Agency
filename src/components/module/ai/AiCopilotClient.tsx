@@ -7,15 +7,33 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label, Textarea } from '@/components/ui/input';
 
+const SAMPLE_PROMPTS = [
+  {
+    label: '🏖️ Holiday Tour (Bangla)',
+    text: 'ভাইয়া, আমরা ৪ জন কক্সবাজার যেতে চাই আগামী মাসে ৩ দিনের জন্য। আপনাদের প্যাকেজ আর খরচ কত পরবে?',
+  },
+  {
+    label: '🎓 Student Visa',
+    text: 'I completed HSC in 2025 with GPA 4.80 and IELTS 6.5. What documents and budget do I need for a Student Visa?',
+  },
+  {
+    label: '💼 Work Permit',
+    text: 'রোমানিয়া বা মধ্যপ্রাচ্যে ওয়ার্ক পারমিট ভিসার জন্য কী কী ডকুমেন্টস লাগবে এবং কত দিন সময় লাগে?',
+  },
+  {
+    label: '🕋 Umrah Package',
+    text: 'আমাদের পরিবারের ৩ জনের জন্য ১৪ দিনের ওমরাহ প্যাকেজের বিস্তারিত এবং হোটেল দূরত্ব জানাবেন প্লিজ।',
+  },
+];
+
 export function AiCopilotClient() {
   const [isPending, startTransition] = useTransition();
-  const [inquiry, setInquiry] = useState(
-    'ভাইয়া, আমরা ৪ জন কক্সবাজার যেতে চাই আগামী মাসে ৩ দিনের জন্য। আপনাদের প্যাকেজ আর খরচ কত পরবে?',
-  );
+  const [inquiry, setInquiry] = useState(SAMPLE_PROMPTS[0].text);
   const [language, setLanguage] = useState<'en' | 'bn' | 'banglish'>('bn');
   const [draftType, setDraftType] = useState<AiDraftType>('CUSTOMER_REPLY');
   const [draftResult, setDraftResult] = useState<AiDraft | null>(null);
   const [editableText, setEditableText] = useState('');
+  const [copied, setCopied] = useState(false);
 
   const handleGenerate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,6 +50,13 @@ export function AiCopilotClient() {
     });
   };
 
+  const handleCopy = () => {
+    if (!editableText || typeof window === 'undefined') return;
+    void navigator.clipboard.writeText(editableText);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  };
+
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       <Card>
@@ -40,6 +65,22 @@ export function AiCopilotClient() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleGenerate} className="space-y-4">
+            <div>
+              <Label>Quick Sample Scenarios (Click to Test)</Label>
+              <div className="mt-1.5 flex flex-wrap gap-1.5">
+                {SAMPLE_PROMPTS.map((sample) => (
+                  <button
+                    key={sample.label}
+                    type="button"
+                    onClick={() => setInquiry(sample.text)}
+                    className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 hover:border-sky-300 hover:bg-sky-50 hover:text-sky-800 transition"
+                  >
+                    {sample.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div>
               <Label>Paste Customer Message (Bangla, English, or Banglish)</Label>
               <Textarea
@@ -112,7 +153,16 @@ export function AiCopilotClient() {
               )}
 
               <div>
-                <Label>Editable Response Text</Label>
+                <div className="flex items-center justify-between mb-1">
+                  <Label className="mb-0">Editable Response Text</Label>
+                  <button
+                    type="button"
+                    onClick={handleCopy}
+                    className="rounded-md bg-sky-50 border border-sky-200 px-2.5 py-1 text-xs font-semibold text-sky-700 hover:bg-sky-100"
+                  >
+                    {copied ? '✓ Copied to Clipboard!' : '📋 Copy Reply'}
+                  </button>
+                </div>
                 <Textarea
                   value={editableText}
                   onChange={(e) => setEditableText(e.target.value)}
@@ -129,7 +179,7 @@ export function AiCopilotClient() {
             </>
           ) : (
             <p className="text-sm text-slate-500 py-12 text-center">
-              Submit a customer inquiry on the left to generate a grounded draft reply.
+              Choose a sample scenario or paste a customer inquiry on the left to generate a grounded draft reply.
             </p>
           )}
         </CardContent>

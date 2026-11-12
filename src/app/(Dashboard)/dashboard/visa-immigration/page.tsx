@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { getVisaAdminOverviewAction } from '@/services/visa/visa.service';
+import { VisaSubNav } from '@/components/module/visa/VisaSubNav';
 
 export const instant = false;
 
@@ -54,7 +55,9 @@ export default async function VisaImmigrationOverviewPage() {
   ];
 
   return (
-    <div className="space-y-8 p-6">
+    <div className="space-y-6">
+      <VisaSubNav />
+
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">

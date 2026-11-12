@@ -7,6 +7,7 @@ import {
   VisaPublicationBadge,
 } from '@/components/module/visa/VisaStatusBadges';
 import { QuickVisaServiceActions } from '@/components/module/visa/VisaServiceActionsClient';
+import { VisaSubNav } from '@/components/module/visa/VisaSubNav';
 import SearchFilter from '@/components/shared/SearchFilter';
 import SelectFilter from '@/components/shared/SelectFilter';
 import TablePagination from '@/components/shared/TablePagination';
@@ -46,7 +47,9 @@ export default async function AdminVisaServicesListPage({
   const meta = res?.meta || { page: 1, limit: 10, total: 0, totalPages: 1 };
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6">
+      <VisaSubNav />
+
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Visa & Permit Services</h1>

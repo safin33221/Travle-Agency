@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { getAdminVisaInquiriesAction } from '@/services/visa/visa.service';
 import { VisaCategoryBadge } from '@/components/module/visa/VisaStatusBadges';
+import { VisaSubNav } from '@/components/module/visa/VisaSubNav';
 import SearchFilter from '@/components/shared/SearchFilter';
 import SelectFilter from '@/components/shared/SelectFilter';
 import TablePagination from '@/components/shared/TablePagination';
@@ -32,7 +33,9 @@ export default async function AdminVisaInquiriesPage({
   const meta = res?.meta || { page: 1, limit: 10, total: 0, totalPages: 1 };
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6">
+      <VisaSubNav />
+
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Visa & Immigration Inquiries</h1>
@@ -120,8 +123,14 @@ export default async function AdminVisaInquiriesPage({
                           {inq.lead.stage}
                         </span>
                         {inq.lead.trackingCode && (
-                          <div className="mt-1 font-mono text-slate-500">
-                            Ref: {inq.lead.trackingCode}
+                          <div className="mt-1">
+                            <Link
+                              href={`/track-status?code=${inq.lead.trackingCode}`}
+                              target="_blank"
+                              className="font-mono font-semibold text-sky-700 hover:underline"
+                            >
+                              #{inq.lead.trackingCode} ↗
+                            </Link>
                           </div>
                         )}
                       </div>
