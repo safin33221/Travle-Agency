@@ -14,18 +14,143 @@ import {
   ServiceCategory,
 } from '@/types/api';
 
-function normalizeMilestones(raw: unknown): LeadMilestoneItem[] {
-  if (!Array.isArray(raw)) return [];
+const DEFAULT_SECTOR_DOCUMENTS: Record<ServiceCategory, string[]> = {
+  TOUR: [
+    'Passport Copy (Minimum 6 Months Validity)',
+    'Recent Passport Size Photograph (White Background)',
+    'Bank Statement (Last 6 Months) & Solvency Certificate',
+    'NOC / Leave Approval Letter or Trade License Copy',
+    'National ID (NID) Copy',
+  ],
+  HAJJ_UMRAH: [
+    'Original Passport (Minimum 6 Months Validity)',
+    'National ID (NID) or Birth Certificate Copy',
+    'Passport Size Photo (White Background)',
+    'Saudi Visa Bio (Biometric) Confirmation Slip',
+    'Meningitis & Seasonal Flu Vaccination Card',
+    'Pre-Registration (PID) / Nusuk Reference (For Hajj)',
+  ],
+  WORK_PERMIT: [
+    'Original Passport (Minimum 12 Months Validity)',
+    'Police Clearance Certificate (PCC)',
+    'GAMCA / Wafid Medical Fit Report',
+    'Passport Size Photos (White Background, Matte Paper)',
+    'National ID (NID) Copy & Nominee NID',
+    'Skill / Experience / Trade Certificate (If Applicable)',
+    'BMET Registration & PDO Certificate',
+  ],
+  STUDENT_VISA: [
+    'Valid Passport Copy',
+    'SSC & HSC Marksheets and Certificates',
+    'Bachelor / Master Transcript & Provisional Certificate',
+    'IELTS / PTE / Duolingo / MOI Score Report',
+    'Updated Academic CV / Resume',
+    'Statement of Purpose (SOP) / Study Plan',
+    'Two Academic / Professional Reference Letters (LOR)',
+    'Sponsor Bank Solvency & 6 Months Bank Statement',
+  ],
+};
+
+const DEFAULT_SECTOR_MILESTONES: Record<
+  ServiceCategory,
+  Array<{ key: string; title: string }>
+> = {
+  TOUR: [
+    { key: 'INQUIRY_LOGGED', title: 'Inquiry & Travel Preferences Recorded' },
+    { key: 'PACKAGE_QUOTED', title: 'Approved Package Quotation Issued' },
+    { key: 'DOCS_COLLECTED', title: 'Passport & Visa Documents Collected' },
+    { key: 'VISA_OR_TICKET', title: 'Visa & Air Ticket / Hotel Confirmed' },
+    { key: 'READY_TO_TRAVEL', title: 'Final Travel Voucher & Briefing Ready' },
+  ],
+  HAJJ_UMRAH: [
+    { key: 'PRE_REGISTRATION', title: 'File Opened & Pre-Registration / Booking' },
+    { key: 'BIOMETRIC_VACCINE', title: 'Saudi Biometric & Vaccine Verification' },
+    { key: 'NUSUK_MOFA_VISA', title: 'Nusuk / MOFA & Umrah/Hajj Visa Issued' },
+    { key: 'HOTEL_TRANSPORT', title: 'Makkah/Madinah Hotel & Flight Assigned' },
+    { key: 'MOALLEM_BRIEFING', title: 'Training, Ihram Kit & Ready for Flight' },
+  ],
+  WORK_PERMIT: [
+    { key: 'FILE_OPENED', title: 'Passport Received & Job Category Selected' },
+    { key: 'MEDICAL_PCC', title: 'Police Clearance & GAMCA Medical Completed' },
+    { key: 'OFFER_PERMIT', title: 'Work Permit / Calling / Demand Approved' },
+    { key: 'EMBASSY_STAMPING', title: 'Mofa & Embassy Visa Stamping Done' },
+    { key: 'BMET_MANPOWER', title: 'BMET Smart Card / Manpower Clearance' },
+    { key: 'FLIGHT_READY', title: 'Air Ticket Issued & Ready for Departure' },
+  ],
+  STUDENT_VISA: [
+    { key: 'PROFILE_ASSESSED', title: 'Academic Profile & University Shortlisted' },
+    { key: 'OFFER_APPLIED', title: 'Application Submitted for Offer Letter' },
+    { key: 'OFFER_RECEIVED', title: 'Conditional / Unconditional Offer Received' },
+    { key: 'TUITION_CAS_I20', title: 'Tuition Deposit Paid & CAS / I-20 / COE Issued' },
+    { key: 'VISA_BIOMETRICS', title: 'Financial File, SOP & Embassy Biometrics Done' },
+    { key: 'VISA_DECISION', title: 'Student Visa Approved & Pre-Departure Briefing' },
+  ],
+};
+
+function parseChecklistItem(item: unknown): Record<string, unknown> | string {
+  if (typeof item === 'string') {
+    const trimmed = item.trim();
+    if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+      try {
+        const parsed = JSON.parse(trimmed);
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          return parsed as Record<string, unknown>;
+        }
+      } catch {
+        // Not JSON, treat as plain title string
+      }
+    }
+    return trimmed;
+  }
+  if (item && typeof item === 'object' && !Array.isArray(item)) {
+    return item as Record<string, unknown>;
+  }
+  return {};
+}
+
+function isValidChecklistEntry(item: unknown): boolean {
+  const parsed = parseChecklistItem(item);
+  if (typeof parsed === 'string') return parsed.trim().length > 0;
+  return Boolean(
+    (typeof parsed.title === 'string' && parsed.title.trim()) ||
+      (typeof parsed.label === 'string' && parsed.label.trim()) ||
+      (typeof parsed.name === 'string' && parsed.name.trim()),
+  );
+}
+
+function normalizeMilestones(
+  raw: unknown,
+  category: ServiceCategory = 'TOUR',
+): LeadMilestoneItem[] {
+  const sectorDefaults =
+    DEFAULT_SECTOR_MILESTONES[category] ?? DEFAULT_SECTOR_MILESTONES.TOUR;
+
+  if (
+    !Array.isArray(raw) ||
+    raw.length === 0 ||
+    !raw.some(isValidChecklistEntry)
+  ) {
+    return sectorDefaults.map((m, idx) => ({
+      key: m.key,
+      title: m.title,
+      status: idx === 0 ? 'DONE' : 'PENDING',
+    }));
+  }
+
   return raw.map((item, idx) => {
-    if (typeof item === 'string') {
+    const fallback = sectorDefaults[idx];
+    const parsed = parseChecklistItem(item);
+    if (typeof parsed === 'string') {
       return {
-        key: `MILESTONE_${idx + 1}`,
-        title: item,
+        key: fallback?.key ?? `MILESTONE_${idx + 1}`,
+        title: parsed || fallback?.title || `Step ${idx + 1}`,
         status: 'PENDING',
       };
     }
-    const obj = (item && typeof item === 'object' ? item : {}) as Record<string, unknown>;
+
+    const obj = parsed;
     const rawStatus = typeof obj.status === 'string' ? obj.status.toUpperCase() : '';
+    const hasExplicitStatus = Boolean(rawStatus) || obj.completed !== undefined || obj.done !== undefined;
     const status: LeadMilestoneItem['status'] =
       rawStatus === 'DONE' ||
       rawStatus === 'COMPLETED' ||
@@ -34,9 +159,15 @@ function normalizeMilestones(raw: unknown): LeadMilestoneItem[] {
         ? 'DONE'
         : rawStatus === 'IN_PROGRESS'
           ? 'IN_PROGRESS'
-          : 'PENDING';
+          : !hasExplicitStatus && idx === 0
+            ? 'DONE'
+            : 'PENDING';
+
     return {
-      key: typeof obj.key === 'string' && obj.key ? obj.key : `MILESTONE_${idx + 1}`,
+      key:
+        typeof obj.key === 'string' && obj.key
+          ? obj.key
+          : fallback?.key ?? `MILESTONE_${idx + 1}`,
       title:
         typeof obj.title === 'string' && obj.title
           ? obj.title
@@ -44,25 +175,46 @@ function normalizeMilestones(raw: unknown): LeadMilestoneItem[] {
             ? obj.label
             : typeof obj.name === 'string' && obj.name
               ? obj.name
-              : `Step ${idx + 1}`,
+              : fallback?.title ?? `Step ${idx + 1}`,
       status,
       completedAt: typeof obj.completedAt === 'string' ? obj.completedAt : undefined,
     };
   });
 }
 
-function normalizeDocuments(raw: unknown): LeadDocumentChecklistItem[] {
-  if (!Array.isArray(raw)) return [];
+function normalizeDocuments(
+  raw: unknown,
+  category: ServiceCategory = 'TOUR',
+): LeadDocumentChecklistItem[] {
+  const sectorDefaults =
+    DEFAULT_SECTOR_DOCUMENTS[category] ?? DEFAULT_SECTOR_DOCUMENTS.TOUR;
+
+  if (
+    !Array.isArray(raw) ||
+    raw.length === 0 ||
+    !raw.some(isValidChecklistEntry)
+  ) {
+    return sectorDefaults.map((title, idx) => ({
+      key: `DOC_${idx + 1}`,
+      title,
+      required: true,
+      status: 'PENDING',
+    }));
+  }
+
   return raw.map((item, idx) => {
-    if (typeof item === 'string') {
+    const fallbackTitle = sectorDefaults[idx];
+    const parsed = parseChecklistItem(item);
+    if (typeof parsed === 'string') {
       return {
         key: `DOC_${idx + 1}`,
-        title: item,
+        title: parsed || fallbackTitle || `Document ${idx + 1}`,
         required: true,
         status: 'PENDING',
       };
     }
-    const obj = (item && typeof item === 'object' ? item : {}) as Record<string, unknown>;
+
+    const obj = parsed;
     const rawStatus = typeof obj.status === 'string' ? obj.status.toUpperCase() : '';
     const status: LeadDocumentChecklistItem['status'] =
       rawStatus === 'VERIFIED' || rawStatus === 'APPROVED'
@@ -81,7 +233,7 @@ function normalizeDocuments(raw: unknown): LeadDocumentChecklistItem[] {
             ? obj.label
             : typeof obj.name === 'string' && obj.name
               ? obj.name
-              : `Document ${idx + 1}`,
+              : fallbackTitle ?? `Document ${idx + 1}`,
       required: typeof obj.required === 'boolean' ? obj.required : true,
       status,
       note: typeof obj.note === 'string' ? obj.note : undefined,
@@ -95,17 +247,18 @@ function normalizeLead(raw: unknown): Lead {
   const unwrapped = (
     'data' in obj && obj.data && typeof obj.data === 'object' ? obj.data : obj
   ) as Record<string, unknown>;
+  const category = (
+    typeof unwrapped.category === 'string' ? unwrapped.category : 'TOUR'
+  ) as ServiceCategory;
   return {
     ...(unwrapped as unknown as Lead),
     stage: (typeof unwrapped.stage === 'string' ? unwrapped.stage : 'NEW') as LeadStage,
     source: (typeof unwrapped.source === 'string' ? unwrapped.source : 'OTHER') as LeadSource,
-    category: (
-      typeof unwrapped.category === 'string' ? unwrapped.category : 'TOUR'
-    ) as ServiceCategory,
+    category,
     eligibilityStatus:
       typeof unwrapped.eligibilityStatus === 'string' ? unwrapped.eligibilityStatus : undefined,
-    documentChecklist: normalizeDocuments(unwrapped.documentChecklist),
-    milestoneChecklist: normalizeMilestones(unwrapped.milestoneChecklist),
+    documentChecklist: normalizeDocuments(unwrapped.documentChecklist, category),
+    milestoneChecklist: normalizeMilestones(unwrapped.milestoneChecklist, category),
     notes: Array.isArray(unwrapped.notes) ? unwrapped.notes : [],
     followUpTasks: Array.isArray(unwrapped.followUpTasks) ? unwrapped.followUpTasks : [],
     quotations: Array.isArray(unwrapped.quotations) ? unwrapped.quotations : [],
@@ -337,9 +490,21 @@ export async function updateLeadChecklists(
     milestoneChecklist?: LeadMilestoneItem[];
   },
 ): Promise<{ success: boolean; message: string }> {
+  const serializedPayload: Record<string, unknown> = {};
+  if (payload.documentChecklist) {
+    serializedPayload.documentChecklist = payload.documentChecklist.map((d) =>
+      JSON.stringify(d),
+    );
+  }
+  if (payload.milestoneChecklist) {
+    serializedPayload.milestoneChecklist = payload.milestoneChecklist.map((m) =>
+      JSON.stringify(m),
+    );
+  }
+
   const res = await serverFetch.patch(`/leads/${leadId}`, {
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(serializedPayload),
   });
 
   const body = await res.json().catch(() => null);
@@ -352,6 +517,7 @@ export async function updateLeadChecklists(
 
   revalidatePath(`/dashboard/leads/${leadId}`);
   revalidatePath('/dashboard/leads');
+  revalidatePath('/track-status');
 
   return {
     success: true,
@@ -431,15 +597,22 @@ export async function trackPublicFileStatus(trackingCode: string): Promise<{
   }
 
   const unwrapped = body.data ?? body;
+  const category = unwrapped.category ?? 'TOUR';
 
   return {
     success: true,
     data: {
       ...unwrapped,
       stage: unwrapped.stage ?? 'NEW',
-      category: unwrapped.category ?? 'TOUR',
-      milestoneChecklist: normalizeMilestones(unwrapped.milestoneChecklist),
-      documentChecklist: normalizeDocuments(unwrapped.documentChecklist),
+      category,
+      milestoneChecklist: normalizeMilestones(
+        unwrapped.milestoneChecklist,
+        category,
+      ),
+      documentChecklist: normalizeDocuments(
+        unwrapped.documentChecklist,
+        category,
+      ),
     },
   };
 }
