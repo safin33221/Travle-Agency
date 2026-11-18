@@ -42,12 +42,12 @@ export default async function QuotationDetailPage({
       </ManagementPageHeader>
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between border-b border-slate-100">
+        <CardHeader className="flex flex-row items-center justify-between border-b border-stone-100">
           <div>
             <CardTitle className="text-lg">
               Itemized Pricing Breakdown (Server-Verified)
             </CardTitle>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-stone-500 mt-1">
               Valid Until: {formatDate(quotation.validUntil)}
             </p>
           </div>
@@ -55,7 +55,7 @@ export default async function QuotationDetailPage({
         </CardHeader>
         <CardContent className="pt-6 space-y-6">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-slate-200 text-xs uppercase text-slate-500">
+            <thead className="border-b border-stone-200 text-xs uppercase text-stone-500">
               <tr>
                 <th className="py-2.5">Description</th>
                 <th className="py-2.5 text-right">Qty</th>
@@ -63,17 +63,17 @@ export default async function QuotationDetailPage({
                 <th className="py-2.5 text-right">Line Total</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-stone-100">
               {quotation.items.map((item, idx) => (
                 <tr key={item.id || idx}>
                   <td className="py-3 font-medium text-slate-900">
                     {item.label}
                   </td>
-                  <td className="py-3 text-right">{item.quantity}</td>
-                  <td className="py-3 text-right">
+                  <td className="py-3 text-right tabular-nums">{item.quantity}</td>
+                  <td className="py-3 text-right tabular-nums">
                     {formatCurrency(item.unitPrice, quotation.currency)}
                   </td>
-                  <td className="py-3 text-right font-semibold">
+                  <td className="py-3 text-right font-semibold tabular-nums">
                     {formatCurrency(item.total, quotation.currency)}
                   </td>
                 </tr>
@@ -82,30 +82,30 @@ export default async function QuotationDetailPage({
           </table>
 
           <div className="flex justify-end">
-            <div className="w-full max-w-xs space-y-2 text-sm border-t border-slate-200 pt-4">
+            <div className="w-full max-w-xs space-y-2 text-sm border-t border-stone-200 pt-4">
               <div className="flex justify-between">
-                <span className="text-slate-500">Subtotal:</span>
-                <span>
+                <span className="text-stone-500">Subtotal:</span>
+                <span className="tabular-nums">
                   {formatCurrency(quotation.subtotal, quotation.currency)}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Discount:</span>
-                <span>
+                <span className="text-stone-500">Discount:</span>
+                <span className="tabular-nums">
                   - {formatCurrency(quotation.discount, quotation.currency)}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">
+                <span className="text-stone-500">
                   Tax ({Number(quotation.taxRate)}%):
                 </span>
-                <span>
+                <span className="tabular-nums">
                   {formatCurrency(quotation.taxAmount, quotation.currency)}
                 </span>
               </div>
-              <div className="flex justify-between border-t border-slate-200 pt-2 text-base font-extrabold text-slate-900">
+              <div className="flex justify-between border-t border-stone-200 pt-2 text-base font-extrabold text-slate-900">
                 <span>Grand Total:</span>
-                <span>
+                <span className="tabular-nums">
                   {formatCurrency(quotation.grandTotal, quotation.currency)}
                 </span>
               </div>
@@ -113,7 +113,7 @@ export default async function QuotationDetailPage({
           </div>
 
           {quotation.terms && (
-            <div className="rounded-lg bg-slate-50 p-4 text-xs text-slate-600 whitespace-pre-line">
+            <div className="rounded-xl border border-stone-200/80 bg-[#FAF9F6] p-4 text-xs text-stone-600 whitespace-pre-line">
               <strong className="block text-slate-800 mb-1">
                 Terms & Conditions Snapshot:
               </strong>

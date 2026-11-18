@@ -51,17 +51,17 @@ export default async function AdminVisaServicesListPage({
       <VisaSubNav />
 
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold text-slate-900">Visa & Permit Services</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Visa & Permit Services</h1>
         <Link
           href="/dashboard/visa-immigration/services/create"
-          className="rounded-lg bg-blue-600 px-4 py-2 text-xs font-semibold text-white hover:bg-blue-700"
+          className="rounded-xl bg-teal-700 px-4 py-2 text-xs font-semibold text-white hover:bg-teal-800 transition shadow-xs"
         >
           + Create Visa Service
         </Link>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex flex-col gap-3 rounded-2xl border border-stone-200/90 bg-white p-4 shadow-2xs lg:flex-row lg:items-center lg:justify-between">
         <div className="flex-1">
           <SearchFilter placeholder="Search by service title, slug, or description..." />
         </div>
@@ -101,9 +101,9 @@ export default async function AdminVisaServicesListPage({
       </div>
 
       {/* Table */}
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-        <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
-          <thead className="bg-slate-50 text-xs font-semibold uppercase text-slate-600">
+      <div className="overflow-hidden rounded-2xl border border-stone-200/90 bg-white shadow-2xs">
+        <table className="min-w-full divide-y divide-stone-200 text-left text-sm">
+          <thead className="bg-[#FAF9F6] text-[11px] font-bold uppercase tracking-wider text-stone-500">
             <tr>
               <th className="px-4 py-3">Service & Country</th>
               <th className="px-4 py-3">Category</th>
@@ -113,20 +113,20 @@ export default async function AdminVisaServicesListPage({
               <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-stone-100">
             {services.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-sm text-slate-500">
+                <td colSpan={6} className="px-4 py-8 text-center text-sm text-stone-500">
                   No visa services found.
                 </td>
               </tr>
             ) : (
               services.map((svc: VisaService) => (
-                <tr key={svc.id} className="hover:bg-slate-50/70">
+                <tr key={svc.id} className="hover:bg-[#FAF9F6]/70">
                   <td className="px-4 py-3">
                     <div className="font-semibold text-slate-900">{svc.title}</div>
-                    <div className="mt-0.5 text-xs text-slate-500">
-                      {svc.country?.flagEmoji} {svc.country?.name} • /{svc.slug}
+                    <div className="mt-0.5 text-xs text-stone-500">
+                      {svc.country?.name} • /{svc.slug}
                     </div>
                   </td>
                   <td className="px-4 py-3">
@@ -141,13 +141,13 @@ export default async function AdminVisaServicesListPage({
                   <td className="px-4 py-3">
                     <AgencyServiceStatusBadge status={svc.serviceStatus} />
                   </td>
-                  <td className="px-4 py-3 text-xs text-slate-600">
-                    <div>
+                  <td className="px-4 py-3 text-xs text-stone-600 tabular-nums">
+                    <div className="font-semibold text-slate-800">
                       {svc.agencyServiceFee
                         ? `${svc.currency} ${Number(svc.agencyServiceFee).toLocaleString()}`
                         : 'TBD'}
                     </div>
-                    <div className="text-slate-400">
+                    <div className="text-stone-400">
                       {svc.requirements?.length ?? 0} Docs • {svc._count?.inquiries ?? 0} Inquiries
                     </div>
                   </td>
@@ -155,7 +155,7 @@ export default async function AdminVisaServicesListPage({
                     <div className="flex flex-col items-end gap-1.5">
                       <Link
                         href={`/dashboard/visa-immigration/services/${svc.id}`}
-                        className="text-xs font-bold text-blue-600 hover:underline"
+                        className="text-xs font-semibold text-teal-700 hover:underline"
                       >
                         Edit Details & Checklist
                       </Link>

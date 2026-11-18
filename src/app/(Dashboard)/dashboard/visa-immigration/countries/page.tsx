@@ -37,17 +37,17 @@ export default async function AdminCountriesListPage({
       <VisaSubNav />
 
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold text-slate-900">Destination Countries</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Destination Countries</h1>
         <Link
           href="/dashboard/visa-immigration/countries/create"
-          className="rounded-lg bg-blue-600 px-4 py-2 text-xs font-semibold text-white hover:bg-blue-700"
+          className="rounded-xl bg-teal-700 px-4 py-2 text-xs font-semibold text-white hover:bg-teal-800 transition shadow-xs"
         >
           + Add Country
         </Link>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 rounded-2xl border border-stone-200/90 bg-white p-4 shadow-2xs sm:flex-row sm:items-center sm:justify-between">
         <div className="flex-1">
           <SearchFilter placeholder="Search by country name, ISO code, or slug..." />
         </div>
@@ -66,9 +66,9 @@ export default async function AdminCountriesListPage({
       </div>
 
       {/* Table */}
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-        <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
-          <thead className="bg-slate-50 text-xs font-semibold uppercase text-slate-600">
+      <div className="overflow-hidden rounded-2xl border border-stone-200/90 bg-white shadow-2xs">
+        <table className="min-w-full divide-y divide-stone-200 text-left text-sm">
+          <thead className="bg-[#FAF9F6] text-[11px] font-bold uppercase tracking-wider text-stone-500">
             <tr>
               <th className="px-4 py-3">Country</th>
               <th className="px-4 py-3">ISO / Slug</th>
@@ -78,46 +78,48 @@ export default async function AdminCountriesListPage({
               <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-stone-100">
             {countries.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-sm text-slate-500">
+                <td colSpan={6} className="px-4 py-8 text-center text-sm text-stone-500">
                   No countries found.
                 </td>
               </tr>
             ) : (
               countries.map((country: Country) => (
-                <tr key={country.id} className="hover:bg-slate-50/70">
+                <tr key={country.id} className="hover:bg-[#FAF9F6]/70">
                   <td className="px-4 py-3 font-medium text-slate-900">
                     <div className="flex items-center gap-2.5">
-                      <span className="text-xl">{country.flagEmoji || '🌍'}</span>
+                      <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-stone-200 bg-[#FAF9F6] text-xs font-bold uppercase text-stone-700">
+                        {country.isoCode || country.name.slice(0, 2)}
+                      </span>
                       <div>
                         <p className="font-semibold">{country.name}</p>
                         {country.shortIntro && (
-                          <p className="line-clamp-1 max-w-xs text-xs text-slate-500">
+                          <p className="line-clamp-1 max-w-xs text-xs text-stone-500">
                             {country.shortIntro}
                           </p>
                         )}
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-xs text-slate-600">
-                    <span className="font-mono font-semibold">{country.isoCode}</span>
-                    <div className="text-slate-400">/{country.slug}</div>
+                  <td className="px-4 py-3 text-xs text-stone-600">
+                    <span className="font-mono font-semibold text-slate-800">{country.isoCode}</span>
+                    <div className="text-stone-400">/{country.slug}</div>
                   </td>
                   <td className="px-4 py-3">
                     <CountryCoverageBadge status={country.coverageStatus} />
                   </td>
                   <td className="px-4 py-3 text-xs">
                     {country.isFeatured ? (
-                      <span className="rounded bg-amber-50 px-2 py-0.5 font-semibold text-amber-700">
+                      <span className="rounded-lg border border-amber-200 bg-amber-50/70 px-2 py-0.5 font-semibold text-amber-800">
                         Featured (#{country.displayOrder})
                       </span>
                     ) : (
-                      <span className="text-slate-400">Standard (#{country.displayOrder})</span>
+                      <span className="text-stone-400">Standard (#{country.displayOrder})</span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-xs text-slate-600">
+                  <td className="px-4 py-3 text-xs text-stone-600 tabular-nums">
                     <span>{country._count?.visaServices ?? 0} Services</span>
                     <span className="mx-1.5">•</span>
                     <span>{country._count?.visaInquiries ?? 0} Inquiries</span>
@@ -126,7 +128,7 @@ export default async function AdminCountriesListPage({
                     <div className="flex items-center justify-end gap-3">
                       <Link
                         href={`/dashboard/visa-immigration/countries/${country.id}`}
-                        className="text-xs font-semibold text-blue-600 hover:underline"
+                        className="rounded-lg border border-stone-300 bg-white px-2.5 py-1 text-xs font-semibold text-slate-800 hover:border-teal-600 hover:text-teal-800 transition"
                       >
                         Edit
                       </Link>

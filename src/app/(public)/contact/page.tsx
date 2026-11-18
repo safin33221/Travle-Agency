@@ -3,6 +3,15 @@
 import { Suspense, useState, useTransition } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import {
+  Check,
+  CheckCircle2,
+  Copy,
+  Mail,
+  MessageSquare,
+  Phone,
+  Search,
+} from 'lucide-react';
 import { brandConfig, SECTOR_CATALOG } from '@/config/brand.config';
 import { useBrand } from '@/components/providers/BrandProvider';
 import { Card } from '@/components/ui/card';
@@ -100,7 +109,7 @@ function ContactFormContent() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-6">
-        <span className="inline-block rounded-full bg-sky-100 px-3 py-0.5 text-xs font-bold text-sky-800">
+        <span className="inline-block rounded-full border border-teal-200 bg-teal-50 px-3 py-0.5 text-xs font-bold text-teal-800">
           Free • Instant Tracking ID
         </span>
         <h1 className="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
@@ -111,11 +120,12 @@ function ContactFormContent() {
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2">
           {result ? (
-            <Card className="p-6 sm:p-8 border-emerald-300 bg-emerald-50/40 space-y-5">
-              <div className="flex flex-wrap items-center justify-between gap-4 border-b border-emerald-200 pb-4">
+            <Card className="p-6 sm:p-8 border-teal-300 bg-teal-50/40 space-y-5">
+              <div className="flex flex-wrap items-center justify-between gap-4 border-b border-teal-200 pb-4">
                 <div>
-                  <span className="text-xs font-bold uppercase text-emerald-700">
-                    ✓ Inquiry Recorded
+                  <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase text-teal-800">
+                    <CheckCircle2 className="h-4 w-4 text-teal-700" />
+                    Inquiry Recorded
                   </span>
                   <div className="mt-1 flex flex-wrap items-center gap-2.5">
                     <h2 className="text-2xl font-extrabold text-slate-900 font-mono">
@@ -130,23 +140,33 @@ function ContactFormContent() {
                           setTimeout(() => setCopiedCode(false), 2500);
                         }
                       }}
-                      className="rounded-lg border border-emerald-300 bg-white px-2.5 py-1 text-xs font-semibold text-emerald-800 hover:bg-emerald-50"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-teal-300 bg-white px-2.5 py-1 text-xs font-semibold text-teal-900 hover:bg-teal-50"
                     >
-                      {copiedCode ? '✓ Copied!' : '📋 Copy Code'}
+                      {copiedCode ? (
+                        <>
+                          <Check className="h-3.5 w-3.5 text-teal-700" />
+                          Copied
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-3.5 w-3.5" />
+                          Copy Code
+                        </>
+                      )}
                     </button>
                   </div>
                 </div>
-                <span className="rounded-full bg-emerald-600 px-4 py-1.5 text-xs font-bold text-white">
+                <span className="rounded-full bg-teal-700 px-4 py-1.5 text-xs font-bold text-white">
                   Match Score: {result.eligibility?.score ?? 70}% (
                   {String(result.eligibility?.status || 'CONDITIONAL_MATCH').replace(/_/g, ' ')})
                 </span>
               </div>
 
-              <div className="rounded-lg bg-white p-4 border border-emerald-200 space-y-2">
+              <div className="rounded-xl bg-white p-4 border border-teal-200 space-y-2">
                 <p className="text-sm font-bold text-slate-900">
                   {result.eligibility?.summary}
                 </p>
-                <ul className="space-y-1 text-xs text-slate-600">
+                <ul className="space-y-1 text-xs text-stone-600">
                   {(result.eligibility?.reasons || []).map((r, i) => (
                     <li key={i}>• {r}</li>
                   ))}
@@ -155,8 +175,9 @@ function ContactFormContent() {
 
               <div className="flex flex-wrap items-center gap-3 pt-1">
                 <Link href={`/track-status?code=${result.trackingCode}`}>
-                  <Button variant="secondary">
-                    🔍 Track My File ({result.trackingCode}) →
+                  <Button variant="secondary" className="gap-1.5">
+                    <Search className="h-3.5 w-3.5" />
+                    Track My File ({result.trackingCode}) →
                   </Button>
                 </Link>
                 <Button
@@ -172,7 +193,7 @@ function ContactFormContent() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Step 1: Choose Sector */}
                 <div>
-                  <label className="block text-xs font-bold uppercase text-slate-500 mb-2">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">
                     1. Select Service Category
                   </label>
                   <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
@@ -181,14 +202,14 @@ function ContactFormContent() {
                         key={s.key}
                         type="button"
                         onClick={() => setCategory(s.key)}
-                        className={`rounded-lg border p-3 text-left transition-all ${
+                        className={`rounded-xl border p-3 text-left transition-all ${
                           category === s.key
-                            ? 'border-sky-600 bg-sky-50 text-sky-900 ring-2 ring-sky-500/20'
-                            : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                            ? 'border-teal-700 bg-teal-50/70 text-teal-950 ring-2 ring-teal-700/15'
+                            : 'border-stone-200 bg-white text-slate-700 hover:bg-[#FAF9F6]'
                         }`}
                       >
                         <p className="text-xs font-bold">{s.shortLabel}</p>
-                        <p className="mt-0.5 text-[11px] text-slate-500 line-clamp-1">
+                        <p className="mt-0.5 text-[11px] text-stone-500 line-clamp-1">
                           {s.label}
                         </p>
                       </button>
@@ -253,8 +274,8 @@ function ContactFormContent() {
 
                 {/* Step 3: Dynamic Sector-Specific Eligibility Inputs */}
                 {category === 'WORK_PERMIT' && (
-                  <div className="rounded-xl border border-amber-200 bg-amber-50/40 p-4 space-y-4">
-                    <p className="text-xs font-bold uppercase text-amber-800">
+                  <div className="rounded-xl border border-stone-200 bg-[#FAF9F6] p-4 space-y-4">
+                    <p className="text-xs font-bold uppercase text-slate-800">
                       Work Permit Pre-Eligibility Check
                     </p>
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -297,8 +318,8 @@ function ContactFormContent() {
                 )}
 
                 {category === 'STUDENT_VISA' && (
-                  <div className="rounded-xl border border-purple-200 bg-purple-50/40 p-4 space-y-4">
-                    <p className="text-xs font-bold uppercase text-purple-800">
+                  <div className="rounded-xl border border-stone-200 bg-[#FAF9F6] p-4 space-y-4">
+                    <p className="text-xs font-bold uppercase text-slate-800">
                       Academic & IELTS Eligibility Profile
                     </p>
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -342,8 +363,8 @@ function ContactFormContent() {
                 )}
 
                 {category === 'HAJJ_UMRAH' && (
-                  <div className="rounded-xl border border-emerald-200 bg-emerald-50/40 p-4 space-y-3">
-                    <p className="text-xs font-bold uppercase text-emerald-800">
+                  <div className="rounded-xl border border-stone-200 bg-[#FAF9F6] p-4 space-y-3">
+                    <p className="text-xs font-bold uppercase text-slate-800">
                       Hajj & Umrah Pilgrim Readiness
                     </p>
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -384,12 +405,12 @@ function ContactFormContent() {
                     value={requirements}
                     onChange={(e) => setRequirements(e.target.value)}
                     placeholder="Mention preferred intake, work experience, room sharing preference, or number of family members..."
-                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-sky-600 focus:outline-none"
+                    className="w-full rounded-xl border border-stone-300 px-3 py-2 text-sm focus:border-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-700/15"
                   />
                 </div>
 
                 {error && (
-                  <p className="rounded-lg bg-rose-50 p-3 text-xs font-medium text-rose-700">
+                  <p className="rounded-xl bg-rose-50 p-3 text-xs font-medium text-rose-700">
                     {error}
                   </p>
                 )}
@@ -411,45 +432,48 @@ function ContactFormContent() {
 
         {/* Contact & Live Tracker Sidebar */}
         <div className="space-y-5">
-          <Card className="p-6 bg-slate-900 text-white">
-            <h3 className="text-sm font-bold uppercase text-sky-400">
+          <Card className="p-6 bg-slate-900 text-white border-slate-800">
+            <h3 className="text-sm font-bold uppercase text-teal-300">
               Already Applied With Us?
             </h3>
             <p className="mt-2 text-xs text-slate-300 leading-relaxed">
               Check your Passport, GAMCA Medical, Offer Letter, BMET Manpower, or Umrah Visa progress 24/7 using your Tracking Code.
             </p>
             <Link href="/track-status" className="mt-4 block">
-              <Button variant="secondary" size="sm" className="w-full">
-                🔍 Track Application Status
+              <Button variant="secondary" size="sm" className="w-full gap-1.5">
+                <Search className="h-3.5 w-3.5" />
+                Track Application Status
               </Button>
             </Link>
           </Card>
 
           <Card className="p-6 space-y-3">
-            <h3 className="text-sm font-bold uppercase text-sky-600">
+            <h3 className="text-sm font-bold uppercase text-teal-700">
               Talk to a Counselor Directly
             </h3>
             <a
               href={`tel:${brand.phone.replace(/\s+/g, '')}`}
-              className="block text-lg font-bold text-slate-900 hover:text-sky-600"
+              className="inline-flex items-center gap-2 text-lg font-bold text-slate-900 hover:text-teal-700 transition"
             >
-              📞 {brand.phone}
+              <Phone className="h-4 w-4 text-teal-700" />
+              {brand.phone}
             </a>
             <a
               href={`https://wa.me/${cleanWhatsapp}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex w-full items-center justify-center rounded-lg bg-emerald-600 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-700 transition"
+              className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-teal-700 px-3 py-2 text-xs font-semibold text-white hover:bg-teal-800 transition"
             >
-              💬 Message on WhatsApp ↗
+              <MessageSquare className="h-3.5 w-3.5" />
+              Message on WhatsApp ↗
             </a>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-stone-500">
               Office Hours: {brand.officeHours}
             </p>
           </Card>
 
           <Card className="p-6">
-            <h3 className="text-sm font-bold uppercase text-sky-600">
+            <h3 className="text-sm font-bold uppercase text-teal-700">
               Visit Our Head Office
             </h3>
             <p className="mt-2 text-sm font-medium text-slate-900">
@@ -457,9 +481,10 @@ function ContactFormContent() {
             </p>
             <a
               href={`mailto:${brand.email}`}
-              className="mt-2 inline-block text-xs font-medium text-sky-700 hover:underline"
+              className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-teal-700 hover:underline"
             >
-              ✉️ {brand.email}
+              <Mail className="h-3.5 w-3.5" />
+              {brand.email}
             </a>
           </Card>
         </div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { ExternalLink, Plus } from 'lucide-react';
 import { getVisaAdminOverviewAction } from '@/services/visa/visa.service';
 import { VisaSubNav } from '@/components/module/visa/VisaSubNav';
 
@@ -59,29 +60,32 @@ export default async function VisaImmigrationOverviewPage() {
       <VisaSubNav />
 
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold text-slate-900">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
           Visa & Immigration Hub
         </h1>
 
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-2.5">
           <Link
             href="/visa-services"
             target="_blank"
-            className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-stone-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-stone-50 transition"
           >
-            View Public Visa Portal ↗
+            View Public Visa Portal
+            <ExternalLink className="h-3.5 w-3.5 text-stone-400" />
           </Link>
           <Link
             href="/dashboard/visa-immigration/countries/create"
-            className="rounded-lg border border-blue-600 bg-blue-50 px-4 py-2 text-xs font-semibold text-blue-700 hover:bg-blue-100"
+            className="inline-flex items-center gap-1 rounded-xl border border-teal-200 bg-teal-50/70 px-4 py-2 text-xs font-semibold text-teal-900 hover:bg-teal-100 transition"
           >
-            + Add Country
+            <Plus className="h-3.5 w-3.5" />
+            Add Country
           </Link>
           <Link
             href="/dashboard/visa-immigration/services/create"
-            className="rounded-lg bg-blue-600 px-4 py-2 text-xs font-semibold text-white hover:bg-blue-700"
+            className="inline-flex items-center gap-1 rounded-xl bg-teal-700 px-4 py-2 text-xs font-semibold text-white hover:bg-teal-800 transition shadow-xs"
           >
-            + Create Visa Service
+            <Plus className="h-3.5 w-3.5" />
+            Create Visa Service
           </Link>
         </div>
       </div>
@@ -92,12 +96,12 @@ export default async function VisaImmigrationOverviewPage() {
           <Link
             key={item.label}
             href={item.href}
-            className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-blue-300 hover:shadow"
+            className="rounded-2xl border border-stone-200/90 bg-white p-5 shadow-2xs transition hover:border-teal-300 hover:shadow-sm"
           >
-            <p className="text-xs font-medium uppercase tracking-wider text-slate-500">
+            <p className="text-xs font-semibold uppercase tracking-wider text-stone-500">
               {item.label}
             </p>
-            <p className="mt-2 text-3xl font-extrabold text-slate-900">{item.value}</p>
+            <p className="mt-2 text-3xl font-extrabold text-slate-900 tabular-nums">{item.value}</p>
           </Link>
         ))}
       </div>

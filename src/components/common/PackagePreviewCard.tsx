@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Check, Clock, MapPin } from 'lucide-react';
 import { TourPackage } from '@/types/api';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,7 +13,7 @@ export function PackagePreviewCard({ pkg }: { pkg: TourPackage }) {
   const specs = (pkg.structuredSpecs ?? {}) as Record<string, unknown>;
 
   return (
-    <Card className="flex flex-col justify-between p-6 hover:border-sky-400 hover:shadow-md transition-all">
+    <Card className="flex flex-col justify-between p-6 hover:border-teal-400 hover:shadow-md transition-all">
       <div>
         <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
           <span
@@ -21,21 +22,25 @@ export function PackagePreviewCard({ pkg }: { pkg: TourPackage }) {
             {sectorMeta.shortLabel}
           </span>
           <div className="flex items-center gap-1.5">
-            <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600">
-              ⏱ {pkg.durationDays} Days
+            <span className="inline-flex items-center gap-1 rounded-lg bg-[#FAF9F6] border border-stone-200 px-2 py-0.5 text-[11px] font-semibold text-stone-600">
+              <Clock className="h-3 w-3 text-stone-400" />
+              {pkg.durationDays} Days
             </span>
-            <Badge variant="info">📍 {pkg.destination}</Badge>
+            <Badge variant="info" className="gap-1">
+              <MapPin className="h-3 w-3" />
+              {pkg.destination}
+            </Badge>
           </div>
         </div>
 
         <h3 className="text-lg font-bold text-slate-900">{pkg.title}</h3>
-        <p className="mt-2 text-sm text-slate-600 line-clamp-3">
+        <p className="mt-2 text-sm text-stone-600 line-clamp-3">
           {pkg.description}
         </p>
 
         {/* Sector-Specific Highlights */}
         {category === 'HAJJ_UMRAH' && Boolean(specs.makkahHotel) && (
-          <div className="mt-3 rounded-lg bg-emerald-50/70 p-2.5 text-xs text-emerald-900 border border-emerald-200/70 space-y-1">
+          <div className="mt-3 rounded-xl bg-[#FAF9F6] p-3 text-xs text-slate-800 border border-stone-200/80 space-y-1">
             <p>
               <strong>Makkah Hotel:</strong> {String(specs.makkahHotel)}
             </p>
@@ -49,7 +54,7 @@ export function PackagePreviewCard({ pkg }: { pkg: TourPackage }) {
         )}
 
         {category === 'WORK_PERMIT' && Boolean(specs.monthlySalaryRange) && (
-          <div className="mt-3 rounded-lg bg-amber-50/70 p-2.5 text-xs text-amber-900 border border-amber-200/70 space-y-1">
+          <div className="mt-3 rounded-xl bg-[#FAF9F6] p-3 text-xs text-slate-800 border border-stone-200/80 space-y-1">
             <p>
               <strong>Salary:</strong> {String(specs.monthlySalaryRange)}
             </p>
@@ -65,7 +70,7 @@ export function PackagePreviewCard({ pkg }: { pkg: TourPackage }) {
         )}
 
         {category === 'STUDENT_VISA' && Boolean(specs.minIeltsRequired) && (
-          <div className="mt-3 rounded-lg bg-purple-50/70 p-2.5 text-xs text-purple-900 border border-purple-200/70 space-y-1">
+          <div className="mt-3 rounded-xl bg-[#FAF9F6] p-3 text-xs text-slate-800 border border-stone-200/80 space-y-1">
             <p>
               <strong>Requirement:</strong> {String(specs.minIeltsRequired)}
             </p>
@@ -80,16 +85,17 @@ export function PackagePreviewCard({ pkg }: { pkg: TourPackage }) {
 
         {pkg.inclusions?.length > 0 && (
           <div className="mt-4">
-            <p className="text-xs font-semibold uppercase text-slate-400 mb-1.5">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-stone-400 mb-1.5">
               Key Inclusions
             </p>
             <div className="flex flex-wrap gap-1.5">
               {pkg.inclusions.slice(0, 3).map((inc, idx) => (
                 <span
                   key={idx}
-                  className="rounded-md bg-slate-100 px-2 py-0.5 text-xs text-slate-700"
+                  className="inline-flex items-center gap-1 rounded-lg bg-[#FAF9F6] border border-stone-200/80 px-2 py-0.5 text-xs text-stone-700"
                 >
-                  ✓ {inc}
+                  <Check className="h-3 w-3 text-teal-700 shrink-0" />
+                  {inc}
                 </span>
               ))}
             </div>
@@ -97,14 +103,14 @@ export function PackagePreviewCard({ pkg }: { pkg: TourPackage }) {
         )}
       </div>
 
-      <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+      <div className="mt-6 pt-4 border-t border-stone-100 flex items-center justify-between">
         <div>
-          <span className="text-xs text-slate-400 block">
+          <span className="text-xs text-stone-400 block">
             {category === 'STUDENT_VISA'
               ? 'Service / File Fee'
               : 'Starting Package Price'}
           </span>
-          <span className="text-xl font-extrabold text-slate-900">
+          <span className="text-xl font-extrabold text-slate-900 tabular-nums">
             {formatCurrency(pkg.basePrice, pkg.currency)}
           </span>
         </div>

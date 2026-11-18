@@ -3,6 +3,22 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import {
+  Activity,
+  Compass,
+  ExternalLink,
+  FileCheck2,
+  Globe,
+  Inbox,
+  LayoutDashboard,
+  MapPin,
+  Plus,
+  SearchCheck,
+  Settings,
+  ShieldCheck,
+  UserCheck,
+  Users,
+} from 'lucide-react';
 import { DASHBOARD_NAV_ITEMS } from '@/lib/navItem.config';
 import { StaffRole } from '@/types/api';
 import { Logo } from '@/components/shared/Logo';
@@ -12,87 +28,27 @@ export function NavIcon({ name, className }: { name: string; className?: string 
   const cls = cn('h-4 w-4 shrink-0', className);
   switch (name) {
     case 'LayoutDashboard':
-      return (
-        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <rect x="3" y="3" width="7" height="9" rx="1" />
-          <rect x="14" y="3" width="7" height="5" rx="1" />
-          <rect x="14" y="12" width="7" height="9" rx="1" />
-          <rect x="3" y="16" width="7" height="5" rx="1" />
-        </svg>
-      );
+      return <LayoutDashboard className={cls} strokeWidth={1.8} />;
     case 'Users':
-      return (
-        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-          <circle cx="9" cy="7" r="4" />
-          <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-        </svg>
-      );
+      return <Users className={cls} strokeWidth={1.8} />;
     case 'Compass':
-      return (
-        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="12" cy="12" r="10" />
-          <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-        </svg>
-      );
+      return <Compass className={cls} strokeWidth={1.8} />;
     case 'Globe':
-      return (
-        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="12" cy="12" r="10" />
-          <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
-          <path d="M2 12h20" />
-        </svg>
-      );
+      return <Globe className={cls} strokeWidth={1.8} />;
     case 'MapPin':
-      return (
-        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-          <circle cx="12" cy="10" r="3" />
-        </svg>
-      );
+      return <MapPin className={cls} strokeWidth={1.8} />;
     case 'FileCheck2':
-      return (
-        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4" />
-          <path d="M14 2v4a2 2 0 0 0 2 2h4" />
-          <path d="m3 15 2 2 4-4" />
-        </svg>
-      );
+      return <FileCheck2 className={cls} strokeWidth={1.8} />;
     case 'Inbox':
-      return (
-        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <polyline points="22 12 16 12 14 15 10 15 8 12 2 12" />
-          <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />
-        </svg>
-      );
+      return <Inbox className={cls} strokeWidth={1.8} />;
     case 'ShieldCheck':
-      return (
-        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
-          <path d="m9 12 2 2 4-4" />
-        </svg>
-      );
+      return <ShieldCheck className={cls} strokeWidth={1.8} />;
     case 'Settings':
-      return (
-        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="12" cy="12" r="3" />
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-        </svg>
-      );
+      return <Settings className={cls} strokeWidth={1.8} />;
     case 'Activity':
-      return (
-        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-        </svg>
-      );
+      return <Activity className={cls} strokeWidth={1.8} />;
     default:
-      return (
-        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-          <circle cx="12" cy="7" r="4" />
-        </svg>
-      );
+      return <UserCheck className={cls} strokeWidth={1.8} />;
   }
 }
 
@@ -102,27 +58,23 @@ export function DashboardSidebar({ role }: { role: StaffRole }) {
     item.roles.includes(role),
   );
 
-  // Group items by their section
   const groups = Array.from(
     new Set(visibleItems.map((i) => i.group || 'General')),
   );
 
   return (
-    <aside className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 border-r border-slate-200 bg-white z-20">
-      <div className="flex h-16 items-center justify-between gap-2 px-5 border-b border-slate-200">
-        <Logo href="/dashboard" />
-        <span className="shrink-0 whitespace-nowrap rounded-md bg-sky-50 border border-sky-200 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-sky-700">
-          CRM
-        </span>
+    <aside className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 bg-slate-900 text-slate-300 z-20">
+      <div className="flex h-15 items-center justify-between gap-2 px-5 border-b border-slate-800">
+        <Logo href="/dashboard" inverted />
       </div>
 
-      {/* Quick Primary CTA */}
-      <div className="px-3 pt-4 pb-1">
+      <div className="px-3.5 pt-4 pb-2">
         <Link
           href="/dashboard/leads/create"
-          className="flex w-full items-center justify-center gap-2 rounded-lg bg-sky-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-sky-700"
+          className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-teal-700 px-3 py-2.5 text-xs font-semibold text-white shadow-2xs transition hover:bg-teal-600"
         >
-          <span>+ Record New Inquiry</span>
+          <Plus className="h-3.5 w-3.5" />
+          <span>New Customer Inquiry</span>
         </Link>
       </div>
 
@@ -132,8 +84,8 @@ export function DashboardSidebar({ role }: { role: StaffRole }) {
             (i) => (i.group || 'General') === groupName,
           );
           return (
-            <div key={groupName} className="space-y-1">
-              <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+            <div key={groupName} className="space-y-0.5">
+              <p className="px-3 text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
                 {groupName}
               </p>
               {groupItems.map((item) => {
@@ -148,18 +100,18 @@ export function DashboardSidebar({ role }: { role: StaffRole }) {
                     href={item.href}
                     title={item.description}
                     className={cn(
-                      'group flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-medium transition-all',
+                      'group flex items-center gap-3 rounded-xl px-3 py-2 text-xs font-medium transition-colors',
                       isActive
-                        ? 'bg-sky-50 text-sky-700 font-semibold border border-sky-200/80 shadow-xs'
-                        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
+                        ? 'bg-teal-700/25 text-teal-200 font-semibold'
+                        : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-100',
                     )}
                   >
                     <NavIcon
                       name={item.icon}
                       className={cn(
                         isActive
-                          ? 'text-sky-600'
-                          : 'text-slate-400 group-hover:text-slate-600',
+                          ? 'text-teal-300'
+                          : 'text-slate-500 group-hover:text-slate-300',
                       )}
                     />
                     <span className="truncate">{item.title}</span>
@@ -171,22 +123,28 @@ export function DashboardSidebar({ role }: { role: StaffRole }) {
         })}
       </div>
 
-      <div className="p-3 border-t border-slate-200 bg-slate-50/80 space-y-1.5">
+      <div className="p-3 border-t border-slate-800 space-y-1">
         <Link
           href="/track-status"
           target="_blank"
-          className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:border-sky-300 hover:text-sky-700 transition"
+          className="flex items-center justify-between rounded-xl px-3 py-2 text-xs font-medium text-slate-400 hover:bg-slate-800/80 hover:text-white transition"
         >
-          <span>🔍 Public File Tracker</span>
-          <span className="text-[10px] text-slate-400">↗</span>
+          <span className="flex items-center gap-2">
+            <SearchCheck className="h-3.5 w-3.5 text-teal-400" />
+            Public File Tracker
+          </span>
+          <ExternalLink className="h-3 w-3 text-slate-500" />
         </Link>
         <Link
           href="/"
           target="_blank"
-          className="flex items-center justify-between rounded-lg px-3 py-1.5 text-xs font-medium text-slate-500 hover:text-sky-600 transition"
+          className="flex items-center justify-between rounded-xl px-3 py-2 text-xs font-medium text-slate-400 hover:bg-slate-800/80 hover:text-white transition"
         >
-          <span>🌐 View Public Website</span>
-          <span className="text-[10px]">↗</span>
+          <span className="flex items-center gap-2">
+            <Globe className="h-3.5 w-3.5 text-slate-500" />
+            Public Website
+          </span>
+          <ExternalLink className="h-3 w-3 text-slate-500" />
         </Link>
       </div>
     </aside>

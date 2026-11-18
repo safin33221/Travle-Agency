@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { Menu, Plus, Search, X } from 'lucide-react';
 import { StaffUser } from '@/types/api';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import { LogoutBtn } from '@/components/shared/LogoutBtn';
@@ -21,7 +22,6 @@ export function DashboardNavbar({ user }: { user: StaffUser }) {
     item.roles.includes(user.role),
   );
 
-  // Determine active nav item for breadcrumb context
   const activeItem =
     visibleItems.find((i) => i.href === pathname) ||
     visibleItems
@@ -38,30 +38,19 @@ export function DashboardNavbar({ user }: { user: StaffUser }) {
 
   return (
     <>
-      <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b border-slate-200 bg-white/95 backdrop-blur px-4 sm:px-6 lg:px-8">
-        {/* Left: Mobile Menu Button + Breadcrumb Context */}
+      <header className="sticky top-0 z-30 flex h-15 items-center justify-between gap-4 border-b border-stone-200/80 bg-white/90 backdrop-blur px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3 min-w-0">
           <button
             type="button"
             onClick={() => setMobileOpen(true)}
-            className="inline-flex md:hidden items-center justify-center rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-100"
+            className="inline-flex md:hidden items-center justify-center rounded-xl border border-stone-200 p-2 text-slate-600 hover:bg-stone-100"
             aria-label="Open navigation menu"
           >
-            <svg
-              className="h-5 w-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
+            <Menu className="h-4 w-4" />
           </button>
 
-          <div className="min-w-0 flex items-center gap-1.5 text-xs text-slate-400">
-            <Link href="/dashboard" className="hover:text-sky-600 font-medium">
+          <div className="min-w-0 flex items-center gap-1.5 text-xs text-stone-400">
+            <Link href="/dashboard" className="hover:text-teal-700 font-medium">
               Workspace
             </Link>
             {activeItem && activeItem.href !== '/dashboard' && (
@@ -69,7 +58,7 @@ export function DashboardNavbar({ user }: { user: StaffUser }) {
                 <span>/</span>
                 <Link
                   href={activeItem.href}
-                  className="font-semibold text-slate-800 hover:text-sky-600 truncate"
+                  className="font-semibold text-slate-800 hover:text-teal-700 truncate"
                 >
                   {activeItem.title}
                 </Link>
@@ -78,36 +67,35 @@ export function DashboardNavbar({ user }: { user: StaffUser }) {
           </div>
         </div>
 
-        {/* Center: Global Quick Lead / Tracking Code Lookup */}
         <form
           onSubmit={handleQuickSearch}
           className="hidden lg:flex items-center max-w-xs w-full"
         >
           <div className="relative w-full">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-stone-400" />
             <input
               type="text"
               value={quickQuery}
               onChange={(e) => setQuickQuery(e.target.value)}
-              placeholder="Quick search name, phone, #SV-..."
-              className="h-9 w-full rounded-lg border border-slate-200 bg-slate-50 pl-3 pr-16 text-xs text-slate-800 placeholder:text-slate-400 focus:border-sky-500 focus:bg-white focus:outline-none"
+              placeholder="Search name, phone, #code..."
+              className="h-9 w-full rounded-xl border border-stone-200 bg-stone-50/80 pl-8 pr-12 text-xs text-slate-800 placeholder:text-stone-400 focus:border-teal-700 focus:bg-white focus:outline-none"
             />
             <button
               type="submit"
-              className="absolute right-1 top-1 bottom-1 rounded-md bg-white px-2 text-[11px] font-semibold text-sky-700 border border-slate-200 hover:bg-sky-50"
+              className="absolute right-1.5 top-1 bottom-1 rounded-lg px-2 text-[11px] font-semibold text-teal-700 hover:bg-teal-50"
             >
               Find
             </button>
           </div>
         </form>
 
-        {/* Right: User Identity & Quick Actions */}
         <div className="flex items-center gap-2 shrink-0">
           <Link
             href="/my-profile"
-            className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50/70 px-2.5 py-1.5 hover:bg-slate-100 transition whitespace-nowrap"
+            className="flex items-center gap-2 rounded-xl border border-stone-200/90 bg-stone-50/70 px-2.5 py-1.5 hover:bg-stone-100 transition whitespace-nowrap"
             title={`${user.name} (${user.email})`}
           >
-            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sky-600 text-[11px] font-bold text-white">
+            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-teal-700 text-[11px] font-bold text-white">
               {(user.name || 'S').charAt(0).toUpperCase()}
             </div>
             <span className="hidden sm:inline text-xs font-semibold text-slate-900 max-w-[110px] truncate">
@@ -121,32 +109,32 @@ export function DashboardNavbar({ user }: { user: StaffUser }) {
         </div>
       </header>
 
-      {/* Mobile Navigation Drawer */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 md:hidden flex">
           <div
             className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs"
             onClick={() => setMobileOpen(false)}
           />
-          <div className="relative z-10 flex w-72 max-w-[85vw] flex-col bg-white shadow-xl">
-            <div className="flex h-16 items-center justify-between px-5 border-b border-slate-200">
-              <Logo href="/dashboard" />
+          <div className="relative z-10 flex w-72 max-w-[85vw] flex-col bg-slate-900 text-slate-200 shadow-xl">
+            <div className="flex h-15 items-center justify-between px-5 border-b border-slate-800">
+              <Logo href="/dashboard" inverted />
               <button
                 type="button"
                 onClick={() => setMobileOpen(false)}
-                className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100"
+                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800"
               >
-                ✕
+                <X className="h-4 w-4" />
               </button>
             </div>
 
-            <div className="p-3 border-b border-slate-100">
+            <div className="p-3 border-b border-slate-800">
               <Link
                 href="/dashboard/leads/create"
                 onClick={() => setMobileOpen(false)}
-                className="flex w-full items-center justify-center rounded-lg bg-sky-600 px-3 py-2 text-xs font-semibold text-white"
+                className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-teal-700 px-3 py-2 text-xs font-semibold text-white"
               >
-                + Record New Inquiry
+                <Plus className="h-3.5 w-3.5" />
+                <span>New Customer Inquiry</span>
               </Link>
             </div>
 
@@ -162,10 +150,10 @@ export function DashboardNavbar({ user }: { user: StaffUser }) {
                     href={item.href}
                     onClick={() => setMobileOpen(false)}
                     className={cn(
-                      'flex items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-medium',
+                      'flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-medium',
                       isActive
-                        ? 'bg-sky-50 text-sky-700 font-semibold border border-sky-200'
-                        : 'text-slate-600 hover:bg-slate-100',
+                        ? 'bg-teal-700/25 text-teal-200 font-semibold'
+                        : 'text-slate-400 hover:bg-slate-800',
                     )}
                   >
                     <NavIcon name={item.icon} />
@@ -173,25 +161,6 @@ export function DashboardNavbar({ user }: { user: StaffUser }) {
                   </Link>
                 );
               })}
-            </div>
-
-            <div className="p-3 border-t border-slate-200 bg-slate-50 space-y-1.5">
-              <Link
-                href="/track-status"
-                target="_blank"
-                onClick={() => setMobileOpen(false)}
-                className="block rounded-lg border border-slate-200 bg-white px-3 py-2 text-center text-xs font-medium text-slate-700"
-              >
-                🔍 Public File Tracker ↗
-              </Link>
-              <Link
-                href="/"
-                target="_blank"
-                onClick={() => setMobileOpen(false)}
-                className="block px-3 py-1.5 text-center text-xs font-medium text-slate-500"
-              >
-                🌐 Public Website ↗
-              </Link>
             </div>
           </div>
         </div>

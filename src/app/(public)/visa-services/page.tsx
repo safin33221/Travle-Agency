@@ -1,5 +1,14 @@
 import React from 'react';
 import Link from 'next/link';
+import type { LucideIcon } from 'lucide-react';
+import {
+  Briefcase,
+  Building2,
+  Globe,
+  GraduationCap,
+  Plane,
+  Wrench,
+} from 'lucide-react';
 import { getPublicCountriesAction, getPublicVisaServicesAction } from '@/services/visa/visa.service';
 import {
   AgencyServiceStatusBadge,
@@ -18,13 +27,13 @@ import {
 
 export const instant = false;
 
-const VISA_CATEGORY_TABS: Array<{ label: string; value: string; icon: string }> = [
-  { label: 'All Categories', value: '', icon: '🌍' },
-  { label: 'Student Visa', value: 'STUDENT_VISA', icon: '🎓' },
-  { label: 'Work Permit', value: 'WORK_PERMIT', icon: '💼' },
-  { label: 'Work Visa', value: 'WORK_VISA', icon: '🛠️' },
-  { label: 'Tourist Visa', value: 'TOURIST_VISA', icon: '✈️' },
-  { label: 'Business Visa', value: 'BUSINESS_VISA', icon: '🤝' },
+const VISA_CATEGORY_TABS: Array<{ label: string; value: string; Icon: LucideIcon }> = [
+  { label: 'All Categories', value: '', Icon: Globe },
+  { label: 'Student Visa', value: 'STUDENT_VISA', Icon: GraduationCap },
+  { label: 'Work Permit', value: 'WORK_PERMIT', Icon: Briefcase },
+  { label: 'Work Visa', value: 'WORK_VISA', Icon: Wrench },
+  { label: 'Tourist Visa', value: 'TOURIST_VISA', Icon: Plane },
+  { label: 'Business Visa', value: 'BUSINESS_VISA', Icon: Building2 },
 ];
 
 export default async function PublicVisaServicesPage({
@@ -51,12 +60,12 @@ export default async function PublicVisaServicesPage({
   const services = servicesRes?.data || [];
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[#FAF9F6]">
       {/* Hero Banner */}
-      <section className="border-b bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950 py-12 text-white">
+      <section className="border-b border-slate-800 bg-gradient-to-br from-slate-900 via-teal-950 to-slate-900 py-12 text-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <span className="inline-flex items-center rounded-full border border-blue-400/30 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-300">
+            <span className="inline-flex items-center rounded-full border border-teal-400/30 bg-teal-500/15 px-3 py-1 text-xs font-semibold text-teal-200">
               Visa & Immigration Portal
             </span>
             <h1 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
@@ -68,8 +77,8 @@ export default async function PublicVisaServicesPage({
 
       <div className="mx-auto max-w-7xl space-y-12 px-4 py-10 sm:px-6 lg:px-8">
         {/* Quick 1-Click Visa Category Tabs + Search & Filter Bar */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
-          <div className="flex flex-wrap items-center gap-2 border-b border-slate-100 pb-4">
+        <div className="rounded-2xl border border-stone-200/90 bg-white p-5 shadow-2xs space-y-4">
+          <div className="flex flex-wrap items-center gap-2 border-b border-stone-100 pb-4">
             {VISA_CATEGORY_TABS.map((tab) => {
               const isSelected = category === tab.value;
               const qs = new URLSearchParams();
@@ -79,17 +88,19 @@ export default async function PublicVisaServicesPage({
               const href = qs.toString()
                 ? `/visa-services?${qs.toString()}`
                 : '/visa-services';
+              const TabIcon = tab.Icon;
               return (
                 <Link
                   key={tab.label}
                   href={href}
-                  className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
                     isSelected
-                      ? 'bg-blue-600 text-white shadow-xs'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                      ? 'bg-teal-700 text-white shadow-xs'
+                      : 'border border-stone-200 bg-[#FAF9F6] text-stone-700 hover:bg-stone-100'
                   }`}
                 >
-                  {tab.icon} {tab.label}
+                  <TabIcon className="h-3.5 w-3.5" />
+                  {tab.label}
                 </Link>
               );
             })}
@@ -138,17 +149,19 @@ export default async function PublicVisaServicesPage({
                 <Link
                   key={country.id}
                   href={`/visa-services/${country.slug}`}
-                  className="group flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md"
+                  className="group flex flex-col justify-between rounded-2xl border border-stone-200/90 bg-white p-6 shadow-2xs transition hover:-translate-y-0.5 hover:border-teal-400 hover:shadow-md"
                 >
                   <div>
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-center gap-3">
-                        <span className="text-3xl">{country.flagEmoji || '🌍'}</span>
+                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-stone-200 bg-[#FAF9F6] text-xs font-bold uppercase text-stone-700">
+                          {country.isoCode || country.name.slice(0, 2)}
+                        </span>
                         <div>
-                          <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-600">
+                          <h3 className="text-lg font-bold text-slate-900 group-hover:text-teal-700">
                             {country.name}
                           </h3>
-                          <span className="font-mono text-xs text-slate-400">
+                          <span className="font-mono text-xs text-stone-400">
                             ISO: {country.isoCode}
                           </span>
                         </div>
@@ -157,7 +170,7 @@ export default async function PublicVisaServicesPage({
                     </div>
 
                     {country.shortIntro && (
-                      <p className="mt-3 line-clamp-2 text-sm text-slate-600">
+                      <p className="mt-3 line-clamp-2 text-sm text-stone-600">
                         {country.shortIntro}
                       </p>
                     )}
@@ -173,14 +186,14 @@ export default async function PublicVisaServicesPage({
                           />
                         ))
                       ) : (
-                        <span className="text-xs text-slate-400">
+                        <span className="text-xs text-stone-400">
                           No published visa services yet
                         </span>
                       )}
                     </div>
                   </div>
 
-                  <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4 text-xs font-semibold text-blue-600">
+                  <div className="mt-6 flex items-center justify-between border-t border-stone-100 pt-4 text-xs font-semibold text-teal-700">
                     <span>
                       {country.visaServices?.length || 0} Published Service
                       {(country.visaServices?.length || 0) === 1 ? '' : 's'}
@@ -214,12 +227,14 @@ export default async function PublicVisaServicesPage({
               {services.map((service: VisaService) => (
                 <div
                   key={service.id}
-                  className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+                  className="flex flex-col justify-between rounded-2xl border border-stone-200/90 bg-white p-6 shadow-2xs"
                 >
                   <div>
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
-                        <span className="text-xl">{service.country?.flagEmoji || '🌐'}</span>
+                        <span className="inline-flex h-6 items-center rounded-md border border-stone-200 bg-[#FAF9F6] px-1.5 font-mono text-[11px] font-bold text-stone-700">
+                          {service.country?.isoCode || 'GLB'}
+                        </span>
                         <span className="text-sm font-semibold text-slate-700">
                           {service.country?.name}
                         </span>
@@ -232,18 +247,18 @@ export default async function PublicVisaServicesPage({
                     </div>
 
                     <h3 className="mt-3 text-lg font-bold text-slate-900">{service.title}</h3>
-                    <p className="mt-1.5 text-sm text-slate-600">{service.shortDescription}</p>
+                    <p className="mt-1.5 text-sm text-stone-600">{service.shortDescription}</p>
 
-                    <div className="mt-4 grid grid-cols-2 gap-3 rounded-xl bg-slate-50 p-3 text-xs">
+                    <div className="mt-4 grid grid-cols-2 gap-3 rounded-xl border border-stone-200/70 bg-[#FAF9F6] p-3 text-xs">
                       <div>
-                        <span className="text-slate-500">Indicative Processing:</span>
+                        <span className="text-stone-500">Indicative Processing:</span>
                         <p className="font-semibold text-slate-800">
                           {service.estimatedProcessingTime || 'Varies by Embassy'}
                         </p>
                       </div>
                       <div>
-                        <span className="text-slate-500">Consultancy Fee:</span>
-                        <p className="font-semibold text-slate-800">
+                        <span className="text-stone-500">Consultancy Fee:</span>
+                        <p className="font-semibold text-slate-800 tabular-nums">
                           {service.agencyServiceFee
                             ? `${service.currency} ${Number(service.agencyServiceFee).toLocaleString()}`
                             : 'Contact for Quote'}
@@ -252,13 +267,13 @@ export default async function PublicVisaServicesPage({
                     </div>
                   </div>
 
-                  <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
-                    <span className="text-xs text-slate-500">
+                  <div className="mt-5 flex items-center justify-between border-t border-stone-100 pt-4">
+                    <span className="text-xs text-stone-500">
                       {service.requirements?.length || 0} Document Checklist Items
                     </span>
                     <Link
                       href={`/visa-services/${service.country?.slug}/${service.slug}`}
-                      className="rounded-lg bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-blue-600"
+                      className="rounded-xl bg-teal-700 px-4 py-2 text-xs font-semibold text-white hover:bg-teal-800 transition"
                     >
                       View Requirements & Inquire
                     </Link>

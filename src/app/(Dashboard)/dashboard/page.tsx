@@ -52,33 +52,33 @@ export default async function DashboardOverviewPage() {
         <StatCard
           title="Total Customer Files"
           value={totalLeads}
-          subtitle={`NEW: ${byStage.NEW || 0} • QUALIFIED: ${byStage.QUALIFIED || 0}`}
+          subtitle={`New: ${byStage.NEW || 0} · Qualified: ${byStage.QUALIFIED || 0}`}
           trend="neutral"
-          icon="👥"
+          iconName="leads"
           href="/dashboard/leads"
         />
         <StatCard
           title="Approved Quotations"
           value={summary?.quotations?.approved ?? 0}
-          subtitle={`${summary?.quotations?.draft ?? 0} drafts awaiting review`}
+          subtitle={`${summary?.quotations?.draft ?? 0} drafts pending`}
           trend="up"
-          icon="📄"
+          iconName="quotes"
           href="/dashboard/leads?stage=QUOTED"
         />
         <StatCard
           title="Confirmed Won Revenue"
           value={formatCurrency(summary?.quotations?.wonRevenue ?? '0')}
-          subtitle={`From ${byStage.WON || 0} won customer files`}
+          subtitle={`From ${byStage.WON || 0} won files`}
           trend="up"
-          icon="💰"
+          iconName="revenue"
           href="/dashboard/leads?stage=WON"
         />
         <StatCard
           title="Pending Follow-Ups"
           value={summary?.followUps?.openCount ?? 0}
-          subtitle={`${summary?.followUps?.overdueCount ?? 0} overdue reminders`}
+          subtitle={`${summary?.followUps?.overdueCount ?? 0} overdue`}
           trend={(summary?.followUps?.overdueCount ?? 0) > 0 ? 'warning' : 'neutral'}
-          icon="⏰"
+          iconName="followups"
           href="/dashboard/leads?stage=FOLLOW_UP"
         />
       </div>
@@ -104,22 +104,22 @@ export default async function DashboardOverviewPage() {
                   <Link
                     key={st.key}
                     href={`/dashboard/leads?stage=${st.key}`}
-                    className="group rounded-xl border border-slate-200 bg-white p-3.5 transition hover:border-sky-400 hover:bg-sky-50/30 hover:shadow-xs flex flex-col justify-between"
+                    className="group rounded-xl border border-stone-200/90 bg-stone-50/40 p-3.5 transition hover:border-teal-600/40 hover:bg-white flex flex-col justify-between"
                   >
                     <div>
                       <div className="flex items-center justify-between gap-2">
                         <StatusBadge status={st.key} />
-                        <span className="text-xs font-semibold text-slate-400 group-hover:text-sky-600">
+                        <span className="text-xs font-medium text-stone-400 group-hover:text-teal-700 tabular-nums">
                           {pct}%
                         </span>
                       </div>
-                      <p className="mt-2.5 text-2xl font-extrabold text-slate-900">
+                      <p className="mt-3 text-2xl font-bold text-slate-900 tabular-nums">
                         {count}
                       </p>
                     </div>
-                    <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
+                    <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-stone-200/70">
                       <div
-                        className="h-full rounded-full bg-sky-600 transition-all"
+                        className="h-full rounded-full bg-teal-700 transition-all"
                         style={{ width: `${Math.max(count > 0 ? 8 : 0, pct)}%` }}
                       />
                     </div>
@@ -146,10 +146,10 @@ export default async function DashboardOverviewPage() {
                 return (
                   <div
                     key={task.id}
-                    className={`flex items-center justify-between gap-3 rounded-lg border p-3 text-sm transition ${
+                    className={`flex items-center justify-between gap-3 rounded-xl border p-3 text-sm transition ${
                       isOverdue
-                        ? 'border-rose-200 bg-rose-50/60 hover:bg-rose-50'
-                        : 'border-slate-200 bg-slate-50/50 hover:bg-white'
+                        ? 'border-rose-200 bg-rose-50/50 hover:bg-rose-50/80'
+                        : 'border-stone-200/90 bg-stone-50/40 hover:bg-white'
                     }`}
                   >
                     <div className="min-w-0">
@@ -158,26 +158,26 @@ export default async function DashboardOverviewPage() {
                           {task.lead?.customerName || 'Customer Inquiry'}
                         </p>
                         {isOverdue && (
-                          <span className="rounded bg-rose-100 px-1.5 py-0.5 text-[10px] font-bold uppercase text-rose-700">
+                          <span className="rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-semibold text-rose-700">
                             Overdue
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-slate-600 line-clamp-1">
+                      <p className="text-xs text-stone-600 line-clamp-1">
                         {task.note}
                       </p>
-                      <p className="text-[11px] text-slate-500 mt-0.5">
-                        Due:{' '}
+                      <p className="text-[11px] text-stone-500 mt-0.5">
+                        Due{' '}
                         <strong className={isOverdue ? 'text-rose-700' : 'text-slate-700'}>
                           {formatDate(task.dueAt)}
                         </strong>{' '}
-                        • {task.assignedTo?.name || 'Staff'}
+                        · {task.assignedTo?.name || 'Staff'}
                       </p>
                     </div>
                     {task.lead?.id && (
                       <Link href={`/dashboard/leads/${task.lead.id}`}>
                         <Button variant="outline" size="sm">
-                          Open →
+                          Open
                         </Button>
                       </Link>
                     )}
@@ -185,12 +185,9 @@ export default async function DashboardOverviewPage() {
                 );
               })}
               {upcomingTasks.length === 0 && (
-                <div className="rounded-lg border border-dashed border-slate-200 py-8 px-4 text-center">
-                  <p className="text-sm font-medium text-slate-600">
-                    All caught up! No pending follow-up reminders.
-                  </p>
-                  <p className="mt-1 text-xs text-slate-400">
-                    You can schedule follow-up dates inside any Lead Workspace.
+                <div className="rounded-xl border border-dashed border-stone-200 py-8 px-4 text-center">
+                  <p className="text-sm font-medium text-stone-600">
+                    No pending follow-up reminders.
                   </p>
                 </div>
               )}
@@ -199,29 +196,29 @@ export default async function DashboardOverviewPage() {
         </Card>
       </div>
 
-      {/* Recent Customer Files & Live Checklist Progress */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-3">
+      {/* Recent Customer Files */}
+      <Card className="overflow-hidden">
+        <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-stone-100">
           <CardTitle className="text-base">Recent Customer Files</CardTitle>
           <Link href="/dashboard/leads">
-            <Button variant="outline" size="sm">
+            <Button variant="ghost" size="sm">
               View All →
             </Button>
           </Link>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-slate-200 text-xs uppercase text-slate-500">
+              <thead className="border-b border-stone-200 bg-stone-50/70 text-[11px] font-semibold uppercase tracking-wider text-stone-500">
                 <tr>
-                  <th className="py-2.5 px-3">Applicant & Tracking ID</th>
-                  <th className="py-2.5 px-3">Sector & Destination</th>
-                  <th className="py-2.5 px-3">Checklist Progress</th>
-                  <th className="py-2.5 px-3">Stage</th>
-                  <th className="py-2.5 px-3 text-right">Action</th>
+                  <th className="py-3 pl-6 pr-3">Applicant & Code</th>
+                  <th className="py-3 px-3">Sector & Destination</th>
+                  <th className="py-3 px-3">Progress</th>
+                  <th className="py-3 px-3">Stage</th>
+                  <th className="py-3 pl-3 pr-6 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-stone-100">
                 {recentLeads.map((lead) => {
                   const cat = lead.category ?? 'TOUR';
                   const sectorMeta = SECTOR_CATALOG[cat] ?? SECTOR_CATALOG.TOUR;
@@ -235,54 +232,55 @@ export default async function DashboardOverviewPage() {
                   ).length;
 
                   return (
-                    <tr key={lead.id} className="hover:bg-slate-50/80">
-                      <td className="py-3 px-3">
+                    <tr key={lead.id} className="hover:bg-stone-50/70 transition-colors">
+                      <td className="py-3.5 pl-6 pr-3">
                         <div className="flex items-center gap-2">
-                          <span className="font-semibold text-slate-900">
+                          <Link
+                            href={`/dashboard/leads/${lead.id}`}
+                            className="font-semibold text-slate-900 hover:text-teal-700"
+                          >
                             {lead.customerName}
-                          </span>
+                          </Link>
                           {lead.trackingCode && (
                             <Link
                               href={`/track-status?code=${lead.trackingCode}`}
                               target="_blank"
-                              title="View on Public Tracker"
-                              className="rounded bg-sky-50 border border-sky-200 px-1.5 py-0.5 font-mono text-[11px] font-bold text-sky-700 hover:bg-sky-100"
+                              className="rounded-md bg-stone-100 border border-stone-200 px-1.5 py-0.5 font-mono text-[11px] font-medium text-slate-600 hover:border-teal-600/40 hover:text-teal-800"
                             >
-                              #{lead.trackingCode} ↗
+                              #{lead.trackingCode}
                             </Link>
                           )}
                         </div>
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs text-stone-500 mt-0.5">
                           {lead.customerPhone || lead.customerEmail || 'No contact'}
                         </p>
                       </td>
-                      <td className="py-3 px-3">
+                      <td className="py-3.5 px-3">
                         <span
-                          className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-semibold ${sectorMeta.badgeColor}`}
+                          className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-medium ${sectorMeta.badgeColor}`}
                         >
                           {sectorMeta.shortLabel}
                         </span>
-                        <p className="mt-0.5 text-xs font-medium text-slate-700">
+                        <p className="mt-1 text-xs text-stone-600">
                           {lead.destination || 'TBD'}
                         </p>
                       </td>
-                      <td className="py-3 px-3 text-xs">
-                        <div className="flex flex-col gap-1">
-                          <span className="text-slate-700 font-medium">
-                            🚀 Milestones: <strong>{doneMilestones}</strong>/{milestones.length} done
-                          </span>
-                          <span className="text-slate-500">
-                            📋 Docs: <strong>{verifiedDocs}</strong>/{docs.length} ready
-                          </span>
-                        </div>
+                      <td className="py-3.5 px-3 text-xs text-stone-600">
+                        <span>
+                          Steps <strong className="text-slate-900">{doneMilestones}</strong>/{milestones.length}
+                        </span>
+                        <span className="mx-1.5 text-stone-300">·</span>
+                        <span>
+                          Docs <strong className="text-slate-900">{verifiedDocs}</strong>/{docs.length}
+                        </span>
                       </td>
-                      <td className="py-3 px-3">
+                      <td className="py-3.5 px-3">
                         <StatusBadge status={lead.stage} />
                       </td>
-                      <td className="py-3 px-3 text-right">
+                      <td className="py-3.5 pl-3 pr-6 text-right">
                         <Link href={`/dashboard/leads/${lead.id}`}>
-                          <Button variant="secondary" size="sm">
-                            Manage File →
+                          <Button variant="outline" size="sm">
+                            Open →
                           </Button>
                         </Link>
                       </td>
@@ -293,9 +291,9 @@ export default async function DashboardOverviewPage() {
                   <tr>
                     <td
                       colSpan={5}
-                      className="py-8 text-center text-sm text-slate-500"
+                      className="py-8 text-center text-sm text-stone-500"
                     >
-                      No customer files recorded yet. Click &ldquo;+ Record New Inquiry&rdquo; to start.
+                      No customer files recorded yet.
                     </td>
                   </tr>
                 )}

@@ -20,7 +20,15 @@ const ADMIN_ONLY_PREFIXES = [
 
 const PROTECTED_PAGE_PREFIXES = ['/dashboard', '/my-profile', '/change-password'];
 const PROTECTED_API_PREFIXES = ['/api/quotations'];
-const AUTH_PAGES = ['/login'];
+const HIDDEN_PUBLIC_AUTH_PROBES = ['/login', '/signin', '/admin', '/staff-login'];
+
+function getStaffPortalPath(): string {
+  const raw = process.env.STAFF_LOGIN_PATH?.trim() || '/office-portal';
+  const normalized = raw.startsWith('/') ? raw : `/${raw}`;
+  return normalized.length > 1 && normalized.endsWith('/')
+    ? normalized.slice(0, -1)
+    : normalized;
+}
 
 interface DecodedSession {
   hasValidSession: boolean;
@@ -191,19 +199,32 @@ export async function proxy(request: NextRequest) {
     );
   }
 
+  const staffPortalPath = getStaffPortalPath();
+  const isSecretPortal =
+    pathname === staffPortalPath || pathname.startsWith(`${staffPortalPath}/`);
+  const isHiddenAuthProbe = HIDDEN_PUBLIC_AUTH_PROBES.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`),
+  );
+
+  // 2b. Conceal common login/admin paths (/login, /admin, /signin) from the public with 404
+  if (isHiddenAuthProbe && staffPortalPath !== '/login') {
+    const notFoundRes = NextResponse.rewrite(
+      new URL('/__hidden-portal-404', request.url),
+    );
+    return applySecurityHeaders(notFoundRes, true);
+  }
+
   const isProtectedPage = PROTECTED_PAGE_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
   const isProtectedApi = PROTECTED_API_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
-  const isAuthPage = AUTH_PAGES.some(
-    (route) => pathname === route || pathname.startsWith(`${route}/`),
-  );
   const isAdminOnlyRoute = ADMIN_ONLY_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
-  const isPrivateRoute = isProtectedPage || isProtectedApi || isAuthPage;
+  const isPrivateRoute =
+    isProtectedPage || isProtectedApi || isSecretPortal;
 
   const session = inspectSession(request);
 
@@ -217,14 +238,9 @@ export async function proxy(request: NextRequest) {
     return applySecurityHeaders(res, true);
   }
 
-  // 4. Protect Dashboard & staff account routes
+  // 4. Protect Dashboard & staff account routes (redirect intruders to / without leaking portal URL)
   if (isProtectedPage && !session.hasValidSession) {
-    const loginUrl = new URL('/login', request.url);
-    const fullTarget = `${pathname}${search}`;
-    if (isSafeRelativePath(fullTarget)) {
-      loginUrl.searchParams.set('callbackUrl', fullTarget);
-    }
-    const res = NextResponse.redirect(loginUrl);
+    const res = NextResponse.redirect(new URL('/', request.url));
     clearAuthCookies(res);
     return applySecurityHeaders(res, true);
   }
@@ -237,13 +253,19 @@ export async function proxy(request: NextRequest) {
     return applySecurityHeaders(res, true);
   }
 
-  // 6. Redirect already authenticated staff away from /login
-  if (isAuthPage && session.hasValidSession) {
-    const callbackUrl = request.nextUrl.searchParams.get('callbackUrl') || '';
-    const destination = isSafeRelativePath(callbackUrl)
-      ? callbackUrl
-      : '/dashboard';
-    const res = NextResponse.redirect(new URL(destination, request.url));
+  // 6. Handle the Stealth Official Staff Portal URL (rewrites internally to /login)
+  if (isSecretPortal) {
+    if (session.hasValidSession) {
+      const callbackUrl = request.nextUrl.searchParams.get('callbackUrl') || '';
+      const destination = isSafeRelativePath(callbackUrl)
+        ? callbackUrl
+        : '/dashboard';
+      const res = NextResponse.redirect(new URL(destination, request.url));
+      return applySecurityHeaders(res, true);
+    }
+
+    const internalLoginUrl = new URL(`/login${search}`, request.url);
+    const res = NextResponse.rewrite(internalLoginUrl);
     return applySecurityHeaders(res, true);
   }
 

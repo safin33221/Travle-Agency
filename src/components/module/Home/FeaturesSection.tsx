@@ -25,7 +25,7 @@ export function FeaturesSection() {
   return (
     <>
       {/* How It Works */}
-      <section className="py-12 bg-white border-t border-slate-200">
+      <section className="py-12 bg-white border-t border-stone-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
             <h2 className="text-2xl font-bold tracking-tight text-slate-900">
@@ -41,8 +41,8 @@ export function FeaturesSection() {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {HOW_IT_WORKS.map((item) => (
               <Link key={item.step} href={item.href}>
-                <Card className="p-5 border-slate-200 hover:border-sky-300 transition flex items-center gap-3.5">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-600 text-white font-extrabold text-sm">
+                <Card className="p-5 border-stone-200/90 hover:border-teal-400 transition flex items-center gap-3.5">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-700 text-white font-extrabold text-sm">
                     {item.step}
                   </span>
                   <h3 className="text-sm sm:text-base font-bold text-slate-900">
@@ -56,7 +56,7 @@ export function FeaturesSection() {
       </section>
 
       {/* Why Plan With Us */}
-      <section className="py-14 bg-slate-50 border-t border-slate-200">
+      <section className="py-14 bg-[#FAF9F6] border-t border-stone-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-8">
             Why Choose Us
@@ -65,7 +65,7 @@ export function FeaturesSection() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {publicContentConfig.features.map((feat, idx) => (
               <Card key={idx} className="p-6">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-sky-100 text-sky-700 font-bold text-xs mb-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-50 border border-teal-200 text-teal-800 font-bold text-xs mb-3">
                   0{idx + 1}
                 </div>
                 <h3 className="text-base font-bold text-slate-900">{feat.title}</h3>

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { Check, CheckCircle2, Copy, Search } from 'lucide-react';
 import { AgencyServiceStatus, VisaCategory } from '@/types/api';
 import { submitPublicVisaInquiryAction } from '@/services/visa/visa.service';
 
@@ -92,19 +93,20 @@ export default function VisaInquiryForm({
 
   if (submittedResult) {
     return (
-      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 space-y-4">
-        <div className="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800">
-          ✓ Consultation Request Registered
+      <div className="rounded-2xl border border-teal-200 bg-teal-50/60 p-6 space-y-4">
+        <div className="inline-flex items-center gap-1.5 rounded-full bg-teal-100 px-3 py-1 text-xs font-bold text-teal-900">
+          <CheckCircle2 className="h-3.5 w-3.5 text-teal-700" />
+          Consultation Request Registered
         </div>
-        <h3 className="text-lg font-bold text-emerald-950">
+        <h3 className="text-lg font-bold text-slate-900">
           Thank you! Your Visa File Has Been Created
         </h3>
-        <p className="text-sm text-emerald-800">{submittedResult.message}</p>
+        <p className="text-sm text-teal-900">{submittedResult.message}</p>
         {submittedResult.trackingCode && (
-          <div className="rounded-xl border border-emerald-300 bg-white p-4 space-y-3">
+          <div className="rounded-xl border border-teal-200 bg-white p-4 space-y-3">
             <div className="flex items-center justify-between gap-2">
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-stone-500">
                   Your File Tracking Code
                 </p>
                 <p className="mt-0.5 font-mono text-xl font-extrabold text-slate-900">
@@ -120,19 +122,30 @@ export default function VisaInquiryForm({
                     setTimeout(() => setCopiedCode(false), 2500);
                   }
                 }}
-                className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-stone-200 bg-[#FAF9F6] px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-stone-100"
               >
-                {copiedCode ? '✓ Copied!' : '📋 Copy ID'}
+                {copiedCode ? (
+                  <>
+                    <Check className="h-3.5 w-3.5 text-teal-700" />
+                    Copied
+                  </>
+                ) : (
+                  <>
+                    <Copy className="h-3.5 w-3.5" />
+                    Copy ID
+                  </>
+                )}
               </button>
             </div>
-            <p className="text-xs text-slate-600">
+            <p className="text-xs text-stone-600">
               Use this Tracking Code anytime to check document verification and visa processing milestones.
             </p>
             <Link
               href={`/track-status?code=${submittedResult.trackingCode}`}
-              className="block w-full rounded-xl bg-sky-600 px-4 py-2.5 text-center text-xs font-bold text-white hover:bg-sky-700 transition"
+              className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-teal-700 px-4 py-2.5 text-xs font-bold text-white hover:bg-teal-800 transition"
             >
-              🔍 Track My File Status Now →
+              <Search className="h-3.5 w-3.5" />
+              Track My File Status Now →
             </Link>
           </div>
         )}
@@ -143,18 +156,18 @@ export default function VisaInquiryForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+      className="space-y-4 rounded-2xl border border-stone-200/90 bg-white p-6 shadow-2xs"
     >
       <div>
         <h3 className="text-lg font-bold text-slate-900">Request a Visa Consultation</h3>
-        <p className="mt-1 text-xs text-slate-600">
+        <p className="mt-1 text-xs text-stone-600">
           Inquiring about <strong>{serviceTitle}</strong> for <strong>{countryName}</strong>. An
           authorized visa consultant will review your inquiry and contact you.
         </p>
       </div>
 
       {error && (
-        <div className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700">
+        <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700">
           {error}
         </div>
       )}
@@ -170,7 +183,7 @@ export default function VisaInquiryForm({
           value={formData.fullName}
           onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
           placeholder="Your full name as on passport"
-          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-600 focus:outline-none"
+          className="w-full rounded-xl border border-stone-300 px-3 py-2 text-sm focus:border-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-700/15"
         />
       </div>
 
@@ -186,7 +199,7 @@ export default function VisaInquiryForm({
             value={formData.phone}
             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
             placeholder="+8801XXXXXXXXX"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-600 focus:outline-none"
+            className="w-full rounded-xl border border-stone-300 px-3 py-2 text-sm focus:border-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-700/15"
           />
         </div>
 
@@ -197,7 +210,7 @@ export default function VisaInquiryForm({
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             placeholder="you@example.com"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-600 focus:outline-none"
+            className="w-full rounded-xl border border-stone-300 px-3 py-2 text-sm focus:border-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-700/15"
           />
         </div>
       </div>
@@ -212,17 +225,17 @@ export default function VisaInquiryForm({
           value={formData.message}
           onChange={(e) => setFormData({ ...formData, message: e.target.value })}
           placeholder="Briefly mention your intended travel timeline, qualification/work background, or questions (do not enter passport or NID numbers here)..."
-          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-600 focus:outline-none"
+          className="w-full rounded-xl border border-stone-300 px-3 py-2 text-sm focus:border-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-700/15"
         />
       </div>
 
-      <label className="flex items-start gap-2.5 text-xs text-slate-600">
+      <label className="flex items-start gap-2.5 text-xs text-stone-600">
         <input
           type="checkbox"
           required
           checked={formData.consentGiven}
           onChange={(e) => setFormData({ ...formData, consentGiven: e.target.checked })}
-          className="mt-0.5 h-4 w-4 rounded border-slate-300 text-blue-600"
+          className="mt-0.5 h-4 w-4 rounded border-stone-300 text-teal-700 focus:ring-teal-700"
         />
         <span>
           I understand that this agency provides visa consultancy and documentation assistance only,
@@ -234,7 +247,7 @@ export default function VisaInquiryForm({
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-50"
+        className="w-full rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-teal-800 disabled:opacity-50"
       >
         {loading ? 'Submitting Inquiry...' : 'Submit Consultation Request'}
       </button>

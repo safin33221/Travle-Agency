@@ -39,7 +39,7 @@ export default async function DashboardPackagesPage() {
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-slate-200 bg-slate-50/70 text-xs uppercase text-slate-500">
+              <thead className="border-b border-stone-200 bg-[#FAF9F6] text-[11px] font-bold uppercase tracking-wider text-stone-500">
                 <tr>
                   <th className="py-3 px-4">Package Title & Sector</th>
                   <th className="py-3 px-4">Destination</th>
@@ -49,12 +49,12 @@ export default async function DashboardPackagesPage() {
                   <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-stone-100">
                 {packages.map((pkg) => {
                   const cat = pkg.category ?? 'TOUR';
                   const sectorMeta = SECTOR_CATALOG[cat] ?? SECTOR_CATALOG.TOUR;
                   return (
-                    <tr key={pkg.id} className="hover:bg-slate-50">
+                    <tr key={pkg.id} className="hover:bg-[#FAF9F6]/70">
                       <td className="py-3.5 px-4">
                         <p className="font-semibold text-slate-900">
                           {pkg.title}
@@ -68,13 +68,13 @@ export default async function DashboardPackagesPage() {
                       <td className="py-3.5 px-4">
                         <Badge variant="info">{pkg.destination}</Badge>
                       </td>
-                      <td className="py-3.5 px-4 text-slate-600 text-xs font-medium">
+                      <td className="py-3.5 px-4 text-stone-600 text-xs font-medium">
                         {pkg.durationDays} Days
                       </td>
-                      <td className="py-3.5 px-4 font-bold text-slate-900">
+                      <td className="py-3.5 px-4 font-bold text-slate-900 tabular-nums">
                         {formatCurrency(pkg.basePrice, pkg.currency)}
                       </td>
-                      <td className="py-3.5 px-4 text-xs text-slate-500 max-w-xs">
+                      <td className="py-3.5 px-4 text-xs text-stone-500 max-w-xs">
                         {(pkg.inclusions || []).slice(0, 3).join(', ') || '—'}
                       </td>
                       <td className="py-3.5 px-4 text-right">
@@ -82,7 +82,7 @@ export default async function DashboardPackagesPage() {
                           <Link
                             href={`/packages/${pkg.id}`}
                             target="_blank"
-                            className="rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-semibold text-sky-700 hover:bg-sky-50"
+                            className="rounded-xl border border-stone-300 bg-white px-2.5 py-1 text-xs font-semibold text-teal-800 hover:bg-teal-50 transition"
                           >
                             Preview ↗
                           </Link>
@@ -96,7 +96,7 @@ export default async function DashboardPackagesPage() {
                   <tr>
                     <td
                       colSpan={6}
-                      className="py-10 text-center text-sm text-slate-500"
+                      className="py-10 text-center text-sm text-stone-500"
                     >
                       No active tour packages in catalog yet.
                     </td>

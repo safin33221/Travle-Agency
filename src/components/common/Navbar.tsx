@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Menu, Phone, Search, X } from 'lucide-react';
 import { Logo } from '@/components/shared/Logo';
 import { Button } from '@/components/ui/button';
 import { useBrand } from '@/components/providers/BrandProvider';
@@ -25,26 +26,16 @@ export function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full border-b border-slate-200 bg-white/95 backdrop-blur-xs shadow-2xs">
+      <header className="sticky top-0 z-40 w-full border-b border-stone-200/80 bg-white/95 backdrop-blur-xs shadow-2xs">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={() => setMobileOpen(true)}
-              className="inline-flex md:hidden items-center justify-center rounded-lg border border-slate-200 p-2 text-slate-700 hover:bg-slate-100"
+              className="inline-flex md:hidden items-center justify-center rounded-xl border border-stone-200 p-2 text-slate-700 hover:bg-stone-100"
               aria-label="Open menu"
             >
-              <svg
-                className="h-5 w-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-              </svg>
+              <Menu className="h-5 w-5" />
             </button>
             <Logo href="/" />
           </div>
@@ -57,10 +48,10 @@ export function Navbar() {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    'rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                    'rounded-xl px-3 py-2 text-sm font-medium transition-colors',
                     active
-                      ? 'bg-sky-50 text-sky-700 font-semibold'
-                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
+                      ? 'bg-teal-50 text-teal-800 font-semibold'
+                      : 'text-stone-600 hover:bg-stone-100 hover:text-slate-900',
                   )}
                 >
                   {item.label}
@@ -70,31 +61,28 @@ export function Navbar() {
             <Link
               href="/track-status"
               className={cn(
-                'ml-1 rounded-full px-3.5 py-1.5 text-xs font-bold border transition-colors',
+                'ml-1 inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold border transition-colors',
                 pathname.startsWith('/track-status')
-                  ? 'bg-sky-600 text-white border-sky-600 shadow-xs'
-                  : 'bg-sky-50 text-sky-700 border-sky-200 hover:bg-sky-100',
+                  ? 'bg-teal-700 text-white border-teal-700 shadow-xs'
+                  : 'bg-teal-50/80 text-teal-800 border-teal-200 hover:bg-teal-100',
               )}
             >
-              🔍 Track My File
+              <Search className="h-3.5 w-3.5" />
+              Track My File
             </Link>
           </nav>
 
           <div className="flex items-center gap-2">
             <Link
               href="/track-status"
-              className="md:hidden rounded-full bg-sky-50 border border-sky-200 px-3 py-1.5 text-xs font-bold text-sky-700"
+              className="md:hidden inline-flex items-center gap-1 rounded-full bg-teal-50 border border-teal-200 px-3 py-1.5 text-xs font-semibold text-teal-800"
             >
-              🔍 Track
+              <Search className="h-3.5 w-3.5" />
+              Track
             </Link>
-            <Link href="/contact" className="hidden sm:inline-block">
+            <Link href="/contact">
               <Button variant="secondary" size="sm">
                 Apply / Get Quote
-              </Button>
-            </Link>
-            <Link href="/login">
-              <Button variant="outline" size="sm">
-                Staff Login
               </Button>
             </Link>
           </div>
@@ -109,14 +97,15 @@ export function Navbar() {
             onClick={() => setMobileOpen(false)}
           />
           <div className="relative z-10 flex w-72 max-w-[85vw] flex-col bg-white shadow-xl">
-            <div className="flex h-16 items-center justify-between px-5 border-b border-slate-200">
+            <div className="flex h-16 items-center justify-between px-5 border-b border-stone-200">
               <Logo href="/" />
               <button
                 type="button"
                 onClick={() => setMobileOpen(false)}
-                className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100"
+                className="rounded-lg p-1.5 text-stone-500 hover:bg-stone-100"
+                aria-label="Close menu"
               >
-                ✕
+                <X className="h-5 w-5" />
               </button>
             </div>
 
@@ -129,10 +118,10 @@ export function Navbar() {
                     href={item.href}
                     onClick={() => setMobileOpen(false)}
                     className={cn(
-                      'block rounded-lg px-3.5 py-2.5 text-sm font-medium',
+                      'block rounded-xl px-3.5 py-2.5 text-sm font-medium',
                       active
-                        ? 'bg-sky-50 text-sky-700 font-semibold border border-sky-200'
-                        : 'text-slate-700 hover:bg-slate-100',
+                        ? 'bg-teal-50 text-teal-800 font-semibold border border-teal-200'
+                        : 'text-slate-700 hover:bg-stone-100',
                     )}
                   >
                     {item.label}
@@ -143,27 +132,22 @@ export function Navbar() {
               <Link
                 href="/track-status"
                 onClick={() => setMobileOpen(false)}
-                className="mt-2 block rounded-lg border border-sky-200 bg-sky-50 px-3.5 py-2.5 text-sm font-bold text-sky-800"
+                className="mt-2 flex items-center gap-2 rounded-xl border border-teal-200 bg-teal-50 px-3.5 py-2.5 text-sm font-semibold text-teal-900"
               >
-                🔍 Track My File Status
+                <Search className="h-4 w-4 text-teal-700" />
+                Track My File Status
               </Link>
             </div>
 
-            <div className="p-4 border-t border-slate-200 bg-slate-50 space-y-2 text-xs text-slate-600">
+            <div className="p-4 border-t border-stone-200 bg-[#FAF9F6] space-y-2 text-xs text-stone-600">
               <p className="font-semibold text-slate-800">Need Immediate Help?</p>
               <a
                 href={`tel:${brand.phone.replace(/\s+/g, '')}`}
-                className="block rounded-lg bg-white border border-slate-200 px-3 py-2 text-center font-semibold text-slate-800"
+                className="flex items-center justify-center gap-1.5 rounded-xl bg-white border border-stone-200 px-3 py-2 font-semibold text-slate-800 hover:bg-stone-50"
               >
-                📞 Call {brand.phone}
+                <Phone className="h-3.5 w-3.5 text-teal-700" />
+                Call {brand.phone}
               </a>
-              <Link
-                href="/login"
-                onClick={() => setMobileOpen(false)}
-                className="block text-center text-slate-500 hover:text-sky-600 pt-1"
-              >
-                Staff Portal Login →
-              </Link>
             </div>
           </div>
         </div>

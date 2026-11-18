@@ -29,15 +29,15 @@ export default async function VisaServiceDetailPage({
   const steps = service.applicationProcessSteps || [];
 
   return (
-    <div className="min-h-screen bg-slate-50 py-10">
+    <div className="min-h-screen bg-[#FAF9F6] py-10">
       <div className="mx-auto max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
-        <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-slate-500">
-          <Link href="/visa-services" className="hover:text-blue-600">
+        <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-stone-500">
+          <Link href="/visa-services" className="hover:text-teal-700">
             Visa & Immigration
           </Link>
           <span>/</span>
-          <Link href={`/visa-services/${country.slug}`} className="hover:text-blue-600">
+          <Link href={`/visa-services/${country.slug}`} className="hover:text-teal-700">
             {country.name}
           </Link>
           <span>/</span>
@@ -47,10 +47,12 @@ export default async function VisaServiceDetailPage({
         <div className="grid gap-8 lg:grid-cols-12">
           {/* Left Column: Detailed Service Information */}
           <div className="space-y-6 lg:col-span-7">
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+            <div className="rounded-2xl border border-stone-200/90 bg-white p-6 shadow-2xs sm:p-8">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2.5">
-                  <span className="text-2xl">{country.flagEmoji || '🌍'}</span>
+                  <span className="inline-flex h-7 items-center rounded-lg border border-stone-200 bg-[#FAF9F6] px-2 font-mono text-xs font-bold text-stone-700">
+                    {country.isoCode || country.name.slice(0, 2)}
+                  </span>
                   <span className="text-sm font-bold text-slate-700">{country.name}</span>
                   <VisaCategoryBadge
                     category={service.category}
@@ -60,30 +62,30 @@ export default async function VisaServiceDetailPage({
                 <AgencyServiceStatusBadge status={service.serviceStatus} />
               </div>
 
-              <h1 className="mt-4 text-2xl font-extrabold text-slate-900 sm:text-3xl">
+              <h1 className="mt-4 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
                 {service.title}
               </h1>
-              <p className="mt-2 text-base text-slate-600">{service.shortDescription}</p>
+              <p className="mt-2 text-base text-stone-600">{service.shortDescription}</p>
 
               {/* Key Service Metrics */}
-              <div className="mt-6 grid gap-4 rounded-xl border border-slate-100 bg-slate-50 p-4 sm:grid-cols-3">
+              <div className="mt-6 grid gap-4 rounded-xl border border-stone-200/70 bg-[#FAF9F6] p-4 sm:grid-cols-3">
                 <div>
-                  <span className="text-xs text-slate-500">Indicative Processing Time</span>
+                  <span className="text-xs text-stone-500">Indicative Processing Time</span>
                   <p className="mt-1 text-sm font-bold text-slate-900">
                     {service.estimatedProcessingTime || 'Varies by Embassy'}
                   </p>
                 </div>
                 <div>
-                  <span className="text-xs text-slate-500">Agency Consultancy Fee</span>
-                  <p className="mt-1 text-sm font-bold text-slate-900">
+                  <span className="text-xs text-stone-500">Agency Consultancy Fee</span>
+                  <p className="mt-1 text-sm font-bold text-slate-900 tabular-nums">
                     {service.agencyServiceFee
                       ? `${service.currency} ${Number(service.agencyServiceFee).toLocaleString()}`
                       : 'Contact for Assessment'}
                   </p>
                 </div>
                 <div>
-                  <span className="text-xs text-slate-500">Embassy / Government Fees</span>
-                  <p className="mt-1 text-xs font-medium text-slate-700">
+                  <span className="text-xs text-stone-500">Embassy / Government Fees</span>
+                  <p className="mt-1 text-xs font-medium text-stone-700">
                     {service.governmentFeeInfo || 'Applicable official embassy fees paid separately'}
                   </p>
                 </div>
@@ -92,16 +94,16 @@ export default async function VisaServiceDetailPage({
               {service.fullDescription && (
                 <div className="mt-6">
                   <h2 className="text-base font-bold text-slate-900">Service Scope & Overview</h2>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-700 whitespace-pre-line">
+                  <p className="mt-2 text-sm leading-relaxed text-stone-700 whitespace-pre-line">
                     {service.fullDescription}
                   </p>
                 </div>
               )}
 
               {service.eligibilityInfo && (
-                <div className="mt-6 rounded-xl border border-blue-100 bg-blue-50/60 p-4">
-                  <h2 className="text-sm font-bold text-blue-950">General Eligibility Guidance</h2>
-                  <p className="mt-1.5 text-sm text-blue-900 whitespace-pre-line">
+                <div className="mt-6 rounded-xl border border-teal-200 bg-teal-50/60 p-4">
+                  <h2 className="text-sm font-bold text-teal-950">General Eligibility Guidance</h2>
+                  <p className="mt-1.5 text-sm text-teal-900 whitespace-pre-line">
                     {service.eligibilityInfo}
                   </p>
                 </div>
@@ -109,33 +111,33 @@ export default async function VisaServiceDetailPage({
             </div>
 
             {/* Required Documents Checklist */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+            <div className="rounded-2xl border border-stone-200/90 bg-white p-6 shadow-2xs sm:p-8">
               <h2 className="text-lg font-bold text-slate-900">
                 Required Documents Checklist ({requirements.length})
               </h2>
-              <p className="mt-1 text-xs text-slate-500">
+              <p className="mt-1 text-xs text-stone-500">
                 Prepare the following documents for initial review. Do not upload sensitive passport
                 scans through public forms; our consultant will guide you during verification.
               </p>
 
               {requirements.length === 0 ? (
-                <p className="mt-4 text-sm text-slate-600">
+                <p className="mt-4 text-sm text-stone-600">
                   Document checklist is customized based on applicant profile during consultation.
                 </p>
               ) : (
-                <ul className="mt-4 divide-y divide-slate-100">
+                <ul className="mt-4 divide-y divide-stone-100">
                   {requirements.map((req: VisaServiceRequirement) => (
                     <li key={req.id} className="flex items-start justify-between gap-4 py-3.5">
                       <div>
                         <p className="text-sm font-semibold text-slate-800">{req.title}</p>
                         {req.description && (
-                          <p className="mt-0.5 text-xs text-slate-600">{req.description}</p>
+                          <p className="mt-0.5 text-xs text-stone-600">{req.description}</p>
                         )}
                       </div>
                       <span
                         className={`shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${req.isMandatory
                             ? 'bg-slate-900 text-white'
-                            : 'bg-slate-100 text-slate-600'
+                            : 'bg-stone-100 text-stone-600'
                           }`}
                       >
                         {req.isMandatory ? 'Mandatory' : 'Supporting'}
@@ -148,17 +150,17 @@ export default async function VisaServiceDetailPage({
 
             {/* Step-by-Step Application Assistance */}
             {steps.length > 0 && (
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+              <div className="rounded-2xl border border-stone-200/90 bg-white p-6 shadow-2xs sm:p-8">
                 <h2 className="text-lg font-bold text-slate-900">
                   How Our Application Assistance Works
                 </h2>
                 <ol className="mt-4 space-y-3">
                   {steps.map((step: string, index: number) => (
                     <li key={index} className="flex items-start gap-3">
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-teal-700 text-xs font-bold text-white">
                         {index + 1}
                       </span>
-                      <span className="pt-0.5 text-sm text-slate-700">{step}</span>
+                      <span className="pt-0.5 text-sm text-stone-700">{step}</span>
                     </li>
                   ))}
                 </ol>

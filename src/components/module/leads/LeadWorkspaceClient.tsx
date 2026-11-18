@@ -25,6 +25,24 @@ import { Input, Label } from '@/components/ui/input';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import { SECTOR_CATALOG } from '@/config/brand.config';
 import { formatCurrency, formatDate } from '@/lib/utils';
+import {
+  Calendar,
+  Check,
+  ClipboardCheck,
+  Clock,
+  Copy,
+  ExternalLink,
+  FileText,
+  Layers,
+  MapPin,
+  MessageSquare,
+  Phone,
+  Rocket,
+  StickyNote,
+  Users,
+  Wallet,
+  X,
+} from 'lucide-react';
 
 const STAGES: LeadStage[] = [
   'NEW',
@@ -271,22 +289,23 @@ export function LeadWorkspaceClient({
     <div className="space-y-6">
       {/* Live Feedback Toast Banner */}
       {feedback && (
-        <div className="sticky top-18 z-20 flex items-center justify-between rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2.5 text-xs font-semibold text-emerald-900 shadow-sm">
+        <div className="sticky top-18 z-20 flex items-center justify-between rounded-xl border border-teal-300 bg-teal-50 px-4 py-2.5 text-xs font-semibold text-teal-900 shadow-sm">
           <span>{feedback}</span>
           <button
             type="button"
             onClick={() => setFeedback(null)}
-            className="text-emerald-700 hover:text-emerald-950 font-bold"
+            className="text-teal-700 hover:text-teal-950"
+            aria-label="Dismiss notification"
           >
-            ✕
+            <X className="h-4 w-4" />
           </button>
         </div>
       )}
 
       {/* Top Applicant Profile & Stage Pipeline Stepper Card */}
-      <Card className="p-5 space-y-5 border-slate-200/90">
+      <Card className="p-5 sm:p-6 space-y-5 border-stone-200/90">
         <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             <div className="flex flex-wrap items-center gap-2">
               <span
                 className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${sectorMeta.badgeColor}`}
@@ -295,36 +314,40 @@ export function LeadWorkspaceClient({
               </span>
               <StatusBadge status={lead.stage} />
               {lead.eligibilityStatus && (
-                <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-bold text-emerald-800">
+                <span className="rounded-full border border-teal-200 bg-teal-50/70 px-2.5 py-0.5 text-xs font-semibold text-teal-900">
                   Eligibility: {String(lead.eligibilityStatus).replace(/_/g, ' ')}
                 </span>
               )}
-              <span className="text-xs text-slate-500">
-                Source: <strong>{lead.source}</strong> • Counselor:{' '}
-                <strong>{lead.assignedTo?.name || 'Unassigned'}</strong>
+              <span className="text-xs text-stone-500">
+                Source: <strong className="text-slate-800">{lead.source}</strong> • Counselor:{' '}
+                <strong className="text-slate-800">{lead.assignedTo?.name || 'Unassigned'}</strong>
               </span>
             </div>
 
             {/* Key Inquiry Facts */}
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-xs text-slate-600">
-              <span>
-                📍 Destination: <strong className="text-slate-900">{lead.destination || 'TBD'}</strong>
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs text-stone-600">
+              <span className="inline-flex items-center gap-1.5">
+                <MapPin className="h-3.5 w-3.5 text-stone-400" />
+                Destination: <strong className="text-slate-900">{lead.destination || 'TBD'}</strong>
               </span>
-              <span>
-                💰 Budget: <strong className="text-slate-900">{formatCurrency(lead.budget)}</strong>
+              <span className="inline-flex items-center gap-1.5">
+                <Wallet className="h-3.5 w-3.5 text-stone-400" />
+                Budget: <strong className="text-slate-900 tabular-nums">{formatCurrency(lead.budget)}</strong>
               </span>
-              <span>
-                👥 Travelers: <strong className="text-slate-900">{lead.travelerCount || 1} Pax</strong>
+              <span className="inline-flex items-center gap-1.5">
+                <Users className="h-3.5 w-3.5 text-stone-400" />
+                Travelers: <strong className="text-slate-900">{lead.travelerCount || 1} Pax</strong>
               </span>
               {lead.travelStartDate && (
-                <span>
-                  📅 Travel Date: <strong className="text-slate-900">{formatDate(lead.travelStartDate)}</strong>
+                <span className="inline-flex items-center gap-1.5">
+                  <Calendar className="h-3.5 w-3.5 text-stone-400" />
+                  Travel Date: <strong className="text-slate-900">{formatDate(lead.travelStartDate)}</strong>
                 </span>
               )}
             </div>
 
             {lead.requirements && (
-              <div className="rounded-lg bg-slate-50 border border-slate-200/80 px-3 py-2 text-xs text-slate-700 max-w-2xl">
+              <div className="rounded-xl bg-[#FAF9F6] border border-stone-200/80 px-3.5 py-2.5 text-xs text-stone-700 max-w-2xl">
                 <span className="font-semibold text-slate-900">Applicant Note / Profile: </span>
                 {lead.requirements}
               </div>
@@ -337,28 +360,30 @@ export function LeadWorkspaceClient({
               <div className="flex flex-wrap items-center gap-2">
                 <a
                   href={`tel:${lead.customerPhone.replace(/\s+/g, '')}`}
-                  className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 hover:bg-slate-50 transition"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-stone-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 hover:bg-stone-50 transition"
                 >
-                  📞 Call {lead.customerPhone}
+                  <Phone className="h-3.5 w-3.5 text-stone-500" />
+                  Call {lead.customerPhone}
                 </a>
                 <a
                   href={`https://wa.me/${lead.customerPhone.replace(/[^0-9]/g, '')}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700 transition shadow-2xs"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-teal-200 bg-teal-50/70 px-3 py-1.5 text-xs font-semibold text-teal-900 hover:bg-teal-100 transition"
                 >
-                  💬 WhatsApp Client ↗
+                  <MessageSquare className="h-3.5 w-3.5 text-teal-700" />
+                  WhatsApp Client
                 </a>
               </div>
             )}
 
             {lead.trackingCode && (
-              <div className="flex flex-col sm:items-end gap-2 rounded-xl border border-sky-200 bg-sky-50/50 p-3">
+              <div className="flex flex-col sm:items-end gap-2 rounded-xl border border-stone-200 bg-[#FAF9F6] p-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-stone-500">
                     Client Tracking ID:
                   </span>
-                  <span className="rounded bg-white border border-sky-200 px-2 py-0.5 font-mono text-xs font-extrabold text-sky-800">
+                  <span className="rounded-lg bg-white border border-stone-200 px-2 py-0.5 font-mono text-xs font-bold text-teal-800">
                     #{lead.trackingCode}
                   </span>
                 </div>
@@ -366,16 +391,27 @@ export function LeadWorkspaceClient({
                   <button
                     type="button"
                     onClick={handleCopyTrackerLink}
-                    className="rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-stone-300 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 hover:bg-stone-50 transition"
                   >
-                    {copiedTracker ? '✓ Copied Link!' : '📋 Copy Client Link'}
+                    {copiedTracker ? (
+                      <>
+                        <Check className="h-3.5 w-3.5 text-teal-700" />
+                        Copied Link
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-3.5 w-3.5 text-stone-500" />
+                        Copy Client Link
+                      </>
+                    )}
                   </button>
                   <Link
                     href={`/track-status?code=${lead.trackingCode}`}
                     target="_blank"
-                    className="rounded-lg bg-sky-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-sky-700 transition"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-teal-700 px-2.5 py-1 text-xs font-semibold text-white hover:bg-teal-800 transition"
                   >
-                    🔍 Live Tracker ↗
+                    <ExternalLink className="h-3.5 w-3.5" />
+                    Live Tracker
                   </Link>
                 </div>
               </div>
@@ -384,9 +420,9 @@ export function LeadWorkspaceClient({
         </div>
 
         {/* Visual Interactive Pipeline Stage Bar */}
-        <div className="pt-3 border-t border-slate-100">
+        <div className="pt-3 border-t border-stone-100">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-stone-400">
               Pipeline Stage
             </span>
           </div>
@@ -403,14 +439,14 @@ export function LeadWorkspaceClient({
                   type="button"
                   disabled={isPending}
                   onClick={() => handleStageChange(st)}
-                  className={`flex items-center justify-center gap-1.5 rounded-lg border px-2.5 py-2 text-xs font-semibold transition-all ${
+                  className={`flex items-center justify-center gap-1.5 rounded-xl border px-2.5 py-2 text-xs font-semibold transition-all ${
                     isCurrent
                       ? st === 'LOST'
                         ? 'border-rose-600 bg-rose-600 text-white shadow-xs'
-                        : 'border-sky-600 bg-sky-600 text-white shadow-xs'
+                        : 'border-teal-700 bg-teal-700 text-white shadow-xs'
                       : isPassed
-                        ? 'border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-100'
-                        : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'
+                        ? 'border-teal-200 bg-teal-50/70 text-teal-900 hover:bg-teal-100'
+                        : 'border-stone-200 bg-white text-stone-600 hover:border-stone-300 hover:bg-stone-50'
                   }`}
                 >
                   <span className="text-[11px]">
@@ -426,81 +462,89 @@ export function LeadWorkspaceClient({
 
       {/* High-Visibility Progress Summary Strip */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-2xs">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-            🚀 Milestones Done
+        <div className="rounded-2xl border border-stone-200/90 bg-white p-4 shadow-2xs">
+          <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-stone-400">
+            <Rocket className="h-3.5 w-3.5 text-teal-700" />
+            Milestones Done
           </p>
-          <p className="mt-1 text-lg font-extrabold text-slate-900">
+          <p className="mt-1.5 text-lg font-extrabold text-slate-900 tabular-nums">
             {doneMilestones} / {milestones.length}{' '}
-            <span className="text-xs font-semibold text-emerald-700">
+            <span className="text-xs font-semibold text-teal-700">
               ({milestonePct}%)
             </span>
           </p>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-2xs">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-            📋 Docs Ready
+        <div className="rounded-2xl border border-stone-200/90 bg-white p-4 shadow-2xs">
+          <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-stone-400">
+            <ClipboardCheck className="h-3.5 w-3.5 text-teal-700" />
+            Docs Ready
           </p>
-          <p className="mt-1 text-lg font-extrabold text-slate-900">
+          <p className="mt-1.5 text-lg font-extrabold text-slate-900 tabular-nums">
             {verifiedDocs + receivedDocs} / {docs.length}{' '}
-            <span className="text-xs font-semibold text-sky-700">
+            <span className="text-xs font-semibold text-teal-700">
               ({docPct}%)
             </span>
           </p>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-2xs">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-            📄 Quotations
+        <div className="rounded-2xl border border-stone-200/90 bg-white p-4 shadow-2xs">
+          <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-stone-400">
+            <FileText className="h-3.5 w-3.5 text-stone-500" />
+            Quotations
           </p>
-          <p className="mt-1 text-lg font-extrabold text-slate-900">
+          <p className="mt-1.5 text-lg font-extrabold text-slate-900 tabular-nums">
             {lead.quotations?.length || 0}{' '}
-            <span className="text-xs font-medium text-slate-500">issued</span>
+            <span className="text-xs font-medium text-stone-500">issued</span>
           </p>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-2xs">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-            ⏰ Open Follow-Ups
+        <div className="rounded-2xl border border-stone-200/90 bg-white p-4 shadow-2xs">
+          <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-stone-400">
+            <Clock className="h-3.5 w-3.5 text-stone-500" />
+            Open Follow-Ups
           </p>
-          <p className="mt-1 text-lg font-extrabold text-slate-900">
+          <p className="mt-1.5 text-lg font-extrabold text-slate-900 tabular-nums">
             {(lead.followUpTasks || []).filter((t) => t.status === 'OPEN').length}{' '}
-            <span className="text-xs font-medium text-slate-500">pending</span>
+            <span className="text-xs font-medium text-stone-500">pending</span>
           </p>
         </div>
       </div>
 
       {/* Workspace Section Switcher Tabs */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-stone-200 pb-3">
         <div className="flex flex-wrap gap-1.5">
           {[
-            { id: 'ALL', label: '⚡ All Workspace Panels' },
+            { id: 'ALL', label: 'All Workspace Panels', Icon: Layers },
             {
               id: 'CHECKLISTS',
-              label: `📋 Milestones & Docs (${doneMilestones}/${milestones.length} • ${verifiedDocs}/${docs.length})`,
+              label: `Milestones & Docs (${doneMilestones}/${milestones.length} • ${verifiedDocs}/${docs.length})`,
+              Icon: ClipboardCheck,
             },
             {
               id: 'QUOTATIONS',
-              label: `📄 Quotations (${lead.quotations?.length || 0})`,
+              label: `Quotations (${lead.quotations?.length || 0})`,
+              Icon: FileText,
             },
             {
               id: 'NOTES',
-              label: `📝 Notes & Follow-Ups (${(lead.notes?.length || 0) + (lead.followUpTasks?.length || 0)})`,
+              label: `Notes & Follow-Ups (${(lead.notes?.length || 0) + (lead.followUpTasks?.length || 0)})`,
+              Icon: StickyNote,
             },
-          ].map((tab) => (
+          ].map(({ id, label, Icon }) => (
             <button
-              key={tab.id}
+              key={id}
               type="button"
               onClick={() =>
                 setActiveTab(
-                  tab.id as 'ALL' | 'CHECKLISTS' | 'QUOTATIONS' | 'NOTES',
+                  id as 'ALL' | 'CHECKLISTS' | 'QUOTATIONS' | 'NOTES',
                 )
               }
-              className={`rounded-lg px-3.5 py-2 text-xs font-semibold transition ${
-                activeTab === tab.id
+              className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold transition ${
+                activeTab === id
                   ? 'bg-slate-900 text-white shadow-xs'
-                  : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'
+                  : 'bg-white border border-stone-200 text-stone-600 hover:bg-stone-100'
               }`}
             >
-              {tab.label}
+              <Icon className="h-3.5 w-3.5" />
+              {label}
             </button>
           ))}
         </div>
@@ -515,20 +559,21 @@ export function LeadWorkspaceClient({
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-base">
-                      🚀 Processing Milestones
+                    <CardTitle className="flex items-center gap-2 text-base">
+                      <Rocket className="h-4 w-4 text-teal-700" />
+                      Processing Milestones
                     </CardTitle>
-                    <p className="text-xs text-slate-500 mt-0.5">
+                    <p className="text-xs text-stone-500 mt-0.5">
                       {doneMilestones} of {milestones.length} completed ({milestonePct}%) • Live on /track-status
                     </p>
                   </div>
-                  <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-xs font-bold text-emerald-700">
+                  <span className="rounded-full bg-teal-50 border border-teal-200 px-2.5 py-0.5 text-xs font-bold text-teal-800">
                     {milestonePct}% Done
                   </span>
                 </div>
-                <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
+                <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-stone-100">
                   <div
-                    className="h-full rounded-full bg-emerald-500 transition-all"
+                    className="h-full rounded-full bg-teal-700 transition-all"
                     style={{ width: `${milestonePct}%` }}
                   />
                 </div>
@@ -537,27 +582,27 @@ export function LeadWorkspaceClient({
                 {milestones.map((m, idx) => (
                   <div
                     key={m.key || idx}
-                    className={`flex flex-col sm:flex-row sm:items-center justify-between gap-2 rounded-lg border p-3 text-xs transition-all ${
+                    className={`flex flex-col sm:flex-row sm:items-center justify-between gap-2 rounded-xl border p-3 text-xs transition-all ${
                       m.status === 'DONE'
-                        ? 'border-emerald-200 bg-emerald-50/60'
+                        ? 'border-teal-200 bg-teal-50/50'
                         : m.status === 'IN_PROGRESS'
-                          ? 'border-sky-300 bg-sky-50/70'
-                          : 'border-slate-200 bg-white'
+                          ? 'border-stone-300 bg-[#FAF9F6]'
+                          : 'border-stone-200 bg-white'
                     }`}
                   >
                     <button
                       type="button"
                       disabled={isPending}
                       onClick={() => handleToggleMilestoneStatus(idx)}
-                      className="flex items-center gap-2.5 text-left font-semibold text-slate-900 hover:text-sky-700"
+                      className="flex items-center gap-2.5 text-left font-semibold text-slate-900 hover:text-teal-700"
                     >
                       <span
                         className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${
                           m.status === 'DONE'
-                            ? 'bg-emerald-600 text-white'
+                            ? 'bg-teal-700 text-white'
                             : m.status === 'IN_PROGRESS'
-                              ? 'bg-sky-600 text-white'
-                              : 'bg-slate-200 text-slate-700'
+                              ? 'bg-slate-900 text-white'
+                              : 'bg-stone-200 text-stone-700'
                         }`}
                       >
                         {m.status === 'DONE' ? '✓' : idx + 1}
@@ -575,14 +620,14 @@ export function LeadWorkspaceClient({
                             type="button"
                             disabled={isPending}
                             onClick={() => handleSetMilestoneStatus(idx, st)}
-                            className={`rounded-md px-2 py-1 text-[10px] font-bold transition ${
+                            className={`rounded-lg px-2 py-1 text-[10px] font-bold transition ${
                               active
                                 ? st === 'DONE'
-                                  ? 'bg-emerald-600 text-white'
+                                  ? 'bg-teal-700 text-white'
                                   : st === 'IN_PROGRESS'
-                                    ? 'bg-sky-600 text-white'
-                                    : 'bg-slate-700 text-white'
-                                : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                                    ? 'bg-slate-900 text-white'
+                                    : 'bg-stone-600 text-white'
+                                : 'bg-stone-100 text-stone-500 hover:bg-stone-200'
                             }`}
                           >
                             {st === 'IN_PROGRESS' ? 'ACTIVE' : st}
@@ -600,20 +645,21 @@ export function LeadWorkspaceClient({
               <CardHeader className="pb-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div>
-                    <CardTitle className="text-base">
-                      📋 Document Verification Checklist
+                    <CardTitle className="flex items-center gap-2 text-base">
+                      <ClipboardCheck className="h-4 w-4 text-teal-700" />
+                      Document Verification Checklist
                     </CardTitle>
-                    <p className="text-xs text-slate-500 mt-0.5">
+                    <p className="text-xs text-stone-500 mt-0.5">
                       {verifiedDocs} verified, {receivedDocs} received of {docs.length} required docs
                     </p>
                   </div>
-                  <span className="rounded-full bg-sky-50 border border-sky-200 px-2.5 py-0.5 text-xs font-bold text-sky-700">
+                  <span className="rounded-full bg-teal-50 border border-teal-200 px-2.5 py-0.5 text-xs font-bold text-teal-800">
                     {docPct}% Ready
                   </span>
                 </div>
-                <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
+                <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-stone-100">
                   <div
-                    className="h-full rounded-full bg-sky-600 transition-all"
+                    className="h-full rounded-full bg-teal-700 transition-all"
                     style={{ width: `${docPct}%` }}
                   />
                 </div>
@@ -622,13 +668,13 @@ export function LeadWorkspaceClient({
                 {docs.map((doc, idx) => (
                   <div
                     key={doc.key || idx}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white p-2.5 text-xs hover:border-slate-300 transition"
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 rounded-xl border border-stone-200 bg-white p-2.5 text-xs hover:border-stone-300 transition"
                   >
                     <button
                       type="button"
                       disabled={isPending}
                       onClick={() => handleToggleDocStatus(idx)}
-                      className="font-medium text-slate-800 text-left hover:text-sky-700"
+                      className="font-medium text-slate-800 text-left hover:text-teal-700"
                     >
                       {idx + 1}. {doc.title || `Document ${idx + 1}`}
                     </button>
@@ -643,16 +689,16 @@ export function LeadWorkspaceClient({
                             type="button"
                             disabled={isPending}
                             onClick={() => handleSetDocStatus(idx, st)}
-                            className={`rounded-md px-2 py-1 text-[10px] font-bold transition ${
+                            className={`rounded-lg px-2 py-1 text-[10px] font-bold transition ${
                               active
                                 ? st === 'VERIFIED'
-                                  ? 'bg-emerald-600 text-white'
+                                  ? 'bg-teal-700 text-white'
                                   : st === 'RECEIVED'
-                                    ? 'bg-sky-600 text-white'
+                                    ? 'bg-slate-800 text-white'
                                     : st === 'REJECTED'
                                       ? 'bg-rose-600 text-white'
-                                      : 'bg-amber-500 text-white'
-                                : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                                      : 'bg-amber-600 text-white'
+                                : 'bg-stone-100 text-stone-500 hover:bg-stone-200'
                             }`}
                           >
                             {st}
@@ -673,8 +719,9 @@ export function LeadWorkspaceClient({
           {/* Deterministic Quotation Builder */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">
-                📄 Create Quotation (Server-Calculated Totals)
+              <CardTitle className="flex items-center gap-2 text-base">
+                <FileText className="h-4 w-4 text-teal-700" />
+                Create Quotation (Server-Calculated Totals)
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -684,7 +731,7 @@ export function LeadWorkspaceClient({
                   <select
                     value={selectedPkgId}
                     onChange={(e) => handlePackageSelect(e.target.value)}
-                    className="flex h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+                    className="flex h-10 w-full rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-700/15"
                   >
                     <option value="">-- Custom Line Item --</option>
                     {packages.map((p) => (
@@ -737,14 +784,14 @@ export function LeadWorkspaceClient({
                   </div>
                 </div>
 
-                <div className="rounded-lg bg-slate-50 p-3 flex items-center justify-between text-sm">
-                  <span className="text-slate-600">Estimated Total Preview:</span>
-                  <strong className="text-slate-900">
+                <div className="rounded-xl bg-[#FAF9F6] border border-stone-200/80 p-3 flex items-center justify-between text-sm">
+                  <span className="text-stone-600">Estimated Total Preview:</span>
+                  <strong className="text-slate-900 tabular-nums">
                     {formatCurrency(Math.max(0, qty * unitPrice - discount))}
                   </strong>
                 </div>
 
-                <Button type="submit" size="sm" disabled={isPending}>
+                <Button type="submit" variant="secondary" size="sm" disabled={isPending}>
                   + Create Quotation Draft
                 </Button>
               </form>
@@ -754,8 +801,9 @@ export function LeadWorkspaceClient({
           {/* Existing Quotations List */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">
-                🗂️ Quotation History ({lead.quotations?.length || 0})
+              <CardTitle className="flex items-center gap-2 text-base">
+                <FileText className="h-4 w-4 text-stone-500" />
+                Quotation History ({lead.quotations?.length || 0})
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2.5">
@@ -763,11 +811,11 @@ export function LeadWorkspaceClient({
                 lead.quotations.map((q) => (
                   <div
                     key={q.id}
-                    className="flex items-center justify-between rounded-lg border border-slate-200 p-3 text-sm hover:bg-slate-50"
+                    className="flex items-center justify-between rounded-xl border border-stone-200 p-3 text-sm hover:bg-[#FAF9F6]"
                   >
                     <div>
                       <span className="font-semibold">Rev #{q.revision}</span> •{' '}
-                      <span className="font-bold text-slate-900">
+                      <span className="font-bold text-slate-900 tabular-nums">
                         {formatCurrency(q.grandTotal, q.currency)}
                       </span>
                       <div className="mt-1">
@@ -782,7 +830,7 @@ export function LeadWorkspaceClient({
                   </div>
                 ))
               ) : (
-                <div className="rounded-lg border border-dashed border-slate-200 p-8 text-center text-xs text-slate-500">
+                <div className="rounded-xl border border-dashed border-stone-200 p-8 text-center text-xs text-stone-500">
                   No quotations issued for this customer yet. Create a quotation draft on the left to generate an official price proposal.
                 </div>
               )}
@@ -796,8 +844,9 @@ export function LeadWorkspaceClient({
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">
-                📝 Staff Consultation Notes ({lead.notes?.length || 0})
+              <CardTitle className="flex items-center gap-2 text-base">
+                <StickyNote className="h-4 w-4 text-teal-700" />
+                Staff Consultation Notes ({lead.notes?.length || 0})
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -807,7 +856,7 @@ export function LeadWorkspaceClient({
                   value={noteText}
                   onChange={(e) => setNoteText(e.target.value)}
                 />
-                <Button type="submit" size="sm" disabled={isPending}>
+                <Button type="submit" variant="secondary" size="sm" disabled={isPending}>
                   Add Note
                 </Button>
               </form>
@@ -816,16 +865,16 @@ export function LeadWorkspaceClient({
                 {lead.notes?.map((note) => (
                   <div
                     key={note.id}
-                    className="rounded-lg bg-slate-50 p-3 text-sm border border-slate-100"
+                    className="rounded-xl bg-[#FAF9F6] p-3 text-sm border border-stone-200/80"
                   >
                     <p className="text-slate-800">{note.content}</p>
-                    <p className="mt-1 text-xs text-slate-400">
+                    <p className="mt-1 text-xs text-stone-400">
                       {note.actor?.name || 'Staff'} • {formatDate(note.createdAt)}
                     </p>
                   </div>
                 ))}
                 {(!lead.notes || lead.notes.length === 0) && (
-                  <p className="text-xs text-slate-400">No notes recorded yet.</p>
+                  <p className="text-xs text-stone-400">No notes recorded yet.</p>
                 )}
               </div>
             </CardContent>
@@ -833,8 +882,9 @@ export function LeadWorkspaceClient({
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">
-                ⏰ Manual Follow-Up Reminders ({lead.followUpTasks?.length || 0})
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Clock className="h-4 w-4 text-teal-700" />
+                Manual Follow-Up Reminders ({lead.followUpTasks?.length || 0})
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -854,7 +904,7 @@ export function LeadWorkspaceClient({
                   onChange={(e) => setFollowUpNote(e.target.value)}
                   required
                 />
-                <Button type="submit" size="sm" disabled={isPending}>
+                <Button type="submit" variant="secondary" size="sm" disabled={isPending}>
                   Schedule Task
                 </Button>
               </form>
@@ -863,11 +913,11 @@ export function LeadWorkspaceClient({
                 {lead.followUpTasks?.map((task) => (
                   <div
                     key={task.id}
-                    className="flex items-center justify-between rounded-lg border border-slate-200 p-3 text-sm"
+                    className="flex items-center justify-between rounded-xl border border-stone-200 p-3 text-sm"
                   >
                     <div>
                       <p className="font-medium text-slate-900">{task.note}</p>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-xs text-stone-500">
                         Due: {formatDate(task.dueAt)}
                       </p>
                     </div>
@@ -898,7 +948,7 @@ export function LeadWorkspaceClient({
                   </div>
                 ))}
                 {(!lead.followUpTasks || lead.followUpTasks.length === 0) && (
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-stone-400">
                     No follow-up tasks scheduled.
                   </p>
                 )}

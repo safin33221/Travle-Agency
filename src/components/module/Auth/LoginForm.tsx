@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { AlertTriangle, Search } from 'lucide-react';
 import { login, LoginActionResult } from '@/services/auth/login';
 import { Button } from '@/components/ui/button';
 import { Input, Label } from '@/components/ui/input';
@@ -30,15 +31,15 @@ export function LoginForm() {
   }, [state, router]);
 
   return (
-    <Card className="w-full max-w-md shadow-lg border-slate-200">
-      <CardHeader className="border-b border-slate-100 pb-4">
-        <span className="inline-flex w-fit items-center rounded-full bg-sky-50 border border-sky-200 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-sky-700">
+    <Card className="w-full max-w-md shadow-lg border-stone-200/90">
+      <CardHeader className="border-b border-stone-100 pb-4">
+        <span className="inline-flex w-fit items-center rounded-full bg-teal-50 border border-teal-200 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-teal-800">
           Operations CRM Desk
         </span>
         <CardTitle className="mt-2 text-2xl font-extrabold text-slate-900">
           Staff Sign In — {brand.agencyName}
         </CardTitle>
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-stone-500">
           Authorized travel counselors and agency administrators only.
         </p>
       </CardHeader>
@@ -48,8 +49,9 @@ export function LoginForm() {
             <input type="hidden" name="callbackUrl" value={callbackUrl} />
           )}
           {state.message && !state.success && (
-            <div className="rounded-lg border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs font-medium text-rose-700">
-              ⚠️ {state.message}
+            <div className="flex items-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs font-medium text-rose-700">
+              <AlertTriangle className="h-4 w-4 shrink-0" />
+              <span>{state.message}</span>
             </div>
           )}
 
@@ -59,8 +61,8 @@ export function LoginForm() {
               id="email"
               name="email"
               type="email"
-              placeholder="admin@travelpilot.internal"
-              defaultValue="admin@travelpilot.internal"
+              placeholder="counselor@agency.com"
+              autoComplete="email"
               required
             />
           </div>
@@ -73,7 +75,7 @@ export function LoginForm() {
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
-                className="text-xs font-semibold text-sky-700 hover:underline"
+                className="text-xs font-semibold text-teal-700 hover:underline"
               >
                 {showPassword ? 'Hide password' : 'Show password'}
               </button>
@@ -82,8 +84,8 @@ export function LoginForm() {
               id="password"
               name="password"
               type={showPassword ? 'text' : 'password'}
-              placeholder="••••••••••••"
-              defaultValue="Admin@TravelPilot2026!"
+              placeholder="Enter your password"
+              autoComplete="current-password"
               required
             />
           </div>
@@ -98,12 +100,13 @@ export function LoginForm() {
           </Button>
         </form>
 
-        <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
-          <Link href="/" className="font-medium text-slate-600 hover:text-sky-700">
+        <div className="mt-5 pt-4 border-t border-stone-100 flex items-center justify-between text-xs">
+          <Link href="/" className="font-medium text-stone-600 hover:text-teal-700">
             ← Back to Public Website
           </Link>
-          <Link href="/track-status" className="font-semibold text-sky-700 hover:underline">
-            🔍 Track a File
+          <Link href="/track-status" className="inline-flex items-center gap-1 font-semibold text-teal-700 hover:underline">
+            <Search className="h-3.5 w-3.5" />
+            Track a File
           </Link>
         </div>
       </CardContent>

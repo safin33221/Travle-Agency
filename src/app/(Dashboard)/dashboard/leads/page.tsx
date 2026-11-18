@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { ExternalLink, MessageSquare, Phone } from 'lucide-react';
 import { getLeads } from '@/services/leads/leads.service';
 import { ManagementPageHeader } from '@/components/shared/ManagementPageHeader';
 import { Card, CardContent } from '@/components/ui/card';
@@ -102,15 +103,15 @@ export default async function DashboardLeadsPage({
         </Link>
       </ManagementPageHeader>
 
-      <Card className="overflow-hidden border-slate-200/90 shadow-xs">
+      <Card className="overflow-hidden border-stone-200/90 shadow-2xs">
         <CardContent className="p-0">
           {/* Clean Single-Row Search & Filter Toolbar */}
-          <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-slate-200 bg-slate-50/50 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-stone-200 bg-stone-50/50 p-4">
             <div className="flex flex-1 flex-wrap items-center gap-2">
               <SearchFilter
                 paramName="search"
-                placeholder="Search name, phone, #tracking code, destination..."
-                className="min-w-[220px] max-w-sm"
+                placeholder="Search name, phone, #code, destination..."
+                className="min-w-[210px] max-w-sm"
               />
               <SelectFilter
                 paramName="category"
@@ -140,14 +141,14 @@ export default async function DashboardLeadsPage({
               <ClearFiltersButton />
             </div>
 
-            <span className="text-xs font-medium text-slate-500 whitespace-nowrap">
+            <span className="text-xs font-medium text-stone-500 whitespace-nowrap">
               {leadsRes.data.length} of <strong className="text-slate-800">{leadsRes.meta.total}</strong> files
             </span>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm border-collapse">
-              <thead className="border-b border-slate-200 bg-slate-50 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+              <thead className="border-b border-stone-200 bg-stone-50/80 text-[11px] font-semibold uppercase tracking-wider text-stone-500">
                 <tr>
                   <th className="py-3 pl-5 pr-3">Applicant</th>
                   <th className="py-3 px-3">File ID & Source</th>
@@ -158,7 +159,7 @@ export default async function DashboardLeadsPage({
                   <th className="py-3 pl-3 pr-5 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 bg-white">
+              <tbody className="divide-y divide-stone-100 bg-white">
                 {leadsRes.data.map((lead) => {
                   const cat = lead.category ?? 'TOUR';
                   const sectorMeta = SECTOR_CATALOG[cat] ?? SECTOR_CATALOG.TOUR;
@@ -178,18 +179,18 @@ export default async function DashboardLeadsPage({
                   return (
                     <tr
                       key={lead.id}
-                      className="group hover:bg-sky-50/40 transition-colors align-middle"
+                      className="group hover:bg-stone-50/70 transition-colors align-middle"
                     >
                       {/* 1. Applicant & Direct Contact */}
-                      <td className="py-3.5 pl-5 pr-3 min-w-[210px]">
+                      <td className="py-4 pl-5 pr-3 min-w-[215px]">
                         <Link
                           href={`/dashboard/leads/${lead.id}`}
-                          className="block font-semibold text-slate-900 group-hover:text-sky-700 hover:underline truncate max-w-[220px]"
+                          className="block font-semibold text-slate-900 group-hover:text-teal-700 hover:underline truncate max-w-[220px]"
                         >
                           {lead.customerName}
                         </Link>
-                        <div className="mt-1 flex items-center gap-1.5 text-xs text-slate-500 whitespace-nowrap">
-                          <span className="truncate max-w-[130px]">
+                        <div className="mt-1 flex items-center gap-1.5 text-xs text-stone-500 whitespace-nowrap">
+                          <span className="truncate max-w-[135px]">
                             {lead.customerPhone || lead.customerEmail || 'No contact'}
                           </span>
                           {lead.customerPhone && (
@@ -197,18 +198,18 @@ export default async function DashboardLeadsPage({
                               <a
                                 href={`tel:${lead.customerPhone.replace(/\s+/g, '')}`}
                                 title="Call customer"
-                                className="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-700 hover:bg-sky-100 hover:text-sky-800"
+                                className="inline-flex h-5 w-5 items-center justify-center rounded border border-stone-200 bg-white text-stone-600 hover:border-teal-600/40 hover:text-teal-700"
                               >
-                                📞
+                                <Phone className="h-3 w-3" />
                               </a>
                               <a
                                 href={`https://wa.me/${lead.customerPhone.replace(/[^0-9]/g, '')}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 title="WhatsApp customer"
-                                className="rounded border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700 hover:bg-emerald-100"
+                                className="inline-flex h-5 w-5 items-center justify-center rounded border border-stone-200 bg-white text-teal-700 hover:border-teal-600/40 hover:bg-teal-50"
                               >
-                                💬
+                                <MessageSquare className="h-3 w-3" />
                               </a>
                             </span>
                           )}
@@ -216,101 +217,94 @@ export default async function DashboardLeadsPage({
                       </td>
 
                       {/* 2. File Tracking ID & Source */}
-                      <td className="py-3.5 px-3 whitespace-nowrap">
+                      <td className="py-4 px-3 whitespace-nowrap">
                         {lead.trackingCode ? (
                           <Link
                             href={`/track-status?code=${lead.trackingCode}`}
                             target="_blank"
                             title="Open Public Client Tracker"
-                            className="inline-flex items-center gap-1 rounded-md bg-sky-50 border border-sky-200 px-2 py-0.5 font-mono text-[11px] font-bold text-sky-700 hover:bg-sky-100"
+                            className="inline-flex items-center gap-1 rounded-md bg-stone-100 border border-stone-200 px-2 py-0.5 font-mono text-[11px] font-semibold text-slate-700 hover:border-teal-600/40 hover:text-teal-800"
                           >
-                            #{lead.trackingCode} ↗
+                            <span>#{lead.trackingCode}</span>
+                            <ExternalLink className="h-2.5 w-2.5 text-stone-400" />
                           </Link>
                         ) : (
-                          <span className="text-xs text-slate-400">—</span>
+                          <span className="text-xs text-stone-400">—</span>
                         )}
-                        <p className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                        <p className="mt-1 text-[10px] font-medium uppercase tracking-wide text-stone-400">
                           {lead.source}
                         </p>
                       </td>
 
                       {/* 3. Sector & Destination */}
-                      <td className="py-3.5 px-3 max-w-[190px]">
+                      <td className="py-4 px-3 max-w-[190px]">
                         <span
-                          className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-semibold whitespace-nowrap ${sectorMeta.badgeColor}`}
+                          className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-medium whitespace-nowrap ${sectorMeta.badgeColor}`}
                         >
                           {sectorMeta.shortLabel}
                         </span>
                         <p
                           title={lead.destination || 'TBD'}
-                          className="mt-1 font-medium text-slate-700 text-xs truncate"
+                          className="mt-1 text-slate-700 text-xs truncate"
                         >
                           {lead.destination || 'TBD'}
                         </p>
                       </td>
 
                       {/* 4. Progress */}
-                      <td className="py-3.5 px-3 w-[155px]">
+                      <td className="py-4 px-3 w-[155px]">
                         <div className="space-y-1">
                           <div className="flex items-center justify-between text-[11px]">
-                            <span className="text-slate-600 font-medium">
+                            <span className="text-stone-600">
                               Steps {doneMilestones}/{milestones.length}
                             </span>
-                            <span className="font-bold text-sky-700 tabular-nums">
+                            <span className="font-semibold text-teal-700 tabular-nums">
                               {milestonePct}%
                             </span>
                           </div>
-                          <div className="h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
+                          <div className="h-1.5 w-full rounded-full bg-stone-200/70 overflow-hidden">
                             <div
-                              className="h-full rounded-full bg-emerald-500 transition-all"
+                              className="h-full rounded-full bg-teal-700 transition-all"
                               style={{ width: `${milestonePct}%` }}
                             />
                           </div>
-                          <p className="text-[11px] text-slate-500">
-                            Docs <strong>{verifiedDocs}</strong>/{docs.length}
+                          <p className="text-[11px] text-stone-500">
+                            Docs <strong className="text-slate-700">{verifiedDocs}</strong>/{docs.length}
                           </p>
                         </div>
                       </td>
 
                       {/* 5. Budget & Match */}
-                      <td className="py-3.5 px-3 whitespace-nowrap">
+                      <td className="py-4 px-3 whitespace-nowrap">
                         <p className="font-semibold text-slate-900 text-xs tabular-nums">
                           {formatCurrency(lead.budget)}
                         </p>
                         {lead.eligibilityStatus ? (
-                          <span
-                            className={`mt-1 inline-block rounded px-1.5 py-0.5 text-[10px] font-bold ${
-                              lead.eligibilityStatus === 'HIGH_MATCH'
-                                ? 'bg-emerald-100 text-emerald-800'
-                                : lead.eligibilityStatus === 'LOW_MATCH'
-                                  ? 'bg-rose-100 text-rose-800'
-                                  : 'bg-amber-100 text-amber-800'
-                            }`}
-                          >
+                          <span className="mt-1 inline-block text-[11px] font-medium text-stone-500">
                             {String(lead.eligibilityStatus).replace(/_/g, ' ')}
                           </span>
                         ) : lead.travelStartDate ? (
-                          <p className="mt-1 text-[11px] text-slate-400">
+                          <p className="mt-1 text-[11px] text-stone-400">
                             {formatDate(lead.travelStartDate)}
                           </p>
                         ) : null}
                       </td>
 
                       {/* 6. Stage & Counselor */}
-                      <td className="py-3.5 px-3 whitespace-nowrap">
+                      <td className="py-4 px-3 whitespace-nowrap">
                         <StatusBadge status={lead.stage} />
-                        <p className="text-[11px] text-slate-500 mt-1 truncate max-w-[120px]">
+                        <p className="text-[11px] text-stone-500 mt-1 truncate max-w-[120px]">
                           {lead.assignedTo?.name || 'Unassigned'}
                         </p>
                       </td>
 
                       {/* 7. Action */}
-                      <td className="py-3.5 pl-3 pr-5 text-right whitespace-nowrap">
+                      <td className="py-4 pl-3 pr-5 text-right whitespace-nowrap">
                         <Link href={`/dashboard/leads/${lead.id}`}>
                           <Button
-                            variant="secondary"
+                            variant="outline"
                             size="sm"
-                            className="whitespace-nowrap"
+                            className="whitespace-nowrap hover:border-teal-600/50 hover:text-teal-800"
                           >
                             Open →
                           </Button>
@@ -323,7 +317,7 @@ export default async function DashboardLeadsPage({
                   <tr>
                     <td
                       colSpan={7}
-                      className="py-12 text-center text-sm text-slate-500"
+                      className="py-12 text-center text-sm text-stone-500"
                     >
                       No customer files matched your current filters.
                     </td>

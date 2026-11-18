@@ -12,7 +12,7 @@ export function LogoutBtn() {
   const handleLogout = () => {
     startTransition(async () => {
       await logout();
-      router.push('/login');
+      router.push('/');
       router.refresh();
     });
   };
