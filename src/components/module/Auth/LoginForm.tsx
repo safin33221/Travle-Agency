@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { login, LoginActionResult } from '@/services/auth/login';
 import { Button } from '@/components/ui/button';
 import { Input, Label } from '@/components/ui/input';
@@ -16,6 +16,8 @@ const initialState: LoginActionResult = {
 
 export function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '';
   const brand = useBrand();
   const [state, formAction, isPending] = useActionState(login, initialState);
   const [showPassword, setShowPassword] = useState(false);
@@ -42,6 +44,9 @@ export function LoginForm() {
       </CardHeader>
       <CardContent className="pt-5">
         <form action={formAction} className="space-y-4">
+          {callbackUrl && (
+            <input type="hidden" name="callbackUrl" value={callbackUrl} />
+          )}
           {state.message && !state.success && (
             <div className="rounded-lg border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs font-medium text-rose-700">
               ⚠️ {state.message}
