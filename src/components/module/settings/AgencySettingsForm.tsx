@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import { updateAgencySettings } from '@/services/settings/settings.service';
 import { AgencySettings } from '@/types/api';
 import { Button } from '@/components/ui/button';
@@ -12,12 +13,15 @@ export function AgencySettingsForm({
 }: {
   settings: AgencySettings | null;
 }) {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [msg, setMsg] = useState('');
+  const [isError, setIsError] = useState(false);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setMsg('');
+    setIsError(false);
     const formData = new FormData(e.currentTarget);
 
     startTransition(async () => {
@@ -34,7 +38,11 @@ export function AgencySettingsForm({
         quotationTerms: String(formData.get('quotationTerms') || ''),
       });
 
+      setIsError(!res.success);
       setMsg(res.message);
+      if (res.success) {
+        router.refresh();
+      }
     });
   };
 
@@ -46,7 +54,13 @@ export function AgencySettingsForm({
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           {msg && (
-            <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-3 text-sm text-emerald-700">
+            <div
+              className={`rounded-lg border p-3 text-sm ${
+                isError
+                  ? 'bg-rose-50 border-rose-200 text-rose-700'
+                  : 'bg-emerald-50 border-emerald-200 text-emerald-700'
+              }`}
+            >
               {msg}
             </div>
           )}

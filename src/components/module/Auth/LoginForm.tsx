@@ -7,7 +7,7 @@ import { login, LoginActionResult } from '@/services/auth/login';
 import { Button } from '@/components/ui/button';
 import { Input, Label } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { brandConfig } from '@/config/brand.config';
+import { useBrand } from '@/components/providers/BrandProvider';
 
 const initialState: LoginActionResult = {
   success: false,
@@ -16,6 +16,7 @@ const initialState: LoginActionResult = {
 
 export function LoginForm() {
   const router = useRouter();
+  const brand = useBrand();
   const [state, formAction, isPending] = useActionState(login, initialState);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -33,7 +34,7 @@ export function LoginForm() {
           Operations CRM Desk
         </span>
         <CardTitle className="mt-2 text-2xl font-extrabold text-slate-900">
-          Staff Sign In — {brandConfig.shortName}
+          Staff Sign In — {brand.agencyName}
         </CardTitle>
         <p className="text-xs text-slate-500">
           Authorized travel counselors and agency administrators only.

@@ -1,23 +1,27 @@
+'use client';
+
 import Link from 'next/link';
 import { brandConfig } from '@/config/brand.config';
+import { useBrand } from '@/components/providers/BrandProvider';
 import { Logo } from '@/components/shared/Logo';
 
 export function Footer() {
-  const cleanWhatsapp = brandConfig.contact.whatsapp.replace(/[^0-9]/g, '');
+  const brand = useBrand();
+  const cleanWhatsapp = brand.whatsapp.replace(/[^0-9]/g, '');
 
   return (
     <footer className="border-t border-slate-200 bg-slate-900 text-slate-300">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           <div className="md:col-span-1">
-            <div className="bg-white inline-block px-3 py-1.5 rounded-lg mb-3">
+            <div className="bg-white inline-block px-3 py-1.5 rounded-lg mb-3 max-w-full">
               <Logo href="/" />
             </div>
             <p className="text-sm text-slate-400 mt-2 leading-relaxed">
               {brandConfig.tagline}
             </p>
             <p className="text-xs text-slate-500 mt-4">
-              {brandConfig.legalName}
+              {brand.legalName}
             </p>
           </div>
 
@@ -84,10 +88,10 @@ export function Footer() {
             <ul className="mt-4 space-y-2.5 text-sm text-slate-400">
               <li>
                 <a
-                  href={`tel:${brandConfig.contact.phone.replace(/\s+/g, '')}`}
+                  href={`tel:${brand.phone.replace(/\s+/g, '')}`}
                   className="hover:text-white transition"
                 >
-                  📞 {brandConfig.contact.phone}
+                  📞 {brand.phone}
                 </a>
               </li>
               <li>
@@ -102,19 +106,19 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href={`mailto:${brandConfig.contact.email}`}
+                  href={`mailto:${brand.email}`}
                   className="hover:text-white transition"
                 >
-                  ✉️ {brandConfig.contact.email}
+                  ✉️ {brand.email}
                 </a>
               </li>
-              <li className="text-xs leading-relaxed">📍 {brandConfig.contact.address}</li>
-              <li className="text-xs">🕒 {brandConfig.contact.officeHours}</li>
+              <li className="text-xs leading-relaxed">📍 {brand.address}</li>
+              <li className="text-xs">🕒 {brand.officeHours}</li>
             </ul>
           </div>
         </div>
         <div className="mt-10 border-t border-slate-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
-          <p>© {brandConfig.establishedYear} {brandConfig.legalName}. All rights reserved.</p>
+          <p>© {brandConfig.establishedYear} {brand.legalName}. All rights reserved.</p>
           <p>Transparent Consultancy • Zero Hidden Charges • 24/7 Online File Tracking</p>
         </div>
       </div>

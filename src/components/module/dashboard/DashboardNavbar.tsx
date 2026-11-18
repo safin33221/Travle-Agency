@@ -101,26 +101,23 @@ export function DashboardNavbar({ user }: { user: StaffUser }) {
         </form>
 
         {/* Right: User Identity & Quick Actions */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2 shrink-0">
           <Link
             href="/my-profile"
-            className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50/70 px-2.5 py-1.5 hover:bg-slate-100 transition"
-            title="View Staff Profile"
+            className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50/70 px-2.5 py-1.5 hover:bg-slate-100 transition whitespace-nowrap"
+            title={`${user.name} (${user.email})`}
           >
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-sky-600 text-[11px] font-bold text-white">
+            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sky-600 text-[11px] font-bold text-white">
               {(user.name || 'S').charAt(0).toUpperCase()}
             </div>
-            <div className="hidden sm:block text-left leading-tight">
-              <p className="text-xs font-semibold text-slate-900 truncate max-w-[120px]">
-                {user.name}
-              </p>
-              <p className="text-[10px] text-slate-500 truncate max-w-[120px]">
-                {user.email}
-              </p>
-            </div>
+            <span className="hidden sm:inline text-xs font-semibold text-slate-900 max-w-[110px] truncate">
+              {user.name}
+            </span>
             <StatusBadge status={user.role} />
           </Link>
-          <LogoutBtn />
+          <div className="shrink-0">
+            <LogoutBtn />
+          </div>
         </div>
       </header>
 

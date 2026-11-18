@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { publicContentConfig } from '@/config/public-content.config';
+import { useBrand } from '@/components/providers/BrandProvider';
 import { Button } from '@/components/ui/button';
 
 const QUICK_SECTORS = [
@@ -34,7 +35,8 @@ const QUICK_SECTORS = [
 ];
 
 export function HeroSection() {
-  const { hero, stats } = publicContentConfig;
+  const { stats } = publicContentConfig;
+  const brand = useBrand();
   const router = useRouter();
   const [trackingCode, setTrackingCode] = useState('');
 
@@ -55,7 +57,7 @@ export function HeroSection() {
           {/* Left Hero Copy & CTAs */}
           <div className="lg:col-span-7">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-500/15 border border-sky-400/30 px-3.5 py-1 text-xs font-semibold text-sky-300">
-              ✓ {hero.badge}
+              ✓ Trusted Travel Partner • {brand.agencyName}
             </span>
             <h1 className="mt-5 text-3xl font-extrabold tracking-tight sm:text-5xl leading-tight">
               Your Trusted Partner for Tours, Hajj, Student Visas & Work Permits

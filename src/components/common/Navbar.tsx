@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Logo } from '@/components/shared/Logo';
 import { Button } from '@/components/ui/button';
-import { brandConfig } from '@/config/brand.config';
+import { useBrand } from '@/components/providers/BrandProvider';
 import { cn } from '@/lib/utils';
 
 const NAV_LINKS = [
@@ -17,6 +17,7 @@ const NAV_LINKS = [
 
 export function Navbar() {
   const pathname = usePathname();
+  const brand = useBrand();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const isRouteActive = (href: string, exact: boolean) =>
@@ -151,10 +152,10 @@ export function Navbar() {
             <div className="p-4 border-t border-slate-200 bg-slate-50 space-y-2 text-xs text-slate-600">
               <p className="font-semibold text-slate-800">Need Immediate Help?</p>
               <a
-                href={`tel:${brandConfig.contact.phone.replace(/\s+/g, '')}`}
+                href={`tel:${brand.phone.replace(/\s+/g, '')}`}
                 className="block rounded-lg bg-white border border-slate-200 px-3 py-2 text-center font-semibold text-slate-800"
               >
-                📞 Call {brandConfig.contact.phone}
+                📞 Call {brand.phone}
               </a>
               <Link
                 href="/login"

@@ -109,10 +109,10 @@ export function DashboardSidebar({ role }: { role: StaffRole }) {
 
   return (
     <aside className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 border-r border-slate-200 bg-white z-20">
-      <div className="flex h-16 items-center justify-between px-5 border-b border-slate-200">
+      <div className="flex h-16 items-center justify-between gap-2 px-5 border-b border-slate-200">
         <Logo href="/dashboard" />
-        <span className="rounded-md bg-sky-50 border border-sky-200 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-sky-700">
-          CRM Desk
+        <span className="shrink-0 whitespace-nowrap rounded-md bg-sky-50 border border-sky-200 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-sky-700">
+          CRM
         </span>
       </div>
 

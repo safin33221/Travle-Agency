@@ -1,8 +1,11 @@
+'use client';
+
 import Link from 'next/link';
-import { brandConfig } from '@/config/brand.config';
+import { useBrand } from '@/components/providers/BrandProvider';
 
 export function FloatingHelpWidget() {
-  const cleanWhatsapp = brandConfig.contact.whatsapp.replace(/[^0-9]/g, '');
+  const brand = useBrand();
+  const cleanWhatsapp = brand.whatsapp.replace(/[^0-9]/g, '');
 
   return (
     <div className="fixed bottom-4 right-4 z-40 flex items-center gap-2">
