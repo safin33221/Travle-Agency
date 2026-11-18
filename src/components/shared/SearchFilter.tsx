@@ -53,18 +53,38 @@ export function SearchFilter({
 
   return (
     <div className={`relative flex-1 min-w-[240px] ${className}`}>
+      <svg
+        className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
+        <circle cx="11" cy="11" r="8" />
+        <path d="m21 21-4.3-4.3" />
+      </svg>
       <Input
-        type="search"
+        type="text"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder={placeholder}
-        className="pr-8"
+        className="pl-9 pr-14"
       />
-      {isPending && (
-        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400">
-          ...
-        </span>
-      )}
+      <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
+        {isPending && (
+          <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-sky-600 border-t-transparent" />
+        )}
+        {value && (
+          <button
+            type="button"
+            onClick={() => setValue('')}
+            aria-label="Clear search"
+            className="rounded-full bg-slate-100 px-1.5 py-0.5 text-[11px] font-bold text-slate-500 hover:bg-slate-200 hover:text-slate-800"
+          >
+            ✕
+          </button>
+        )}
+      </div>
     </div>
   );
 }

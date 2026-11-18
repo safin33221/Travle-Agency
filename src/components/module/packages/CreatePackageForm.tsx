@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createPackage } from '@/services/packages/packages.service';
 import { ServiceCategory } from '@/types/api';
@@ -120,6 +121,21 @@ export function CreatePackageForm() {
                 required
               />
             </div>
+            <div>
+              <Label htmlFor="currency">Currency</Label>
+              <select
+                id="currency"
+                name="currency"
+                defaultValue="BDT"
+                className="flex h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900"
+              >
+                <option value="BDT">BDT (৳)</option>
+                <option value="USD">USD ($)</option>
+                <option value="SAR">SAR (﷼)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="GBP">GBP (£)</option>
+              </select>
+            </div>
           </div>
 
           <div>
@@ -151,9 +167,14 @@ export function CreatePackageForm() {
             </div>
           </div>
 
-          <div className="flex justify-end">
+          <div className="flex items-center justify-end gap-3 pt-2 border-t border-slate-100">
+            <Link href="/dashboard/packages">
+              <Button type="button" variant="outline">
+                Cancel
+              </Button>
+            </Link>
             <Button type="submit" variant="secondary" disabled={isPending}>
-              {isPending ? 'Publishing...' : 'Publish Approved Package'}
+              {isPending ? 'Publishing...' : '✓ Publish Approved Package'}
             </Button>
           </div>
         </form>

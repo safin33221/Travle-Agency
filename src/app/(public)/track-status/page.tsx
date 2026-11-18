@@ -97,18 +97,13 @@ function TrackStatusContent() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
-      <div className="text-center mb-8">
+      <div className="text-center mb-6">
         <span className="rounded-full bg-sky-100 px-3 py-1 text-xs font-bold uppercase text-sky-800">
-          24/7 Self-Service File Tracker • No Login Needed
+          24/7 Live File Tracker
         </span>
-        <h1 className="mt-3 text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+        <h1 className="mt-2.5 text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
           Track Your Visa, Work Permit or Package Status
         </h1>
-        <p className="mt-2 text-sm text-slate-600 max-w-xl mx-auto">
-          Enter the File Tracking Code you received after submitting your inquiry (for example{' '}
-          <strong className="font-mono text-slate-800">SV-820383</strong> or{' '}
-          <strong className="font-mono text-slate-800">WP-102938</strong>) to view live progress.
-        </p>
       </div>
 
       <Card className="p-5 sm:p-6 mb-8 border-slate-200 shadow-sm">
@@ -232,18 +227,15 @@ function TrackStatusContent() {
             <div className="rounded-2xl border border-amber-200 bg-amber-50/80 p-5 space-y-2">
               <div className="flex items-center justify-between gap-2">
                 <h3 className="text-sm font-bold text-amber-950">
-                  📌 Action Needed From You ({pendingDocs.length} Pending Document{pendingDocs.length === 1 ? '' : 's'})
+                  📌 Pending Documents ({pendingDocs.length})
                 </h3>
                 <a
                   href={`tel:${brandConfig.contact.phone.replace(/\s+/g, '')}`}
                   className="text-xs font-bold text-amber-900 underline"
                 >
-                  Need help? Call {brandConfig.contact.phone}
+                  Call {brandConfig.contact.phone}
                 </a>
               </div>
-              <p className="text-xs text-amber-900">
-                To move your file to the next stage faster, please submit or bring these items to our desk:
-              </p>
               <div className="flex flex-wrap gap-1.5 pt-1">
                 {pendingDocs.map((d, i) => (
                   <span
@@ -266,14 +258,9 @@ function TrackStatusContent() {
           {/* Step-by-Step Milestone Progress */}
           <Card className="p-6">
             <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
-              <div>
-                <h3 className="text-base font-bold text-slate-900">
-                  🚀 Application & Visa Processing Milestones
-                </h3>
-                <p className="text-xs text-slate-500">
-                  Step-by-step live status updated directly by your counselor
-                </p>
-              </div>
+              <h3 className="text-base font-bold text-slate-900">
+                🚀 Processing Milestones
+              </h3>
               <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full px-2.5 py-0.5">
                 {doneMilestones} of {milestones.length} Completed
               </span>
@@ -335,17 +322,14 @@ function TrackStatusContent() {
 
           {/* Document Checklist Verification Status */}
           <Card className="p-6">
-            <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
               <h3 className="text-base font-bold text-slate-900">
-                📋 Document Verification Checklist
+                📋 Document Checklist
               </h3>
               <span className="text-xs text-slate-500">
                 {verifiedDocs} Verified • {pendingDocs.length} Pending
               </span>
             </div>
-            <p className="text-xs text-slate-500 mb-4">
-              <strong>PENDING</strong> = You still need to submit • <strong>RECEIVED</strong> = We have it & reviewing • <strong>VERIFIED</strong> = Approved for submission.
-            </p>
             <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
               {docs.map((doc, idx) => (
                 <div

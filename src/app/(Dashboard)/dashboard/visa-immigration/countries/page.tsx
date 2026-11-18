@@ -37,12 +37,7 @@ export default async function AdminCountriesListPage({
       <VisaSubNav />
 
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Destination Countries</h1>
-          <p className="text-sm text-slate-600">
-            Configure countries where the agency offers visa and immigration assistance
-          </p>
-        </div>
+        <h1 className="text-2xl font-bold text-slate-900">Destination Countries</h1>
         <Link
           href="/dashboard/visa-immigration/countries/create"
           className="rounded-lg bg-blue-600 px-4 py-2 text-xs font-semibold text-white hover:bg-blue-700"

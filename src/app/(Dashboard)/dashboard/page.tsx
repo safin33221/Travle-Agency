@@ -15,14 +15,13 @@ export const instant = false;
 const ORDERED_STAGES: ReadonlyArray<{
   key: LeadStage;
   label: string;
-  hint: string;
 }> = [
-  { key: 'NEW', label: 'New Inquiries', hint: 'Needs initial call & qualification' },
-  { key: 'QUALIFIED', label: 'Qualified Files', hint: 'Collecting documents & preferences' },
-  { key: 'QUOTED', label: 'Quotation Sent', hint: 'Awaiting client price approval' },
-  { key: 'FOLLOW_UP', label: 'In Follow-Up', hint: 'Active visa/package processing' },
-  { key: 'WON', label: 'Won / Confirmed', hint: 'Payment & file finalized' },
-  { key: 'LOST', label: 'Closed / Lost', hint: 'Archived or cancelled inquiry' },
+  { key: 'NEW', label: 'New Inquiries' },
+  { key: 'QUALIFIED', label: 'Qualified Files' },
+  { key: 'QUOTED', label: 'Quotation Sent' },
+  { key: 'FOLLOW_UP', label: 'In Follow-Up' },
+  { key: 'WON', label: 'Won / Confirmed' },
+  { key: 'LOST', label: 'Closed / Lost' },
 ];
 
 export default async function DashboardOverviewPage() {
@@ -39,134 +38,48 @@ export default async function DashboardOverviewPage() {
   return (
     <div className="space-y-6">
       <ManagementPageHeader
-        title="Agency Operations Command Center"
-        description="Monitor live customer inquiries, visa & tour file checklists, quotation revenue, and pending follow-ups."
+        title="Operations Overview"
         actionLabel="+ Record New Inquiry"
         actionHref="/dashboard/leads/create"
       >
         <Link href="/dashboard/leads">
-          <Button variant="outline">Open All Leads →</Button>
+          <Button variant="outline">All Leads →</Button>
         </Link>
       </ManagementPageHeader>
 
-      {/* End-to-End Agency Workflow Guide */}
-      <div className="rounded-xl border border-sky-200 bg-gradient-to-r from-sky-50/90 via-white to-indigo-50/60 p-4 shadow-xs">
-        <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-          <div className="flex items-center gap-2">
-            <span className="rounded-md bg-sky-600 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
-              Quick Workflow Guide
-            </span>
-            <h2 className="text-xs font-bold text-slate-800">
-              How Customer Inquiries Move Through Your Agency Workspace
-            </h2>
-          </div>
-          <Link
-            href="/track-status"
-            target="_blank"
-            className="text-xs font-semibold text-sky-700 hover:underline"
-          >
-            Test Public File Tracker ↗
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <Link
-            href="/dashboard/leads/create"
-            className="group rounded-lg border border-slate-200/90 bg-white p-3 transition hover:border-sky-300 hover:shadow-xs"
-          >
-            <div className="flex items-center gap-2">
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-sky-100 text-[11px] font-bold text-sky-700">
-                1
-              </span>
-              <p className="text-xs font-bold text-slate-900 group-hover:text-sky-700">
-                Capture Inquiry & File ID
-              </p>
-            </div>
-            <p className="mt-1 text-[11px] text-slate-500">
-              Website forms or staff entry auto-generate a tracking code (e.g.{' '}
-              <code className="font-mono text-slate-700">#SV-820383</code>).
-            </p>
-          </Link>
-
-          <Link
-            href="/dashboard/leads"
-            className="group rounded-lg border border-slate-200/90 bg-white p-3 transition hover:border-sky-300 hover:shadow-xs"
-          >
-            <div className="flex items-center gap-2">
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-100 text-[11px] font-bold text-emerald-700">
-                2
-              </span>
-              <p className="text-xs font-bold text-slate-900 group-hover:text-sky-700">
-                Verify Docs & Milestones
-              </p>
-            </div>
-            <p className="mt-1 text-[11px] text-slate-500">
-              Open any lead file to mark documents <span className="font-medium">VERIFIED</span> and advance visa/tour milestones.
-            </p>
-          </Link>
-
-          <Link
-            href="/dashboard/leads"
-            className="group rounded-lg border border-slate-200/90 bg-white p-3 transition hover:border-sky-300 hover:shadow-xs"
-          >
-            <div className="flex items-center gap-2">
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-100 text-[11px] font-bold text-amber-800">
-                3
-              </span>
-              <p className="text-xs font-bold text-slate-900 group-hover:text-sky-700">
-                Quotations & Follow-Ups
-              </p>
-            </div>
-            <p className="mt-1 text-[11px] text-slate-500">
-              Create itemized client quotations, export approved PDFs, and schedule follow-up tasks.
-            </p>
-          </Link>
-
-          <Link
-            href="/track-status"
-            target="_blank"
-            className="group rounded-lg border border-slate-200/90 bg-white p-3 transition hover:border-sky-300 hover:shadow-xs"
-          >
-            <div className="flex items-center gap-2">
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-indigo-100 text-[11px] font-bold text-indigo-700">
-                4
-              </span>
-              <p className="text-xs font-bold text-slate-900 group-hover:text-sky-700">
-                24/7 Client Live Tracker
-              </p>
-            </div>
-            <p className="mt-1 text-[11px] text-slate-500">
-              Applicants enter their tracking code on <span className="font-mono">/track-status</span> to see live updates.
-            </p>
-          </Link>
-        </div>
-      </div>
-
-      {/* Top KPI Cards */}
+      {/* Top KPI Cards (Clickable to jump straight to filtered queues) */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Total Customer Files"
           value={totalLeads}
           subtitle={`NEW: ${byStage.NEW || 0} • QUALIFIED: ${byStage.QUALIFIED || 0}`}
           trend="neutral"
+          icon="👥"
+          href="/dashboard/leads"
         />
         <StatCard
           title="Approved Quotations"
           value={summary?.quotations?.approved ?? 0}
           subtitle={`${summary?.quotations?.draft ?? 0} drafts awaiting review`}
           trend="up"
+          icon="📄"
+          href="/dashboard/leads?stage=QUOTED"
         />
         <StatCard
           title="Confirmed Won Revenue"
           value={formatCurrency(summary?.quotations?.wonRevenue ?? '0')}
           subtitle={`From ${byStage.WON || 0} won customer files`}
           trend="up"
+          icon="💰"
+          href="/dashboard/leads?stage=WON"
         />
         <StatCard
           title="Pending Follow-Ups"
           value={summary?.followUps?.openCount ?? 0}
           subtitle={`${summary?.followUps?.overdueCount ?? 0} overdue reminders`}
           trend={(summary?.followUps?.overdueCount ?? 0) > 0 ? 'warning' : 'neutral'}
+          icon="⏰"
+          href="/dashboard/leads?stage=FOLLOW_UP"
         />
       </div>
 
@@ -174,14 +87,7 @@ export default async function DashboardOverviewPage() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
         <Card className="lg:col-span-7">
           <CardHeader className="flex flex-row items-center justify-between pb-3">
-            <div>
-              <CardTitle className="text-base">
-                Interactive Lead Pipeline (Click Stage to Filter)
-              </CardTitle>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Click any stage card below to view those specific customer files
-              </p>
-            </div>
+            <CardTitle className="text-base">Lead Pipeline</CardTitle>
             <Link href="/dashboard/leads">
               <Button variant="ghost" size="sm">
                 All Files ({totalLeads}) →
@@ -210,9 +116,6 @@ export default async function DashboardOverviewPage() {
                       <p className="mt-2.5 text-2xl font-extrabold text-slate-900">
                         {count}
                       </p>
-                      <p className="mt-0.5 text-[11px] text-slate-500">
-                        {st.hint}
-                      </p>
                     </div>
                     <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
                       <div
@@ -229,14 +132,7 @@ export default async function DashboardOverviewPage() {
 
         <Card className="lg:col-span-5">
           <CardHeader className="flex flex-row items-center justify-between pb-3">
-            <div>
-              <CardTitle className="text-base">
-                Upcoming Follow-Up Reminders
-              </CardTitle>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Scheduled callbacks & document collection tasks
-              </p>
-            </div>
+            <CardTitle className="text-base">Upcoming Follow-Ups</CardTitle>
             <Link href="/dashboard/leads">
               <Button variant="ghost" size="sm">
                 Manage →
@@ -245,32 +141,49 @@ export default async function DashboardOverviewPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-2.5">
-              {upcomingTasks.map((task) => (
-                <div
-                  key={task.id}
-                  className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50/50 p-3 text-sm hover:bg-white transition"
-                >
-                  <div className="min-w-0">
-                    <p className="font-semibold text-slate-900 truncate">
-                      {task.lead?.customerName || 'Customer Inquiry'}
-                    </p>
-                    <p className="text-xs text-slate-600 line-clamp-1">
-                      {task.note}
-                    </p>
-                    <p className="text-[11px] text-slate-400 mt-0.5">
-                      Due: <strong className="text-slate-600">{formatDate(task.dueAt)}</strong> •{' '}
-                      {task.assignedTo?.name || 'Staff'}
-                    </p>
+              {upcomingTasks.map((task) => {
+                const isOverdue = Boolean(task.isOverdue);
+                return (
+                  <div
+                    key={task.id}
+                    className={`flex items-center justify-between gap-3 rounded-lg border p-3 text-sm transition ${
+                      isOverdue
+                        ? 'border-rose-200 bg-rose-50/60 hover:bg-rose-50'
+                        : 'border-slate-200 bg-slate-50/50 hover:bg-white'
+                    }`}
+                  >
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p className="font-semibold text-slate-900 truncate">
+                          {task.lead?.customerName || 'Customer Inquiry'}
+                        </p>
+                        {isOverdue && (
+                          <span className="rounded bg-rose-100 px-1.5 py-0.5 text-[10px] font-bold uppercase text-rose-700">
+                            Overdue
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-slate-600 line-clamp-1">
+                        {task.note}
+                      </p>
+                      <p className="text-[11px] text-slate-500 mt-0.5">
+                        Due:{' '}
+                        <strong className={isOverdue ? 'text-rose-700' : 'text-slate-700'}>
+                          {formatDate(task.dueAt)}
+                        </strong>{' '}
+                        • {task.assignedTo?.name || 'Staff'}
+                      </p>
+                    </div>
+                    {task.lead?.id && (
+                      <Link href={`/dashboard/leads/${task.lead.id}`}>
+                        <Button variant="outline" size="sm">
+                          Open →
+                        </Button>
+                      </Link>
+                    )}
                   </div>
-                  {task.lead?.id && (
-                    <Link href={`/dashboard/leads/${task.lead.id}`}>
-                      <Button variant="outline" size="sm">
-                        Open →
-                      </Button>
-                    </Link>
-                  )}
-                </div>
-              ))}
+                );
+              })}
               {upcomingTasks.length === 0 && (
                 <div className="rounded-lg border border-dashed border-slate-200 py-8 px-4 text-center">
                   <p className="text-sm font-medium text-slate-600">
@@ -289,17 +202,10 @@ export default async function DashboardOverviewPage() {
       {/* Recent Customer Files & Live Checklist Progress */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between pb-3">
-          <div>
-            <CardTitle className="text-base">
-              Recent Customer Files & Checklist Readiness
-            </CardTitle>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Latest inquiries with real-time milestone and document verification progress
-            </p>
-          </div>
+          <CardTitle className="text-base">Recent Customer Files</CardTitle>
           <Link href="/dashboard/leads">
             <Button variant="outline" size="sm">
-              View Full Pipeline →
+              View All →
             </Button>
           </Link>
         </CardHeader>

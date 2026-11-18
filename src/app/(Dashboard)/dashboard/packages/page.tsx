@@ -23,8 +23,7 @@ export default async function DashboardPackagesPage() {
   return (
     <div className="space-y-5">
       <ManagementPageHeader
-        title="Verified Tour & Service Package Catalog"
-        description="Approved agency packages used by sales staff for customer quotations and catalog publishing."
+        title="Package Catalog"
         actionLabel={isAdmin ? '+ Create New Package' : undefined}
         actionHref={isAdmin ? '/dashboard/packages/create' : undefined}
       >
@@ -37,12 +36,6 @@ export default async function DashboardPackagesPage() {
 
       <Card>
         <CardContent className="pt-6">
-          <div className="mb-4 flex items-center justify-between text-xs text-slate-500">
-            <span>
-              Active Approved Packages: <strong className="text-slate-900">{packages.length}</strong>
-            </span>
-            <span>Synced with Public Website & Quotation Catalog</span>
-          </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">

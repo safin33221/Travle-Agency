@@ -53,26 +53,15 @@ export default async function PublicVisaServicesPage({
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Hero Banner */}
-      <section className="border-b bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950 py-16 text-white">
+      <section className="border-b bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950 py-12 text-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <span className="inline-flex items-center rounded-full border border-blue-400/30 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-300">
-              Visa & Immigration Consultancy
+              Visa & Immigration Portal
             </span>
-            <h1 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-5xl">
-              Destination Countries & Visa Assistance Services
+            <h1 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
+              Destination Countries & Visa Services
             </h1>
-            <p className="mt-4 text-base text-slate-300 sm:text-lg">
-              Explore destination countries where our agency provides structured document
-              preparation, eligibility review, and visa application file consultancy for Student
-              Visas, Work Permits, Work Visas, Tourist Visas, and Business travel.
-            </p>
-            <div className="mt-6 rounded-xl border border-amber-400/30 bg-amber-500/10 p-4 text-xs text-amber-200">
-              <strong>Important Notice:</strong> Agency service availability indicates whether our
-              consultants are currently accepting new client files. Final visa or permit issuance is
-              determined exclusively by the respective embassy or government immigration authority.
-              We never advertise guaranteed visa approvals.
-            </div>
           </div>
         </div>
       </section>
@@ -128,15 +117,9 @@ export default async function PublicVisaServicesPage({
         {/* Destination Countries Grid */}
         <section>
           <div className="mb-6 flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold text-slate-900">
-                Destination Countries We Cover ({countries.length})
-              </h2>
-              <p className="text-sm text-slate-600">
-                Select a destination country to inspect available visa categories and document
-                checklists
-              </p>
-            </div>
+            <h2 className="text-2xl font-bold text-slate-900">
+              Destination Countries ({countries.length})
+            </h2>
           </div>
 
           {countries.length === 0 ? (
@@ -216,12 +199,8 @@ export default async function PublicVisaServicesPage({
         <section>
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-slate-900">
-              Published Visa & Immigration Services ({services.length})
+              Published Visa Services ({services.length})
             </h2>
-            <p className="text-sm text-slate-600">
-              Direct access to individual visa categories, eligibility notes, and consultation
-              requests
-            </p>
           </div>
 
           {services.length === 0 ? (

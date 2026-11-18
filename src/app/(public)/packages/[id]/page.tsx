@@ -148,9 +148,6 @@ export default async function PublicPackageDetailsPage({
               <p className="mt-1 text-3xl font-extrabold text-slate-900">
                 {formatCurrency(pkg.basePrice, pkg.currency)}
               </p>
-              <p className="mt-1.5 text-xs text-slate-500">
-                Transparent pricing with clear inclusions & zero hidden fees.
-              </p>
             </div>
 
             <div className="space-y-2.5">
@@ -170,15 +167,8 @@ export default async function PublicPackageDetailsPage({
               </a>
             </div>
 
-            <div className="rounded-xl bg-slate-50 border border-slate-200/80 p-3.5 space-y-2 text-xs text-slate-600">
-              <p className="font-bold text-slate-900">How Booking Works:</p>
-              <p>1. Submit your inquiry above to get an instant Tracking ID.</p>
-              <p>2. Our counselor verifies your documents & sends an official PDF quote.</p>
-              <p>3. Track your file status anytime on <code className="font-mono text-sky-700">/track-status</code>.</p>
-            </div>
-
             <div className="pt-3 border-t border-slate-100 text-xs text-slate-500 space-y-1">
-              <p>Office: {brandConfig.contact.officeHours}</p>
+              <p>Hours: {brandConfig.contact.officeHours}</p>
               <p>Email: {brandConfig.contact.email}</p>
             </div>
           </Card>

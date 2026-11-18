@@ -59,15 +59,9 @@ export default async function VisaImmigrationOverviewPage() {
       <VisaSubNav />
 
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">
-            Visa & Immigration Services Management
-          </h1>
-          <p className="text-sm text-slate-600">
-            Manage destination countries, visa categories, document checklists, publication state,
-            and incoming inquiries linked to the Lead CRM.
-          </p>
-        </div>
+        <h1 className="text-2xl font-bold text-slate-900">
+          Visa & Immigration Hub
+        </h1>
 
         <div className="flex flex-wrap gap-3">
           <Link
@@ -104,60 +98,8 @@ export default async function VisaImmigrationOverviewPage() {
               {item.label}
             </p>
             <p className="mt-2 text-3xl font-extrabold text-slate-900">{item.value}</p>
-            <p className="mt-1 text-xs text-slate-500">{item.sub}</p>
           </Link>
         ))}
-      </div>
-
-      {/* Quick Operations Cards */}
-      <div className="grid gap-6 md:grid-cols-3">
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-base font-bold text-slate-900">1. Country Coverage Directory</h2>
-          <p className="mt-1.5 text-xs text-slate-600">
-            Maintain destination countries, ISO codes, featured flags, and agency coverage status
-            (ACTIVE, LIMITED, PAUSED, ARCHIVED).
-          </p>
-          <div className="mt-4 flex gap-3">
-            <Link
-              href="/dashboard/visa-immigration/countries"
-              className="text-xs font-semibold text-blue-600 hover:underline"
-            >
-              Manage Countries →
-            </Link>
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-base font-bold text-slate-900">2. Visa Services & Checklists</h2>
-          <p className="mt-1.5 text-xs text-slate-600">
-            Configure Student Visa, Work Permit, Work Visa, and Tourist Visa offerings with
-            separate Publication Status vs. Inquiry Availability controls.
-          </p>
-          <div className="mt-4 flex gap-3">
-            <Link
-              href="/dashboard/visa-immigration/services"
-              className="text-xs font-semibold text-blue-600 hover:underline"
-            >
-              Manage Visa Services →
-            </Link>
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-base font-bold text-slate-900">3. Visa Inquiries & CRM Sync</h2>
-          <p className="mt-1.5 text-xs text-slate-600">
-            Every public visa consultation request automatically creates or links a Lead record in
-            the main CRM pipeline for qualification, checklists, and quotations.
-          </p>
-          <div className="mt-4 flex gap-3">
-            <Link
-              href="/dashboard/visa-immigration/inquiries"
-              className="text-xs font-semibold text-blue-600 hover:underline"
-            >
-              View Visa Inquiries →
-            </Link>
-          </div>
-        </div>
       </div>
     </div>
   );

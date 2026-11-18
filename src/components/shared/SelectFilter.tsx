@@ -55,7 +55,11 @@ export function SelectFilter({
         value={currentValue}
         disabled={isPending}
         onChange={(e) => handleChange(e.target.value)}
-        className="h-10 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:border-blue-600 focus:outline-none"
+        className={`h-10 rounded-lg border px-3 py-2 text-sm transition focus:border-sky-600 focus:outline-none ${
+          currentValue
+            ? 'border-sky-400 bg-sky-50 font-semibold text-sky-900'
+            : 'border-slate-300 bg-white text-slate-800'
+        }`}
       >
         <option value="">{placeholder}</option>
         {options.map((opt) => (

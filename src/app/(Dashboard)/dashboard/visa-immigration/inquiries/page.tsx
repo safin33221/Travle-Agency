@@ -37,13 +37,7 @@ export default async function AdminVisaInquiriesPage({
       <VisaSubNav />
 
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Visa & Immigration Inquiries</h1>
-          <p className="text-sm text-slate-600">
-            All public visa consultation requests are automatically synchronized with the main Lead
-            CRM pipeline.
-          </p>
-        </div>
+        <h1 className="text-2xl font-bold text-slate-900">Web Visa Inquiries</h1>
         <Link
           href="/dashboard/leads"
           className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"

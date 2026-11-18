@@ -24,26 +24,6 @@ export function Navbar() {
 
   return (
     <>
-      {/* Subtle Top Help Bar */}
-      <div className="bg-slate-900 text-slate-200 text-xs">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-1.5 sm:px-6 lg:px-8">
-          <p className="truncate">
-            ✈️ Verified Tours, Hajj & Umrah, Student Visas & Work Permits •{' '}
-            <span className="text-sky-300 font-medium">100% Transparent Process</span>
-          </p>
-          <div className="hidden sm:flex items-center gap-4 shrink-0">
-            <a
-              href={`tel:${brandConfig.contact.phone.replace(/\s+/g, '')}`}
-              className="hover:text-white transition"
-            >
-              📞 Hotline: <strong className="text-white">{brandConfig.contact.phone}</strong>
-            </a>
-            <span className="text-slate-600">|</span>
-            <span className="text-slate-400">{brandConfig.contact.officeHours}</span>
-          </div>
-        </div>
-      </div>
-
       <header className="sticky top-0 z-40 w-full border-b border-slate-200 bg-white/95 backdrop-blur-xs shadow-2xs">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">

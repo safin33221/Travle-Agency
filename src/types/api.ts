@@ -247,6 +247,7 @@ export interface DashboardSummary {
     overdueCount: number;
     upcomingTasks: Array<
       FollowUpTask & {
+        isOverdue?: boolean;
         lead?: {
           id: string;
           customerName: string;

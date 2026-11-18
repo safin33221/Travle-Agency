@@ -97,54 +97,23 @@ function ContactFormContent() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-      {/* Clear User-Friendly Header + 3-Step Visual Guide */}
-      <div className="mb-8 rounded-2xl border border-sky-100 bg-gradient-to-r from-sky-50/90 via-white to-emerald-50/50 p-6 sm:p-8">
+      <div className="mb-6">
         <span className="inline-block rounded-full bg-sky-100 px-3 py-0.5 text-xs font-bold text-sky-800">
-          100% Free • Instant Tracking ID
+          Free • Instant Tracking ID
         </span>
         <h1 className="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
-          Free Eligibility Assessment & File Opening
+          Eligibility Check & Inquiry
         </h1>
-        <p className="mt-1.5 text-sm text-slate-600 max-w-2xl">
-          Fill out this quick 1-minute form to see your eligibility match score and automatically receive a live File Tracking ID—no registration required.
-        </p>
-
-        <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3 text-xs">
-          <div className="flex items-center gap-2.5 rounded-xl bg-white border border-slate-200/80 p-3">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sky-600 text-white font-bold">
-              1
-            </span>
-            <span className="font-semibold text-slate-800">
-              Select your service & fill basic info
-            </span>
-          </div>
-          <div className="flex items-center gap-2.5 rounded-xl bg-white border border-slate-200/80 p-3">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white font-bold">
-              2
-            </span>
-            <span className="font-semibold text-slate-800">
-              Get instant Eligibility Score + Tracking Code
-            </span>
-          </div>
-          <div className="flex items-center gap-2.5 rounded-xl bg-white border border-slate-200/80 p-3">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-white font-bold">
-              3
-            </span>
-            <span className="font-semibold text-slate-800">
-              Track checklist & visa steps 24/7 online
-            </span>
-          </div>
-        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2">
           {result ? (
-            <Card className="p-6 sm:p-8 border-emerald-300 bg-emerald-50/40 space-y-6">
+            <Card className="p-6 sm:p-8 border-emerald-300 bg-emerald-50/40 space-y-5">
               <div className="flex flex-wrap items-center justify-between gap-4 border-b border-emerald-200 pb-4">
                 <div>
                   <span className="text-xs font-bold uppercase text-emerald-700">
-                    ✓ Inquiry & Pre-Assessment Recorded
+                    ✓ Inquiry Recorded
                   </span>
                   <div className="mt-1 flex flex-wrap items-center gap-2.5">
                     <h2 className="text-2xl font-extrabold text-slate-900 font-mono">
@@ -182,30 +151,17 @@ function ContactFormContent() {
                 </ul>
               </div>
 
-              <div className="rounded-xl bg-white border border-slate-200 p-4 text-xs text-slate-600 space-y-1.5">
-                <p className="font-bold text-slate-900">What Happens Next?</p>
-                <p>
-                  1. Save your Tracking ID <strong className="font-mono text-sky-700">#{result.trackingCode}</strong> (take a screenshot or click Copy Code).
-                </p>
-                <p>
-                  2. Our specialist counselor will contact you on <strong>{customerPhone}</strong> and update your required document checklist.
-                </p>
-                <p>
-                  3. Open <strong>Track My File Status</strong> below anytime to see live progress.
-                </p>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-3 pt-2">
+              <div className="flex flex-wrap items-center gap-3 pt-1">
                 <Link href={`/track-status?code=${result.trackingCode}`}>
                   <Button variant="secondary">
-                    🔍 Track My File Status ({result.trackingCode}) →
+                    🔍 Track My File ({result.trackingCode}) →
                   </Button>
                 </Link>
                 <Button
                   variant="outline"
                   onClick={() => setResult(null)}
                 >
-                  Submit Another Assessment
+                  New Inquiry
                 </Button>
               </div>
             </Card>

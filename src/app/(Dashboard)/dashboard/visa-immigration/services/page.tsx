@@ -51,12 +51,7 @@ export default async function AdminVisaServicesListPage({
       <VisaSubNav />
 
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Visa & Permit Services</h1>
-          <p className="text-sm text-slate-600">
-            Manage visa categories, document checklists, publication state, and inquiry availability
-          </p>
-        </div>
+        <h1 className="text-2xl font-bold text-slate-900">Visa & Permit Services</h1>
         <Link
           href="/dashboard/visa-immigration/services/create"
           className="rounded-lg bg-blue-600 px-4 py-2 text-xs font-semibold text-white hover:bg-blue-700"

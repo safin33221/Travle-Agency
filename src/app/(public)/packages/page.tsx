@@ -43,18 +43,10 @@ export default async function PublicPackagesPage({
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 space-y-8">
       {/* Header & Search */}
-      <div className="rounded-2xl border border-slate-200 bg-gradient-to-r from-sky-50/80 via-white to-slate-50 p-6 sm:p-8 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-        <div className="max-w-2xl">
-          <span className="inline-block rounded-full bg-sky-100 px-3 py-0.5 text-xs font-bold text-sky-800">
-            100% Agency-Verified Pricing & Inclusions
-          </span>
-          <h1 className="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
-            Browse Holiday Tours, Hajj, Work Permits & Study Programs
-          </h1>
-          <p className="mt-1.5 text-sm text-slate-600">
-            Select a category below or search by country/destination to compare packages and see required documents.
-          </p>
-        </div>
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+          Packages & Programs
+        </h1>
         <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
           <div className="w-full sm:w-72">
             <SearchFilter
@@ -114,9 +106,6 @@ export default async function PublicPackagesPage({
           <p className="text-base font-semibold text-slate-800">
             No active packages matched your selection.
           </p>
-          <p className="text-sm text-slate-500 max-w-md mx-auto">
-            Looking for a specific country, custom group tour, or visa option? Request a custom quote in 1 minute!
-          </p>
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <Link href="/packages">
               <Button variant="outline" size="sm">
@@ -131,21 +120,6 @@ export default async function PublicPackagesPage({
           </div>
         </div>
       )}
-
-      {/* Custom Inquiry Banner */}
-      <div className="rounded-2xl bg-slate-900 p-6 sm:p-8 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-lg font-bold">
-            Need a Custom Family Tour or Group Quotation?
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-300 mt-1">
-            Tell us your travel dates, number of travelers, and budget—our team will prepare a custom PDF quote.
-          </p>
-        </div>
-        <Link href="/contact" className="shrink-0">
-          <Button variant="secondary">Get Custom Quote →</Button>
-        </Link>
-      </div>
     </div>
   );
 }

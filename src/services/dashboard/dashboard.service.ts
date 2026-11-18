@@ -89,7 +89,12 @@ export async function getDashboardSummary(): Promise<DashboardSummary> {
         openCount: Number(raw?.followUps?.openCount ?? 0),
         overdueCount: Number(raw?.followUps?.overdueCount ?? 0),
         upcomingTasks: Array.isArray(raw?.followUps?.upcomingTasks)
-          ? raw.followUps.upcomingTasks
+          ? raw.followUps.upcomingTasks.map((task) => ({
+              ...task,
+              isOverdue: Boolean(
+                task.dueAt && new Date(task.dueAt).getTime() < Date.now(),
+              ),
+            }))
           : [],
       },
       packages: {

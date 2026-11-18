@@ -11,10 +11,7 @@ export default async function AuditLogsPage() {
 
   return (
     <div>
-      <ManagementPageHeader
-        title="Security & Operations Audit Trail"
-        description="Immutable log of staff actions, package price updates, and quotation approvals."
-      />
+      <ManagementPageHeader title="Audit Trail" />
 
       <Card>
         <CardContent className="pt-6">

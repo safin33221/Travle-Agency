@@ -9,10 +9,7 @@ export default async function AgencySettingsPage() {
 
   return (
     <div>
-      <ManagementPageHeader
-        title="Agency Configuration & Quotation Defaults"
-        description="Manage agency identity, default tax rate, currency, and PDF quotation terms."
-      />
+      <ManagementPageHeader title="Agency Settings" />
       <AgencySettingsForm settings={settings} />
     </div>
   );

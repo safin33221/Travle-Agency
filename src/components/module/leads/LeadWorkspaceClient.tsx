@@ -331,45 +331,63 @@ export function LeadWorkspaceClient({
             )}
           </div>
 
-          {/* Public Tracker Sharing Controls */}
-          {lead.trackingCode && (
-            <div className="flex flex-col sm:items-end gap-2 rounded-xl border border-sky-200 bg-sky-50/50 p-3">
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
-                  Client Tracking ID:
-                </span>
-                <span className="rounded bg-white border border-sky-200 px-2 py-0.5 font-mono text-xs font-extrabold text-sky-800">
-                  #{lead.trackingCode}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={handleCopyTrackerLink}
-                  className="rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+          {/* Quick Contact + Public Tracker Sharing Controls */}
+          <div className="flex flex-col sm:items-end gap-2.5">
+            {lead.customerPhone && (
+              <div className="flex flex-wrap items-center gap-2">
+                <a
+                  href={`tel:${lead.customerPhone.replace(/\s+/g, '')}`}
+                  className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 hover:bg-slate-50 transition"
                 >
-                  {copiedTracker ? '✓ Copied Link!' : '📋 Copy Client Link'}
-                </button>
-                <Link
-                  href={`/track-status?code=${lead.trackingCode}`}
+                  📞 Call {lead.customerPhone}
+                </a>
+                <a
+                  href={`https://wa.me/${lead.customerPhone.replace(/[^0-9]/g, '')}`}
                   target="_blank"
-                  className="rounded-lg bg-sky-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-sky-700 transition"
+                  rel="noopener noreferrer"
+                  className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700 transition shadow-2xs"
                 >
-                  🔍 Live Tracker ↗
-                </Link>
+                  💬 WhatsApp Client ↗
+                </a>
               </div>
-            </div>
-          )}
+            )}
+
+            {lead.trackingCode && (
+              <div className="flex flex-col sm:items-end gap-2 rounded-xl border border-sky-200 bg-sky-50/50 p-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                    Client Tracking ID:
+                  </span>
+                  <span className="rounded bg-white border border-sky-200 px-2 py-0.5 font-mono text-xs font-extrabold text-sky-800">
+                    #{lead.trackingCode}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleCopyTrackerLink}
+                    className="rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+                  >
+                    {copiedTracker ? '✓ Copied Link!' : '📋 Copy Client Link'}
+                  </button>
+                  <Link
+                    href={`/track-status?code=${lead.trackingCode}`}
+                    target="_blank"
+                    className="rounded-lg bg-sky-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-sky-700 transition"
+                  >
+                    🔍 Live Tracker ↗
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Visual Interactive Pipeline Stage Bar */}
         <div className="pt-3 border-t border-slate-100">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              Pipeline Stage Progression (Click any stage to update)
-            </span>
-            <span className="text-[11px] text-slate-500">
-              Current: <strong className="text-slate-800">{lead.stage}</strong>
+              Pipeline Stage
             </span>
           </div>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-6">
@@ -405,6 +423,50 @@ export function LeadWorkspaceClient({
           </div>
         </div>
       </Card>
+
+      {/* High-Visibility Progress Summary Strip */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-2xs">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            🚀 Milestones Done
+          </p>
+          <p className="mt-1 text-lg font-extrabold text-slate-900">
+            {doneMilestones} / {milestones.length}{' '}
+            <span className="text-xs font-semibold text-emerald-700">
+              ({milestonePct}%)
+            </span>
+          </p>
+        </div>
+        <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-2xs">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            📋 Docs Ready
+          </p>
+          <p className="mt-1 text-lg font-extrabold text-slate-900">
+            {verifiedDocs + receivedDocs} / {docs.length}{' '}
+            <span className="text-xs font-semibold text-sky-700">
+              ({docPct}%)
+            </span>
+          </p>
+        </div>
+        <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-2xs">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            📄 Quotations
+          </p>
+          <p className="mt-1 text-lg font-extrabold text-slate-900">
+            {lead.quotations?.length || 0}{' '}
+            <span className="text-xs font-medium text-slate-500">issued</span>
+          </p>
+        </div>
+        <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-2xs">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            ⏰ Open Follow-Ups
+          </p>
+          <p className="mt-1 text-lg font-extrabold text-slate-900">
+            {(lead.followUpTasks || []).filter((t) => t.status === 'OPEN').length}{' '}
+            <span className="text-xs font-medium text-slate-500">pending</span>
+          </p>
+        </div>
+      </div>
 
       {/* Workspace Section Switcher Tabs */}
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
@@ -442,10 +504,6 @@ export function LeadWorkspaceClient({
             </button>
           ))}
         </div>
-
-        <span className="text-xs text-slate-400 hidden sm:inline">
-          Changes auto-sync to public <code className="font-mono">/track-status</code>
-        </span>
       </div>
 
       {/* SECTION 1: Automated Application Milestones & Document Checklist */}

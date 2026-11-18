@@ -10,28 +10,24 @@ const QUICK_SECTORS = [
   {
     icon: '🏖️',
     title: 'Holiday Tours & Visa',
-    subtitle: 'Family trips, honeymoon & tourist visas',
     href: '/packages?category=TOUR',
     color: 'hover:border-sky-400 hover:bg-sky-500/10',
   },
   {
     icon: '🕋',
     title: 'Hajj & Umrah',
-    subtitle: 'Haram-side hotels & guided Umrah groups',
     href: '/packages?category=HAJJ_UMRAH',
     color: 'hover:border-emerald-400 hover:bg-emerald-500/10',
   },
   {
     icon: '🎓',
     title: 'Student Visa',
-    subtitle: 'University admission, SOP & offer letters',
     href: '/visa-services?category=STUDENT_VISA',
     color: 'hover:border-purple-400 hover:bg-purple-500/10',
   },
   {
     icon: '💼',
     title: 'Work Permit & Job Visa',
-    subtitle: 'Verified overseas jobs, medical & BMET',
     href: '/visa-services?category=WORK_PERMIT',
     color: 'hover:border-amber-400 hover:bg-amber-500/10',
   },
@@ -64,9 +60,6 @@ export function HeroSection() {
             <h1 className="mt-5 text-3xl font-extrabold tracking-tight sm:text-5xl leading-tight">
               Your Trusted Partner for Tours, Hajj, Student Visas & Work Permits
             </h1>
-            <p className="mt-4 text-base leading-7 text-slate-300 sm:text-lg">
-              {hero.subtitle}
-            </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <Link href="/packages">
                 <Button variant="secondary" size="lg">
@@ -98,16 +91,9 @@ export function HeroSection() {
           <div className="lg:col-span-5">
             <div className="rounded-2xl border border-slate-700/80 bg-slate-900/90 p-5 sm:p-6 shadow-2xl backdrop-blur">
               <div className="mb-4">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-sky-400">
-                  Already Applied With Us?
-                </span>
-                <h2 className="mt-0.5 text-lg font-bold text-white">
-                  🔍 Track Your Live Application Status
+                <h2 className="text-lg font-bold text-white">
+                  🔍 Track Your Live File Status
                 </h2>
-                <p className="text-xs text-slate-400">
-                  Enter your Tracking ID (e.g. <code className="text-sky-300 font-mono">WP-102938</code> or{' '}
-                  <code className="text-sky-300 font-mono">SV-820383</code>)
-                </p>
               </div>
 
               <form onSubmit={handleQuickTrack} className="flex gap-2">
@@ -125,20 +111,17 @@ export function HeroSection() {
 
               <div className="mt-5 pt-5 border-t border-slate-800">
                 <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3">
-                  Or Choose What You Need Today:
+                  Browse By Category
                 </p>
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                   {QUICK_SECTORS.map((item) => (
                     <Link
                       key={item.title}
                       href={item.href}
-                      className={`rounded-xl border border-slate-700/80 bg-slate-800/60 p-3 transition ${item.color}`}
+                      className={`rounded-xl border border-slate-700/80 bg-slate-800/60 px-3.5 py-3 transition ${item.color}`}
                     >
                       <p className="text-xs font-bold text-white">
                         {item.icon} {item.title}
-                      </p>
-                      <p className="mt-0.5 text-[11px] text-slate-400 line-clamp-1">
-                        {item.subtitle}
                       </p>
                     </Link>
                   ))}

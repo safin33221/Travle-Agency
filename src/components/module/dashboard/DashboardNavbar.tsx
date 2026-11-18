@@ -60,26 +60,21 @@ export function DashboardNavbar({ user }: { user: StaffUser }) {
             </svg>
           </button>
 
-          <div className="min-w-0">
-            <div className="flex items-center gap-1.5 text-xs text-slate-400">
-              <Link href="/dashboard" className="hover:text-sky-600 font-medium">
-                Workspace
-              </Link>
-              {activeItem && activeItem.href !== '/dashboard' && (
-                <>
-                  <span>/</span>
-                  <Link
-                    href={activeItem.href}
-                    className="font-semibold text-slate-700 hover:text-sky-600 truncate"
-                  >
-                    {activeItem.title}
-                  </Link>
-                </>
-              )}
-            </div>
-            <p className="text-xs font-semibold text-slate-800 truncate hidden sm:block">
-              {activeItem?.description || 'Agency Operations & Customer Pipeline'}
-            </p>
+          <div className="min-w-0 flex items-center gap-1.5 text-xs text-slate-400">
+            <Link href="/dashboard" className="hover:text-sky-600 font-medium">
+              Workspace
+            </Link>
+            {activeItem && activeItem.href !== '/dashboard' && (
+              <>
+                <span>/</span>
+                <Link
+                  href={activeItem.href}
+                  className="font-semibold text-slate-800 hover:text-sky-600 truncate"
+                >
+                  {activeItem.title}
+                </Link>
+              </>
+            )}
           </div>
         </div>
 

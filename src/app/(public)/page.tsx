@@ -25,18 +25,10 @@ export default async function PublicHomePage() {
 
       {/* Featured Tour, Hajj & Visa Packages */}
       <section className="py-16 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
-          <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-sky-600">
-              Verified Catalog
-            </span>
-            <h2 className="mt-1 text-3xl font-bold tracking-tight text-slate-900">
-              Featured Packages & Programs
-            </h2>
-            <p className="mt-2 text-sm text-slate-600">
-              Clear inclusions, required document lists, and transparent starting prices—no hidden costs.
-            </p>
-          </div>
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+            Featured Packages & Programs
+          </h2>
           <Link href="/packages">
             <Button variant="outline">View All Packages →</Button>
           </Link>
@@ -70,19 +62,11 @@ export default async function PublicHomePage() {
         <section className="py-14 bg-slate-50 border-t border-slate-200">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
-              <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
-                  Visa & Immigration Desk
-                </span>
-                <h2 className="mt-1 text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-                  Popular Visa Destinations We Cover
-                </h2>
-                <p className="mt-1.5 text-sm text-slate-600">
-                  Click any country to see student visa, work permit, and tourist visa checklists.
-                </p>
-              </div>
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+                Popular Visa Destinations
+              </h2>
               <Link href="/visa-services">
-                <Button variant="outline">Explore All Countries →</Button>
+                <Button variant="outline">All Countries →</Button>
               </Link>
             </div>
 

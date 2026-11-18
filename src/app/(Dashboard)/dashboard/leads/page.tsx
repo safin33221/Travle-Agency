@@ -99,8 +99,7 @@ export default async function DashboardLeadsPage({
   return (
     <div className="space-y-5">
       <ManagementPageHeader
-        title="Multi-Sector Customer Leads & Visa Files"
-        description="Manage Holiday Tours, Hajj & Umrah, Work Permit, and Student Visa files with automated checklists, follow-ups, and quotations."
+        title="Leads & Visa Files"
         actionLabel="+ New Customer Inquiry"
         actionHref="/dashboard/leads/create"
       >
@@ -285,10 +284,33 @@ export default async function DashboardLeadsPage({
                             </Link>
                           )}
                         </div>
-                        <p className="text-xs text-slate-500 mt-0.5">
-                          {lead.customerPhone || lead.customerEmail || 'No contact'} •{' '}
+                        <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-slate-500">
+                          <span>
+                            {lead.customerPhone || lead.customerEmail || 'No contact'}
+                          </span>
+                          <span>•</span>
                           <span className="font-medium">{lead.source}</span>
-                        </p>
+                          {lead.customerPhone && (
+                            <span className="inline-flex items-center gap-1 ml-1">
+                              <a
+                                href={`tel:${lead.customerPhone.replace(/\s+/g, '')}`}
+                                title="Call customer"
+                                className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-700 hover:bg-sky-100 hover:text-sky-800"
+                              >
+                                📞 Call
+                              </a>
+                              <a
+                                href={`https://wa.me/${lead.customerPhone.replace(/[^0-9]/g, '')}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title="Message on WhatsApp"
+                                className="rounded bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700 hover:bg-emerald-100"
+                              >
+                                💬 WA
+                              </a>
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="py-3.5 px-4">
                         <span
