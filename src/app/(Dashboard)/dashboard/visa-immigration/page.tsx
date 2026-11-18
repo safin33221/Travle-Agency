@@ -147,7 +147,7 @@ export default async function VisaImmigrationOverviewPage() {
           <h2 className="text-base font-bold text-slate-900">3. Visa Inquiries & CRM Sync</h2>
           <p className="mt-1.5 text-xs text-slate-600">
             Every public visa consultation request automatically creates or links a Lead record in
-            the main CRM pipeline for qualification, AI drafts, and quotations.
+            the main CRM pipeline for qualification, checklists, and quotations.
           </p>
           <div className="mt-4 flex gap-3">
             <Link

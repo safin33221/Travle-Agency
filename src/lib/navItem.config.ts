@@ -16,15 +16,7 @@ export const DASHBOARD_NAV_ITEMS: NavItem[] = [
     icon: 'Users',
     roles: ['OWNER_ADMIN', 'SALES_AGENT'],
     group: 'Core CRM & Pipeline',
-    description: 'Customer inquiries, checklists, quotes & AI replies',
-  },
-  {
-    title: 'AI Response Copilot',
-    href: '/dashboard/ai-copilot',
-    icon: 'Sparkles',
-    roles: ['OWNER_ADMIN', 'SALES_AGENT'],
-    group: 'Core CRM & Pipeline',
-    description: 'Draft Bangla, English & Banglish replies',
+    description: 'Customer inquiries, checklists, quotations & follow-ups',
   },
   {
     title: 'Tour Package Catalog',

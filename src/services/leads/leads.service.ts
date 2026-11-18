@@ -262,7 +262,6 @@ function normalizeLead(raw: unknown): Lead {
     notes: Array.isArray(unwrapped.notes) ? unwrapped.notes : [],
     followUpTasks: Array.isArray(unwrapped.followUpTasks) ? unwrapped.followUpTasks : [],
     quotations: Array.isArray(unwrapped.quotations) ? unwrapped.quotations : [],
-    aiDrafts: Array.isArray(unwrapped.aiDrafts) ? unwrapped.aiDrafts : [],
   };
 }
 

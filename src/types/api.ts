@@ -46,13 +46,6 @@ export type LeadSource =
 export type QuotationStatus = 'DRAFT' | 'APPROVED' | 'VOID';
 export type FollowUpStatus = 'OPEN' | 'DONE' | 'CANCELLED';
 
-export type AiDraftType =
-  | 'CUSTOMER_REPLY'
-  | 'QUALIFICATION_QUESTIONS'
-  | 'QUOTATION_EXPLANATION';
-
-export type AiDraftStatus = 'DRAFT' | 'REVIEWED' | 'USED' | 'DISCARDED';
-
 export interface StaffUser {
   id: string;
   email: string;
@@ -201,22 +194,6 @@ export interface Quotation {
   } | null;
 }
 
-export interface AiDraft {
-  id: string;
-  leadId?: string | null;
-  actorId: string;
-  type: AiDraftType;
-  language: string;
-  customerInquiry?: string | null;
-  suggestedText: string;
-  missingInformation: string[];
-  sourcePackageIds: string[];
-  modelUsed: string;
-  needsHumanReview: boolean;
-  status: AiDraftStatus;
-  createdAt: string;
-}
-
 export interface Lead {
   id: string;
   trackingCode?: string | null;
@@ -247,7 +224,6 @@ export interface Lead {
   notes?: LeadNote[];
   followUpTasks?: FollowUpTask[];
   quotations?: Quotation[];
-  aiDrafts?: AiDraft[];
   _count?: {
     notes: number;
     quotations: number;

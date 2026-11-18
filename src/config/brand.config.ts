@@ -7,7 +7,7 @@
  *    contact details, currency, and SEO metadata.
  * 2. Update `public-content.config.ts` and `src/app/(Public)` for landing page
  *    custom design.
- * 3. The entire `(Dashboard)` CRM, AI Copilot, Quotation Engine, and RBAC
+ * 3. The entire `(Dashboard)` CRM, Quotation Engine, and RBAC
  *    automatically adapt without changing a single dashboard file.
  * ============================================================================
  */

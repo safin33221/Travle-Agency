@@ -24,7 +24,7 @@ export default async function DashboardPackagesPage() {
     <div className="space-y-5">
       <ManagementPageHeader
         title="Verified Tour & Service Package Catalog"
-        description="Approved agency packages used by sales staff for quotations and by the AI Response Copilot."
+        description="Approved agency packages used by sales staff for customer quotations and catalog publishing."
         actionLabel={isAdmin ? '+ Create New Package' : undefined}
         actionHref={isAdmin ? '/dashboard/packages/create' : undefined}
       >
@@ -41,7 +41,7 @@ export default async function DashboardPackagesPage() {
             <span>
               Active Approved Packages: <strong className="text-slate-900">{packages.length}</strong>
             </span>
-            <span>Synced with Public Website & AI Copilot Grounding</span>
+            <span>Synced with Public Website & Quotation Catalog</span>
           </div>
 
           <div className="overflow-x-auto">

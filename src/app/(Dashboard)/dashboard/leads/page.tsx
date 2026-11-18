@@ -100,7 +100,7 @@ export default async function DashboardLeadsPage({
     <div className="space-y-5">
       <ManagementPageHeader
         title="Multi-Sector Customer Leads & Visa Files"
-        description="Manage Holiday Tours, Hajj & Umrah, Work Permit, and Student Visa files with automated checklists, AI drafts, and quotations."
+        description="Manage Holiday Tours, Hajj & Umrah, Work Permit, and Student Visa files with automated checklists, follow-ups, and quotations."
         actionLabel="+ New Customer Inquiry"
         actionHref="/dashboard/leads/create"
       >

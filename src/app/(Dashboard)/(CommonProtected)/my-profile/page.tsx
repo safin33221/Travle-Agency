@@ -79,9 +79,9 @@ export default async function MyProfilePage() {
                 </p>
               </div>
               <div className="rounded-lg border border-slate-200 bg-slate-50/70 p-3">
-                <p className="font-bold text-slate-900">✓ AI Copilot & Quotations</p>
+                <p className="font-bold text-slate-900">✓ Quotations & Follow-Ups</p>
                 <p className="mt-1">
-                  Generate Bangla/English replies grounded in approved packages and issue itemized PDF quotations.
+                  Prepare itemized customer quotations, export approved PDF proposals, and track consultation follow-ups.
                 </p>
               </div>
               <div className="rounded-lg border border-slate-200 bg-slate-50/70 p-3">

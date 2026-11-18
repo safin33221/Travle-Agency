@@ -106,7 +106,7 @@ export default async function DashboardOverviewPage() {
           </Link>
 
           <Link
-            href="/dashboard/ai-copilot"
+            href="/dashboard/leads"
             className="group rounded-lg border border-slate-200/90 bg-white p-3 transition hover:border-sky-300 hover:shadow-xs"
           >
             <div className="flex items-center gap-2">
@@ -114,11 +114,11 @@ export default async function DashboardOverviewPage() {
                 3
               </span>
               <p className="text-xs font-bold text-slate-900 group-hover:text-sky-700">
-                AI Draft & Quotation PDF
+                Quotations & Follow-Ups
               </p>
             </div>
             <p className="mt-1 text-[11px] text-slate-500">
-              Draft Bangla/English replies or missing-doc reminders and issue itemized quotations.
+              Create itemized client quotations, export approved PDFs, and schedule follow-up tasks.
             </p>
           </Link>
 

@@ -9,7 +9,6 @@ import {
   updateLeadChecklists,
   updateLeadStage,
 } from '@/services/leads/leads.service';
-import { generateAiDraft } from '@/services/ai/ai.service';
 import { createQuotation } from '@/services/quotations/quotations.service';
 import {
   DocumentItemStatus,
@@ -22,7 +21,7 @@ import {
 } from '@/types/api';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input, Label, Textarea } from '@/components/ui/input';
+import { Input, Label } from '@/components/ui/input';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import { SECTOR_CATALOG } from '@/config/brand.config';
 import { formatCurrency, formatDate } from '@/lib/utils';
@@ -58,11 +57,10 @@ export function LeadWorkspaceClient({
 }) {
   const [isPending, startTransition] = useTransition();
   const [activeTab, setActiveTab] = useState<
-    'ALL' | 'CHECKLISTS' | 'AI_QUOTES' | 'NOTES'
+    'ALL' | 'CHECKLISTS' | 'QUOTATIONS' | 'NOTES'
   >('ALL');
   const [feedback, setFeedback] = useState<string | null>(null);
   const [copiedTracker, setCopiedTracker] = useState(false);
-  const [copiedAiDraft, setCopiedAiDraft] = useState(false);
 
   const [noteText, setNoteText] = useState('');
   const [followUpDate, setFollowUpDate] = useState('');
@@ -102,16 +100,6 @@ export function LeadWorkspaceClient({
         completedAt: m?.completedAt,
       }),
     ),
-  );
-
-  // AI Draft state
-  const [aiInquiry, setAiInquiry] = useState(
-    lead.requirements ||
-      `Customer ${lead.customerName} is inquiring about ${lead.category || 'TOUR'} for ${lead.destination || 'preferred destination'}.`,
-  );
-  const [aiLang, setAiLang] = useState<'en' | 'bn' | 'banglish'>('bn');
-  const [latestDraft, setLatestDraft] = useState<string>(
-    lead.aiDrafts?.[0]?.suggestedText || '',
   );
 
   // Quick Quotation state
@@ -204,33 +192,6 @@ export function LeadWorkspaceClient({
     handleSetMilestoneStatus(index, MILESTONE_STATUS_CYCLE[nextIdx]);
   };
 
-  const handleDraftMissingDocsReminder = () => {
-    const missing = docs
-      .filter((d) => d.status === 'PENDING' || d.status === 'REJECTED')
-      .map((d) => d.title);
-    const prompt =
-      missing.length > 0
-        ? `Please remind ${lead.customerName} (Tracking ID: ${lead.trackingCode || 'N/A'}) to submit pending documents: ${missing.join(', ')}.`
-        : `All required documents for ${lead.customerName} are verified. Provide a status update for ${lead.destination || 'their file'}.`;
-    setAiInquiry(prompt);
-    if (activeTab === 'CHECKLISTS' || activeTab === 'NOTES') {
-      setActiveTab('ALL');
-    }
-
-    startTransition(async () => {
-      const res = await generateAiDraft({
-        leadId: lead.id,
-        customerInquiry: prompt,
-        language: aiLang,
-        type: 'CUSTOMER_REPLY',
-      });
-      if (res.data?.suggestedText) {
-        setLatestDraft(res.data.suggestedText);
-        showToast('✓ AI missing-documents reminder drafted below!');
-      }
-    });
-  };
-
   const handleAddNote = (e: React.FormEvent) => {
     e.preventDefault();
     if (!noteText.trim()) return;
@@ -252,21 +213,6 @@ export function LeadWorkspaceClient({
       setFollowUpDate('');
       setFollowUpNote('');
       if (res.success) showToast('✓ Follow-up reminder scheduled');
-    });
-  };
-
-  const handleGenerateAi = () => {
-    startTransition(async () => {
-      const res = await generateAiDraft({
-        leadId: lead.id,
-        customerInquiry: aiInquiry,
-        language: aiLang,
-        type: 'CUSTOMER_REPLY',
-      });
-      if (res.data?.suggestedText) {
-        setLatestDraft(res.data.suggestedText);
-        showToast('✓ Grounded AI reply draft generated');
-      }
     });
   };
 
@@ -304,14 +250,6 @@ export function LeadWorkspaceClient({
     setCopiedTracker(true);
     showToast(`✓ Client Tracking URL copied (#${lead.trackingCode})`);
     setTimeout(() => setCopiedTracker(false), 2500);
-  };
-
-  const handleCopyAiDraft = () => {
-    if (!latestDraft || typeof window === 'undefined') return;
-    void navigator.clipboard.writeText(latestDraft);
-    setCopiedAiDraft(true);
-    showToast('✓ AI reply copied to clipboard');
-    setTimeout(() => setCopiedAiDraft(false), 2500);
   };
 
   const doneMilestones = milestones.filter((m) => m.status === 'DONE').length;
@@ -478,8 +416,8 @@ export function LeadWorkspaceClient({
               label: `📋 Milestones & Docs (${doneMilestones}/${milestones.length} • ${verifiedDocs}/${docs.length})`,
             },
             {
-              id: 'AI_QUOTES',
-              label: `✨ AI Copilot & Quotations (${lead.quotations?.length || 0})`,
+              id: 'QUOTATIONS',
+              label: `📄 Quotations (${lead.quotations?.length || 0})`,
             },
             {
               id: 'NOTES',
@@ -491,7 +429,7 @@ export function LeadWorkspaceClient({
               type="button"
               onClick={() =>
                 setActiveTab(
-                  tab.id as 'ALL' | 'CHECKLISTS' | 'AI_QUOTES' | 'NOTES',
+                  tab.id as 'ALL' | 'CHECKLISTS' | 'QUOTATIONS' | 'NOTES',
                 )
               }
               className={`rounded-lg px-3.5 py-2 text-xs font-semibold transition ${
@@ -599,7 +537,7 @@ export function LeadWorkspaceClient({
               </CardContent>
             </Card>
 
-            {/* Document Verification Checklist + 1-Click Missing Docs Chaser */}
+            {/* Document Verification Checklist */}
             <Card>
               <CardHeader className="pb-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
@@ -611,15 +549,9 @@ export function LeadWorkspaceClient({
                       {verifiedDocs} verified, {receivedDocs} received of {docs.length} required docs
                     </p>
                   </div>
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="secondary"
-                    disabled={isPending}
-                    onClick={handleDraftMissingDocsReminder}
-                  >
-                    ✨ Draft Missing Docs Reminder
-                  </Button>
+                  <span className="rounded-full bg-sky-50 border border-sky-200 px-2.5 py-0.5 text-xs font-bold text-sky-700">
+                    {docPct}% Ready
+                  </span>
                 </div>
                 <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
                   <div
@@ -677,94 +609,9 @@ export function LeadWorkspaceClient({
           </div>
         )}
 
-      {/* SECTION 2: AI Copilot & Quotations */}
-      {(activeTab === 'ALL' || activeTab === 'AI_QUOTES') && (
+      {/* SECTION 2: Quotations Builder & History */}
+      {(activeTab === 'ALL' || activeTab === 'QUOTATIONS') && (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          {/* AI Copilot Panel */}
-          <Card className="border-sky-200">
-            <CardHeader className="bg-sky-50/60 border-b border-sky-100">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-base text-sky-950">
-                  ✨ AI Response Copilot (Grounded in Approved Catalog)
-                </CardTitle>
-                <span className="rounded-full bg-amber-100 border border-amber-300 px-2.5 py-0.5 text-[11px] font-semibold text-amber-800">
-                  Human Review Required
-                </span>
-              </div>
-            </CardHeader>
-            <CardContent className="pt-4 space-y-4">
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                <div className="sm:col-span-2">
-                  <Label>Customer Inquiry / Reminder Context</Label>
-                  <Input
-                    value={aiInquiry}
-                    onChange={(e) => setAiInquiry(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <Label>Reply Language</Label>
-                  <select
-                    value={aiLang}
-                    onChange={(e) =>
-                      setAiLang(e.target.value as 'en' | 'bn' | 'banglish')
-                    }
-                    className="flex h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
-                  >
-                    <option value="bn">Bangla (বাংলা)</option>
-                    <option value="en">English</option>
-                    <option value="banglish">Banglish</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="sm"
-                  disabled={isPending}
-                  onClick={handleGenerateAi}
-                >
-                  {isPending
-                    ? 'Generating AI Draft...'
-                    : '✨ Generate Grounded Reply Draft'}
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  disabled={isPending}
-                  onClick={handleDraftMissingDocsReminder}
-                >
-                  📋 Draft Pending Docs Chaser
-                </Button>
-              </div>
-
-              {latestDraft && (
-                <div className="space-y-2 pt-2">
-                  <div className="flex items-center justify-between">
-                    <Label>Editable Staff Review Draft</Label>
-                    <button
-                      type="button"
-                      onClick={handleCopyAiDraft}
-                      className="rounded-md bg-sky-50 border border-sky-200 px-2.5 py-1 text-xs font-semibold text-sky-700 hover:bg-sky-100"
-                    >
-                      {copiedAiDraft ? '✓ Copied!' : '📋 Copy Reply for WhatsApp'}
-                    </button>
-                  </div>
-                  <Textarea
-                    value={latestDraft}
-                    onChange={(e) => setLatestDraft(e.target.value)}
-                    className="min-h-[140px] bg-slate-50"
-                  />
-                  <p className="text-xs text-amber-700">
-                    ⚠️ AI never sends messages autonomously. Review prices and checklist items before copying to WhatsApp/Email.
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
           {/* Deterministic Quotation Builder */}
           <Card>
             <CardHeader>
@@ -843,34 +690,42 @@ export function LeadWorkspaceClient({
                   + Create Quotation Draft
                 </Button>
               </form>
+            </CardContent>
+          </Card>
 
-              {/* Existing Quotations List */}
-              {lead.quotations && lead.quotations.length > 0 && (
-                <div className="mt-6 pt-4 border-t border-slate-200 space-y-2">
-                  <p className="text-xs font-semibold uppercase text-slate-400">
-                    Quotation History ({lead.quotations.length})
-                  </p>
-                  {lead.quotations.map((q) => (
-                    <div
-                      key={q.id}
-                      className="flex items-center justify-between rounded-lg border border-slate-200 p-2.5 text-sm hover:bg-slate-50"
-                    >
-                      <div>
-                        <span className="font-semibold">Rev #{q.revision}</span> •{' '}
-                        <span className="font-bold text-slate-900">
-                          {formatCurrency(q.grandTotal, q.currency)}
-                        </span>
-                        <div className="mt-0.5">
-                          <StatusBadge status={q.status} />
-                        </div>
+          {/* Existing Quotations List */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">
+                🗂️ Quotation History ({lead.quotations?.length || 0})
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2.5">
+              {lead.quotations && lead.quotations.length > 0 ? (
+                lead.quotations.map((q) => (
+                  <div
+                    key={q.id}
+                    className="flex items-center justify-between rounded-lg border border-slate-200 p-3 text-sm hover:bg-slate-50"
+                  >
+                    <div>
+                      <span className="font-semibold">Rev #{q.revision}</span> •{' '}
+                      <span className="font-bold text-slate-900">
+                        {formatCurrency(q.grandTotal, q.currency)}
+                      </span>
+                      <div className="mt-1">
+                        <StatusBadge status={q.status} />
                       </div>
-                      <Link href={`/dashboard/quotations/${q.id}`}>
-                        <Button variant="outline" size="sm">
-                          Open / PDF →
-                        </Button>
-                      </Link>
                     </div>
-                  ))}
+                    <Link href={`/dashboard/quotations/${q.id}`}>
+                      <Button variant="outline" size="sm">
+                        Open / PDF →
+                      </Button>
+                    </Link>
+                  </div>
+                ))
+              ) : (
+                <div className="rounded-lg border border-dashed border-slate-200 p-8 text-center text-xs text-slate-500">
+                  No quotations issued for this customer yet. Create a quotation draft on the left to generate an official price proposal.
                 </div>
               )}
             </CardContent>
