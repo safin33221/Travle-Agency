@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils';
-import { SECTOR_CATALOG } from '@/config/brand.config';
+import { isPackageCategory, SECTOR_CATALOG } from '@/config/brand.config';
 
 
 export const instant = false;
@@ -37,7 +37,11 @@ export default async function PublicPackageDetailsPage({
   return (
     <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
       <Link
-        href={`/packages?category=${category}`}
+        href={
+          isPackageCategory(category)
+            ? `/packages?category=${category}`
+            : `/visa-services?category=${category}`
+        }
         className="text-sm font-medium text-teal-700 hover:underline"
       >
         ← Back to {sectorMeta.label}

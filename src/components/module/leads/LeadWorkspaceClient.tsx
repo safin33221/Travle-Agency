@@ -124,15 +124,23 @@ export function LeadWorkspaceClient({
   );
 
   // Quick Quotation state
+  const isTourOrHajjLead = isPackageCategory(lead.category);
+  const defaultPkg = isTourOrHajjLead ? packages[0] : undefined;
+  const [selectedCatalogKey, setSelectedCatalogKey] = useState<string>(
+    defaultPkg ? `pkg:${defaultPkg.id}` : '',
+  );
   const [selectedPkgId, setSelectedPkgId] = useState<string>(
-    packages[0]?.id || '',
+    defaultPkg?.id || '',
   );
   const [itemLabel, setItemLabel] = useState<string>(
-    packages[0]?.title || `${lead.destination || 'Service'} Package`,
+    defaultPkg?.title ||
+      (isTourOrHajjLead
+        ? `${lead.destination || 'Tour'} Package`
+        : `${lead.destination || 'Visa'} Consultancy & Processing`),
   );
   const [qty, setQty] = useState<number>(lead.travelerCount || 1);
   const [unitPrice, setUnitPrice] = useState<number>(
-    Number(packages[0]?.basePrice || 20000),
+    Number(defaultPkg?.basePrice || 20000),
   );
   const [discount, setDiscount] = useState<number>(0);
 
@@ -237,12 +245,29 @@ export function LeadWorkspaceClient({
     });
   };
 
-  const handlePackageSelect = (pkgId: string) => {
-    setSelectedPkgId(pkgId);
-    const found = packages.find((p) => p.id === pkgId);
-    if (found) {
-      setItemLabel(`${found.title} (${found.destination})`);
-      setUnitPrice(Number(found.basePrice));
+  const handlePackageSelect = (catalogKey: string) => {
+    setSelectedCatalogKey(catalogKey);
+    if (catalogKey.startsWith('pkg:')) {
+      const id = catalogKey.slice(4);
+      const found = packages.find((p) => p.id === id);
+      if (found) {
+        setSelectedPkgId(found.id);
+        setItemLabel(`${found.title} (${found.destination})`);
+        setUnitPrice(Number(found.basePrice));
+      }
+      return;
+    }
+
+    setSelectedPkgId('');
+    if (catalogKey.startsWith('visa:')) {
+      const id = catalogKey.slice(5);
+      const foundVisa = visaServices.find((v) => v.id === id);
+      if (foundVisa) {
+        setItemLabel(
+          `${foundVisa.title}${foundVisa.country?.name ? ` (${foundVisa.country.name})` : ''}`,
+        );
+        setUnitPrice(Number(foundVisa.agencyServiceFee || 0));
+      }
     }
   };
 
@@ -730,19 +755,35 @@ export function LeadWorkspaceClient({
             <CardContent>
               <form onSubmit={handleCreateQuotation} className="space-y-3">
                 <div>
-                  <Label>Select Verified Catalog Package (Optional)</Label>
+                  <Label>Select Verified Catalog Package or Visa Service (Optional)</Label>
                   <select
-                    value={selectedPkgId}
+                    value={selectedCatalogKey}
                     onChange={(e) => handlePackageSelect(e.target.value)}
                     className="flex h-10 w-full rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-700/15"
                   >
                     <option value="">-- Custom Line Item --</option>
-                    {packages.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        [{p.category || 'TOUR'}] {p.title} —{' '}
-                        {formatCurrency(p.basePrice, p.currency)}
-                      </option>
-                    ))}
+                    {packages.length > 0 && (
+                      <optgroup label="Tour & Hajj Packages">
+                        {packages.map((p) => (
+                          <option key={p.id} value={`pkg:${p.id}`}>
+                            [{p.category === 'HAJJ_UMRAH' ? 'HAJJ & UMRAH' : 'TOUR'}] {p.title} —{' '}
+                            {formatCurrency(p.basePrice, p.currency)}
+                          </option>
+                        ))}
+                      </optgroup>
+                    )}
+                    {visaServices.length > 0 && (
+                      <optgroup label="Visa & Immigration Services">
+                        {visaServices.map((svc) => (
+                          <option key={svc.id} value={`visa:${svc.id}`}>
+                            [{svc.country?.name || 'VISA'}] {svc.title} —{' '}
+                            {svc.agencyServiceFee
+                              ? formatCurrency(svc.agencyServiceFee, svc.currency)
+                              : 'Fee TBD'}
+                          </option>
+                        ))}
+                      </optgroup>
+                    )}
                   </select>
                 </div>
 
