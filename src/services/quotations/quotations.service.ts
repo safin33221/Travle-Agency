@@ -49,18 +49,25 @@ export async function createQuotation(
     };
   }
 
+  const created = (
+    body && typeof body === 'object' && 'data' in body && body.data
+      ? body.data
+      : body
+  ) as Quotation;
+
   revalidatePath(`/dashboard/leads/${leadId}`);
   revalidatePath('/dashboard');
 
   return {
     success: true,
     message: 'Quotation draft created with deterministic server pricing',
-    data: body as Quotation,
+    data: created,
   };
 }
 
 export async function approveQuotation(
   quotationId: string,
+  leadId?: string,
 ): Promise<{ success: boolean; message: string; data?: Quotation }> {
   const res = await serverFetch.post(`/quotations/${quotationId}/approve`);
   const body = await res.json().catch(() => null);
@@ -72,12 +79,22 @@ export async function approveQuotation(
     };
   }
 
+  const approved = (
+    body && typeof body === 'object' && 'data' in body && body.data
+      ? body.data
+      : body
+  ) as Quotation;
+
   revalidatePath(`/dashboard/quotations/${quotationId}`);
+  if (leadId) {
+    revalidatePath(`/dashboard/leads/${leadId}`);
+  }
+  revalidatePath('/dashboard/leads');
   revalidatePath('/dashboard');
 
   return {
     success: true,
     message: 'Quotation approved and locked for PDF export',
-    data: body as Quotation,
+    data: approved,
   };
 }
