@@ -138,7 +138,7 @@ export function DashboardNavbar({ user }: { user: StaffUser }) {
               </Link>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-3 space-y-1">
+            <div className="no-scrollbar flex-1 overflow-y-auto p-3 space-y-1">
               {visibleItems.map((item) => {
                 const isActive = item.exact
                   ? pathname === item.href

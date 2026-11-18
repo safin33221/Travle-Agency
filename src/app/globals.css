@@ -33,3 +33,12 @@ select:not(:disabled),
 [role="button"] {
   cursor: pointer;
 }
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

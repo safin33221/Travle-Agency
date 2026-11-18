@@ -78,14 +78,14 @@ export function DashboardSidebar({ role }: { role: StaffRole }) {
         </Link>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-3 py-3 space-y-5">
+      <div className="no-scrollbar flex-1 overflow-y-auto px-3 py-2.5 space-y-3.5">
         {groups.map((groupName) => {
           const groupItems = visibleItems.filter(
             (i) => (i.group || 'General') === groupName,
           );
           return (
             <div key={groupName} className="space-y-0.5">
-              <p className="px-3 text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+              <p className="px-3 text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1">
                 {groupName}
               </p>
               {groupItems.map((item) => {
@@ -100,7 +100,7 @@ export function DashboardSidebar({ role }: { role: StaffRole }) {
                     href={item.href}
                     title={item.description}
                     className={cn(
-                      'group flex items-center gap-3 rounded-xl px-3 py-2 text-xs font-medium transition-colors',
+                      'group flex items-center gap-3 rounded-xl px-3 py-1.5 text-xs font-medium transition-colors',
                       isActive
                         ? 'bg-teal-700/25 text-teal-200 font-semibold'
                         : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-100',
