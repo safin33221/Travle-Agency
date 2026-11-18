@@ -1,11 +1,12 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getSinglePackage } from '@/services/packages/packages.service';
+import { getLiveBrandInfo } from '@/services/settings/settings.service';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils';
-import { brandConfig, SECTOR_CATALOG } from '@/config/brand.config';
+import { SECTOR_CATALOG } from '@/config/brand.config';
 
 
 export const instant = false;
@@ -16,7 +17,10 @@ export default async function PublicPackageDetailsPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const pkg = await getSinglePackage(id);
+  const [pkg, brand] = await Promise.all([
+    getSinglePackage(id),
+    getLiveBrandInfo(),
+  ]);
 
   if (!pkg) {
     notFound();
@@ -160,16 +164,16 @@ export default async function PublicPackageDetailsPage({
                 </Button>
               </Link>
               <a
-                href={`tel:${brandConfig.contact.phone.replace(/\s+/g, '')}`}
+                href={`tel:${brand.phone.replace(/\s+/g, '')}`}
                 className="block w-full rounded-lg border border-slate-200 bg-slate-50 py-2 text-center text-xs font-semibold text-slate-700 hover:bg-slate-100"
               >
-                📞 Call Desk: {brandConfig.contact.phone}
+                📞 Call Desk: {brand.phone}
               </a>
             </div>
 
             <div className="pt-3 border-t border-slate-100 text-xs text-slate-500 space-y-1">
-              <p>Hours: {brandConfig.contact.officeHours}</p>
-              <p>Email: {brandConfig.contact.email}</p>
+              <p>Hours: {brand.officeHours}</p>
+              <p>Email: {brand.email}</p>
             </div>
           </Card>
         </div>

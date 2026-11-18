@@ -7,7 +7,8 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { StatusBadge } from '@/components/shared/StatusBadge';
-import { brandConfig, SECTOR_CATALOG } from '@/config/brand.config';
+import { SECTOR_CATALOG } from '@/config/brand.config';
+import { useBrand } from '@/components/providers/BrandProvider';
 import { trackPublicFileStatus } from '@/services/leads/leads.service';
 import {
   LeadDocumentChecklistItem,
@@ -18,6 +19,7 @@ import {
 import { formatDate } from '@/lib/utils';
 
 function TrackStatusContent() {
+  const brand = useBrand();
   const searchParams = useSearchParams();
   const initialCode = searchParams.get('code') || '';
 
@@ -230,10 +232,10 @@ function TrackStatusContent() {
                   📌 Pending Documents ({pendingDocs.length})
                 </h3>
                 <a
-                  href={`tel:${brandConfig.contact.phone.replace(/\s+/g, '')}`}
+                  href={`tel:${brand.phone.replace(/\s+/g, '')}`}
                   className="text-xs font-bold text-amber-900 underline"
                 >
-                  Call {brandConfig.contact.phone}
+                  Call {brand.phone}
                 </a>
               </div>
               <div className="flex flex-wrap gap-1.5 pt-1">

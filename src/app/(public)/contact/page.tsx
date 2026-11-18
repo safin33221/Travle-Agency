@@ -4,6 +4,7 @@ import { Suspense, useState, useTransition } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { brandConfig, SECTOR_CATALOG } from '@/config/brand.config';
+import { useBrand } from '@/components/providers/BrandProvider';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -90,10 +91,11 @@ function ContactFormContent() {
     });
   };
 
+  const brand = useBrand();
   const enabledSectors = brandConfig.enabledCategories.map(
     (k) => SECTOR_CATALOG[k],
   );
-  const cleanWhatsapp = brandConfig.contact.whatsapp.replace(/[^0-9]/g, '');
+  const cleanWhatsapp = brand.whatsapp.replace(/[^0-9]/g, '');
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
@@ -238,7 +240,7 @@ function ContactFormContent() {
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Estimated Budget ({brandConfig.defaults.currency})
+                      Estimated Budget ({brand.defaultCurrency})
                     </label>
                     <Input
                       type="number"
@@ -428,10 +430,10 @@ function ContactFormContent() {
               Talk to a Counselor Directly
             </h3>
             <a
-              href={`tel:${brandConfig.contact.phone.replace(/\s+/g, '')}`}
+              href={`tel:${brand.phone.replace(/\s+/g, '')}`}
               className="block text-lg font-bold text-slate-900 hover:text-sky-600"
             >
-              📞 {brandConfig.contact.phone}
+              📞 {brand.phone}
             </a>
             <a
               href={`https://wa.me/${cleanWhatsapp}`}
@@ -442,7 +444,7 @@ function ContactFormContent() {
               💬 Message on WhatsApp ↗
             </a>
             <p className="text-xs text-slate-500">
-              Office Hours: {brandConfig.contact.officeHours}
+              Office Hours: {brand.officeHours}
             </p>
           </Card>
 
@@ -451,13 +453,13 @@ function ContactFormContent() {
               Visit Our Head Office
             </h3>
             <p className="mt-2 text-sm font-medium text-slate-900">
-              {brandConfig.contact.address}
+              {brand.address}
             </p>
             <a
-              href={`mailto:${brandConfig.contact.email}`}
+              href={`mailto:${brand.email}`}
               className="mt-2 inline-block text-xs font-medium text-sky-700 hover:underline"
             >
-              ✉️ {brandConfig.contact.email}
+              ✉️ {brand.email}
             </a>
           </Card>
         </div>
