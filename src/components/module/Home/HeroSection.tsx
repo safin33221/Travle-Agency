@@ -19,7 +19,7 @@ import { Button } from '@/components/ui/button';
 const QUICK_SECTORS = [
   {
     Icon: Palmtree,
-    title: 'Holiday Tours & Visa',
+    title: 'Holiday Tours',
     href: '/packages?category=TOUR',
   },
   {

@@ -14,6 +14,12 @@
 
 import { ServiceCategory } from '@/types/api';
 
+export const PACKAGE_CATEGORIES: ServiceCategory[] = ['TOUR', 'HAJJ_UMRAH'];
+
+export function isPackageCategory(category?: ServiceCategory | string): boolean {
+  return category === 'TOUR' || category === 'HAJJ_UMRAH';
+}
+
 export interface SectorMetaConfig {
   key: ServiceCategory;
   label: string;

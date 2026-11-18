@@ -6,33 +6,95 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { PackageArchiveBtn } from '@/components/module/packages/PackageArchiveBtn';
-import { SECTOR_CATALOG } from '@/config/brand.config';
+import { isPackageCategory, SECTOR_CATALOG } from '@/config/brand.config';
+import { ServiceCategory } from '@/types/api';
 import { formatCurrency } from '@/lib/utils';
 
 export const instant = false;
 
-export default async function DashboardPackagesPage() {
+export default async function DashboardPackagesPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ category?: string }>;
+}) {
+  const resolved = (await searchParams) ?? {};
+  const activeCategory =
+    resolved.category === 'TOUR' || resolved.category === 'HAJJ_UMRAH'
+      ? (resolved.category as ServiceCategory)
+      : undefined;
+
   const [packagesRes, user] = await Promise.all([
-    getPackages({ limit: 50, isArchived: false }),
+    getPackages({
+      limit: 50,
+      isArchived: false,
+      category: activeCategory,
+    }),
     getMe(),
   ]);
 
   const isAdmin = user?.role === 'OWNER_ADMIN';
-  const packages = packagesRes?.data || [];
+  const packages = (packagesRes?.data || []).filter((pkg) =>
+    isPackageCategory(pkg.category),
+  );
 
   return (
     <div className="space-y-5">
       <ManagementPageHeader
-        title="Package Catalog"
+        title="Tour & Hajj Package Catalog"
         actionLabel={isAdmin ? '+ Create New Package' : undefined}
         actionHref={isAdmin ? '/dashboard/packages/create' : undefined}
       >
+        <Link href="/dashboard/visa-immigration/services">
+          <Button variant="outline" size="sm">
+            Visa & Permit Services →
+          </Button>
+        </Link>
         <Link href="/packages" target="_blank">
           <Button variant="outline" size="sm">
             View Public Catalog ↗
           </Button>
         </Link>
       </ManagementPageHeader>
+
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href="/dashboard/packages"
+            className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
+              !activeCategory
+                ? 'bg-slate-900 text-white'
+                : 'border border-stone-200 bg-white text-stone-600 hover:bg-stone-100'
+            }`}
+          >
+            All Tour & Hajj
+          </Link>
+          <Link
+            href="/dashboard/packages?category=TOUR"
+            className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
+              activeCategory === 'TOUR'
+                ? 'bg-teal-700 text-white'
+                : 'border border-stone-200 bg-white text-stone-600 hover:bg-stone-100'
+            }`}
+          >
+            Holiday Tours
+          </Link>
+          <Link
+            href="/dashboard/packages?category=HAJJ_UMRAH"
+            className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
+              activeCategory === 'HAJJ_UMRAH'
+                ? 'bg-teal-700 text-white'
+                : 'border border-stone-200 bg-white text-stone-600 hover:bg-stone-100'
+            }`}
+          >
+            Hajj & Umrah
+          </Link>
+        </div>
+
+        <span className="text-xs text-stone-500">
+          Showing <strong>{packages.length}</strong> active package
+          {packages.length === 1 ? '' : 's'}
+        </span>
+      </div>
 
       <Card>
         <CardContent className="pt-6">

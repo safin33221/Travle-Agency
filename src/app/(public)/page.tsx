@@ -6,28 +6,31 @@ import { FeaturesSection } from '@/components/module/Home/FeaturesSection';
 import { PackagePreviewCard } from '@/components/common/PackagePreviewCard';
 import { CountryCoverageBadge } from '@/components/module/visa/VisaStatusBadges';
 import { Button } from '@/components/ui/button';
+import { isPackageCategory } from '@/config/brand.config';
 import { Country } from '@/types/api';
 
 export const instant = false;
 
 export default async function PublicHomePage() {
   const [packagesRes, countriesRes] = await Promise.all([
-    getPackages({ limit: 6, isArchived: false }),
+    getPackages({ limit: 12, isArchived: false }),
     getPublicCountriesAction({ limit: 6 }),
   ]);
 
-  const packages = packagesRes?.data || [];
+  const packages = (packagesRes?.data || [])
+    .filter((pkg) => isPackageCategory(pkg.category))
+    .slice(0, 6);
   const countries = countriesRes?.data || [];
 
   return (
     <div>
       <HeroSection />
 
-      {/* Featured Tour, Hajj & Visa Packages */}
+      {/* Featured Tour & Hajj Packages */}
       <section className="py-16 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-            Featured Packages & Programs
+            Featured Tour & Hajj Packages
           </h2>
           <Link href="/packages">
             <Button variant="outline">View All Packages →</Button>

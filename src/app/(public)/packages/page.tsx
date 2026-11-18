@@ -1,15 +1,19 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import type { LucideIcon } from 'lucide-react';
 import {
-  Briefcase,
-  GraduationCap,
+  Globe,
   Landmark,
   Layers,
   Palmtree,
 } from 'lucide-react';
 import { getPackages } from '@/services/packages/packages.service';
 import { PackagePreviewCard } from '@/components/common/PackagePreviewCard';
-import { brandConfig, SECTOR_CATALOG } from '@/config/brand.config';
+import {
+  isPackageCategory,
+  PACKAGE_CATEGORIES,
+  SECTOR_CATALOG,
+} from '@/config/brand.config';
 import { ServiceCategory } from '@/types/api';
 import { SearchFilter } from '@/components/shared/SearchFilter';
 import { ClearFiltersButton } from '@/components/shared/ClearFiltersButton';
@@ -24,11 +28,9 @@ interface PublicPackagesPageProps {
   }>;
 }
 
-const SECTOR_ICONS: Record<ServiceCategory, LucideIcon> = {
+const PACKAGE_ICONS: Partial<Record<ServiceCategory, LucideIcon>> = {
   TOUR: Palmtree,
   HAJJ_UMRAH: Landmark,
-  WORK_PERMIT: Briefcase,
-  STUDENT_VISA: GraduationCap,
 };
 
 export default async function PublicPackagesPage({
@@ -37,6 +39,10 @@ export default async function PublicPackagesPage({
   const resolved = (await searchParams) ?? {};
   const activeCategory = resolved.category;
 
+  if (activeCategory === 'WORK_PERMIT' || activeCategory === 'STUDENT_VISA') {
+    redirect(`/visa-services?category=${activeCategory}`);
+  }
+
   const packagesRes = await getPackages({
     limit: 50,
     isArchived: false,
@@ -44,29 +50,36 @@ export default async function PublicPackagesPage({
     search: resolved.search,
   });
 
-  const enabledSectors = brandConfig.enabledCategories.map(
-    (key) => SECTOR_CATALOG[key],
+  const filteredPackages = (packagesRes.data || []).filter((pkg) =>
+    isPackageCategory(pkg.category),
   );
+
+  const packageSectors = PACKAGE_CATEGORIES.map((key) => SECTOR_CATALOG[key]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 space-y-8">
       {/* Header & Search */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
-          Packages & Programs
-        </h1>
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+            Tour & Hajj Packages
+          </h1>
+          <p className="mt-1 text-sm text-stone-500">
+            Curated domestic & international holidays, plus Hajj & Umrah packages.
+          </p>
+        </div>
         <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
           <div className="w-full sm:w-72">
             <SearchFilter
               paramName="search"
-              placeholder="Search Cox's Bazar, Makkah, UK..."
+              placeholder="Search Cox's Bazar, Dubai, Makkah..."
             />
           </div>
           <ClearFiltersButton />
         </div>
       </div>
 
-      {/* Category Filter Tabs controlled by brandConfig.enabledCategories */}
+      {/* Category Filter Tabs (Tour & Hajj only) */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-200 pb-4">
         <div className="flex flex-wrap items-center gap-2">
           <Link
@@ -78,11 +91,11 @@ export default async function PublicPackagesPage({
             }`}
           >
             <Layers className="h-3.5 w-3.5" />
-            All Services
+            All Tour & Hajj
           </Link>
-          {enabledSectors.map((sector) => {
+          {packageSectors.map((sector) => {
             const isSelected = activeCategory === sector.key;
-            const Icon = SECTOR_ICONS[sector.key];
+            const Icon = PACKAGE_ICONS[sector.key] || Palmtree;
             return (
               <Link
                 key={sector.key}
@@ -94,21 +107,28 @@ export default async function PublicPackagesPage({
                 }`}
               >
                 <Icon className="h-3.5 w-3.5" />
-                {sector.label}
+                {sector.key === 'TOUR' ? 'Holiday Tours' : sector.label}
               </Link>
             );
           })}
+          <Link
+            href="/visa-services"
+            className="inline-flex items-center gap-1.5 rounded-full border border-teal-200 bg-teal-50/70 px-4 py-2 text-xs font-semibold text-teal-800 hover:bg-teal-100 transition"
+          >
+            <Globe className="h-3.5 w-3.5" />
+            Looking for Visa or Work Permits? →
+          </Link>
         </div>
 
         <span className="text-xs font-medium text-stone-500">
-          Showing <strong>{packagesRes.data.length}</strong> active package
-          {packagesRes.data.length === 1 ? '' : 's'}
+          Showing <strong>{filteredPackages.length}</strong> active package
+          {filteredPackages.length === 1 ? '' : 's'}
         </span>
       </div>
 
-      {packagesRes.data.length > 0 ? (
+      {filteredPackages.length > 0 ? (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {packagesRes.data.map((pkg) => (
+          {filteredPackages.map((pkg) => (
             <PackagePreviewCard key={pkg.id} pkg={pkg} />
           ))}
         </div>

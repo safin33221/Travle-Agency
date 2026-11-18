@@ -18,12 +18,13 @@ import {
   LeadStage,
   MilestoneItemStatus,
   TourPackage,
+  VisaService,
 } from '@/types/api';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input, Label } from '@/components/ui/input';
 import { StatusBadge } from '@/components/shared/StatusBadge';
-import { SECTOR_CATALOG } from '@/config/brand.config';
+import { isPackageCategory, SECTOR_CATALOG } from '@/config/brand.config';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import {
   Calendar,
@@ -69,9 +70,11 @@ const MILESTONE_STATUS_CYCLE: MilestoneItemStatus[] = [
 export function LeadWorkspaceClient({
   lead,
   packages,
+  visaServices = [],
 }: {
   lead: Lead;
   packages: TourPackage[];
+  visaServices?: VisaService[];
 }) {
   const [isPending, startTransition] = useTransition();
   const [activeTab, setActiveTab] = useState<

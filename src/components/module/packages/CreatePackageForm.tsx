@@ -68,18 +68,25 @@ export function CreatePackageForm() {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <Label htmlFor="category">Service Sector *</Label>
+              <Label htmlFor="category">Package Category *</Label>
               <select
                 id="category"
                 name="category"
-                className="flex h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+                className="flex h-10 w-full rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-700/15"
                 defaultValue="TOUR"
               >
-                <option value="TOUR">Holiday Tour & Tourist Visa</option>
+                <option value="TOUR">Holiday Tour Package</option>
                 <option value="HAJJ_UMRAH">Hajj & Umrah Package</option>
-                <option value="WORK_PERMIT">Work Permit & Job Visa</option>
-                <option value="STUDENT_VISA">Study Abroad & Student Visa</option>
               </select>
+              <p className="mt-1.5 text-[11px] text-stone-500">
+                For Student Visa or Work Permits,{' '}
+                <Link
+                  href="/dashboard/visa-immigration/services/create"
+                  className="font-semibold text-teal-700 hover:underline"
+                >
+                  create a Visa Service instead →
+                </Link>
+              </p>
             </div>
             <div>
               <Label htmlFor="title">Package / Program Title *</Label>
@@ -127,7 +134,7 @@ export function CreatePackageForm() {
                 id="currency"
                 name="currency"
                 defaultValue="BDT"
-                className="flex h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900"
+                className="flex h-10 w-full rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-700/15"
               >
                 <option value="BDT">BDT (৳)</option>
                 <option value="USD">USD ($)</option>
